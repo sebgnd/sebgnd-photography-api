@@ -1,0 +1,32 @@
+{
+    "rootDir": "categories",
+    "types": ["jpeg", "jpg", "png"],
+    "temporary": "tmp",
+    "format": {
+        "thumbnail": {
+            "small": {
+                "height": 80,
+                "width": 80,
+                "folderName": "thumbnail_small"
+            },
+            "medium": {
+                "height": 400,
+                "width": 400,
+                "folderName": "thumbnail_medium"
+            }
+        },
+        "regular": {
+            "small": {
+                "height": 450,
+                "folderName": "small_res"
+            },
+            "medium": {
+                "height": 1080,
+                "folderName": "medium_res"
+            },
+            "full": {
+                "folderName": "full_res"
+            }
+        }
+    }
+}
