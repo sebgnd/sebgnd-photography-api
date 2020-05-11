@@ -11,16 +11,7 @@ export default class GalleryService {
             const galleriesToThumbnails = await ThumbnailGallery.findAll({
                 include: [Image, Gallery]
             });
-            const galleries = galleriesToThumbnails.map(galleryToThumbnail => {
-                const current: any = galleryToThumbnail.get({ plain: true });
-                return {
-                    ...current.gallery,
-                    thumbnail: {
-                        ...current.image
-                    }
-                }
-            });
-            return galleries;
+            return this.transformGalleryResult(galleriesToThumbnails);
         } catch (e) {
             throw e;
         }
@@ -28,11 +19,11 @@ export default class GalleryService {
 
     public async getWithLimit(limit: number) {
         try {
-            const galleries = await Gallery.findAll({
-                order: [['id', 'ASC']],
+            const galleriesToThumbnails = await ThumbnailGallery.findAll({
+                include: [Image, Gallery],
                 limit
             });
-            return galleries;
+            return this.transformGalleryResult(galleriesToThumbnails);
         } catch (e) {
             throw e;
         }
@@ -46,5 +37,17 @@ export default class GalleryService {
         } catch (e) {
             throw e;
         }
+    }
+
+    private transformGalleryResult(galleriesToThumbnails: ThumbnailGallery[]) {
+        return galleriesToThumbnails.map(galleryToThumbnail => {
+            const current: any = galleryToThumbnail.get({ plain: true });
+            return {
+                ...current.gallery,
+                thumbnail: {
+                    ...current.image
+                }
+            }
+        });
     }
 }
