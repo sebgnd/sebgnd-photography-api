@@ -42,10 +42,10 @@ export default class ImageService {
         }
     }
 
-    public async getFromGallery(name: string) {
+    public async getFromGallery(id: string) {
         try {
             const images = await this.getAll();
-            return images.filter(image => image.gallery.name === name);
+            return images.filter(image => image.gallery.id === id);
         } catch (e) {
             throw e;
         }
