@@ -3,3 +3,12 @@ Tue Mar 17 2020 10:18:12 GMT+0100 (Central European Standard Time) | (SequelizeD
 Tue Mar 17 2020 10:19:16 GMT+0100 (Central European Standard Time) | (SequelizeDatabaseError) Unknown column 'ThumbnailGallery.idImage' in 'where clause'
 Tue Mar 17 2020 10:19:36 GMT+0100 (Central European Standard Time) | (SequelizeDatabaseError) Unknown column 'ThumbnailGallery.idImage' in 'where clause'
 Mon May 11 2020 16:08:34 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Mon May 11 2020 19:00:09 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\undefined\full_res\undefined.jpg'
+Mon May 11 2020 19:00:44 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\undefined\thumbnail_medium\undefined.jpg'
+Mon May 11 2020 19:03:10 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\undefined\thumbnail_medium\undefined.jpg'
+Mon May 11 2020 19:04:07 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\undefined\thumbnail_medium\undefined.jpg'
+Mon May 11 2020 19:04:13 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\undefined\thumbnail_medium\undefined.jpg'
+Mon May 11 2020 19:05:42 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\undefined\thumbnail_medium\undefined.jpg'
+Mon May 11 2020 19:06:13 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\undefined\thumbnail_medium\undefined.jpg'
+Mon May 11 2020 19:09:36 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\undefined\thumbnail_medium\undefined.jpg'
+Mon May 11 2020 19:11:37 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\undefined\thumbnail_medium\undefined.jpg'
