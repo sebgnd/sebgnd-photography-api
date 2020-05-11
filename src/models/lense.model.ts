@@ -3,7 +3,6 @@ import Image from './image.model';
 
 @Table
 export default class Lense extends Model<Lense> {
-    
     @Column
     name!: string;
 

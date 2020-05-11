@@ -1,14 +1,10 @@
-import { Table, Column, Model, PrimaryKey, CreatedAt, AllowNull, BelongsTo, ForeignKey, DataType, HasOne } from 'sequelize-typescript';
+import { Table, Column, Model, PrimaryKey, CreatedAt, AllowNull, BelongsTo, ForeignKey, DataType } from 'sequelize-typescript';
 import Gallery from './gallery.model';
 import Camera from './camera.model';
 import Lense from './lense.model';
 
 @Table
 export default class Image extends Model<Image> {
-    
-    @Column
-    name!: string;
-    
     @AllowNull
     @Column
     iso?: number;
@@ -33,7 +29,7 @@ export default class Image extends Model<Image> {
 
     @ForeignKey(() => Gallery)
     @Column
-    galleryId!: number;
+    galleryId!: string;
 
     @ForeignKey(() => Camera)
     @Column

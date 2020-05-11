@@ -6,7 +6,7 @@ export default class Gallery extends Model<Gallery> {
     
     @PrimaryKey
     @Column
-    name!: string;
+    id!: string;
 
     @Column
     displayName!: string;

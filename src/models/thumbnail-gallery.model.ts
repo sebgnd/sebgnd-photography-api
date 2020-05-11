@@ -4,14 +4,13 @@ import Gallery from './gallery.model';
 
 @Table
 export default class ThumbnailGallery extends Model<ThumbnailGallery> {
-    
     @ForeignKey(() => Image)
     @Column
     imageId!: number;
 
     @ForeignKey(() => Gallery)
     @Column
-    galleryId!: number;
+    galleryId!: string;
 
     @BelongsTo(() => Image)
     image!: Image;
