@@ -2,3 +2,4 @@ Tue Mar 17 2020 10:17:10 GMT+0100 (Central European Standard Time) | (SequelizeD
 Tue Mar 17 2020 10:18:12 GMT+0100 (Central European Standard Time) | (SequelizeDatabaseError) Unknown column 'ThumbnailGallery.idImage' in 'where clause'
 Tue Mar 17 2020 10:19:16 GMT+0100 (Central European Standard Time) | (SequelizeDatabaseError) Unknown column 'ThumbnailGallery.idImage' in 'where clause'
 Tue Mar 17 2020 10:19:36 GMT+0100 (Central European Standard Time) | (SequelizeDatabaseError) Unknown column 'ThumbnailGallery.idImage' in 'where clause'
+Mon May 11 2020 16:08:34 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
