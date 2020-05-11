@@ -5,6 +5,6 @@ const gallery = express.Router();
 
 gallery.get('/', getAll);
 
-gallery.get('/:limit', getWithLimit);
+gallery.get('/limit/:limit', getWithLimit);
 
 export default gallery;

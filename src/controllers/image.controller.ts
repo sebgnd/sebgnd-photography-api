@@ -17,7 +17,7 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const getFromGallery = async (req: Request, res: Response, next: NextFunction) => {
-    const gallery = req.params.gallery;
+    const gallery = req.params.id;
     try {
         const images = await imageService.getFromGallery(gallery);
         if (images.length != 0) {

@@ -5,7 +5,7 @@ const image = express.Router();
 
 image.get('/', getAll);
 
-image.get('/:gallery', getFromGallery);
+image.get('/gallery/:id', getFromGallery);
 
 image.delete('/:id', deleteImage);
 
