@@ -8,8 +8,17 @@ export default class GalleryService {
 
     public async getAll() {
         try {
-            const galleries = await Gallery.findAll({
-                order: [['id', 'ASC']]
+            const galleriesToThumbnails = await ThumbnailGallery.findAll({
+                include: [Image, Gallery]
+            });
+            const galleries = galleriesToThumbnails.map(galleryToThumbnail => {
+                const current: any = galleryToThumbnail.get({ plain: true });
+                return {
+                    ...current.gallery,
+                    thumbnail: {
+                        ...current.image
+                    }
+                }
             });
             return galleries;
         } catch (e) {

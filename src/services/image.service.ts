@@ -44,8 +44,14 @@ export default class ImageService {
 
     public async getFromGallery(id: string) {
         try {
-            const images = await this.getAll();
-            return images.filter(image => image.gallery.id === id);
+            const images = Image.findAll({
+                order: [['id', 'ASC']],
+                include: [{
+                    model: Gallery,
+                    where: {id}
+                }, Lense, Camera]
+            });
+            return images;
         } catch (e) {
             throw e;
         }

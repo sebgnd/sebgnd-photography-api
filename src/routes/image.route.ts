@@ -1,12 +1,8 @@
 import express from 'express';
-import { getAll, getFromGallery, deleteImage } from '../controllers/image.controller';
+import { sendImage } from '../controllers/image.controller';
 
 const image = express.Router();
 
-image.get('/', getAll);
-
-image.get('/:gallery', getFromGallery);
-
-image.delete('/:id', deleteImage);
+image.get('/:gallery/:size/:id', sendImage);
 
 export default image;
