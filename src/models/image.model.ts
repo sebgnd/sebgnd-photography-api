@@ -1,4 +1,4 @@
-import { Table, Column, Model, PrimaryKey, CreatedAt, AllowNull, BelongsTo, ForeignKey, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, PrimaryKey, CreatedAt, AllowNull, BelongsTo, ForeignKey, DataType, Default } from 'sequelize-typescript';
 import Gallery from './gallery.model';
 import Camera from './camera.model';
 import Lense from './lense.model';
@@ -41,6 +41,10 @@ export default class Image extends Model<Image> {
 
     @BelongsTo(() => Gallery)
     gallery!: Gallery;
+
+    @Default(false)
+    @Column
+    isThumbnail!: boolean;
 
     @BelongsTo(() => Camera)
     camera!: Camera;

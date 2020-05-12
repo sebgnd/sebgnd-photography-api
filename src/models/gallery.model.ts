@@ -14,4 +14,7 @@ export default class Gallery extends Model<Gallery> {
 
     @HasMany(() => Image)
     images!: Image[];
+
+    @HasOne(() => Image)
+    thumbnail!: Image;
 }
