@@ -1,6 +1,5 @@
 import { Table, Column, Model, PrimaryKey, CreatedAt, HasMany, HasOne } from 'sequelize-typescript';
 import Image from './image.model';
-import ThumbnailGallery from './thumbnail-gallery.model';
 
 @Table
 export default class Gallery extends Model<Gallery> {
