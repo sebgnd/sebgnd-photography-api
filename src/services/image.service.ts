@@ -46,10 +46,8 @@ export default class ImageService {
         try {
             const images = Image.findAll({
                 order: [['id', 'ASC']],
-                include: [{
-                    model: Gallery,
-                    where: {id}
-                }, Lense, Camera]
+                where: { galleryId: id }, 
+                include: [Lense, Camera]
             });
             return images;
         } catch (e) {
