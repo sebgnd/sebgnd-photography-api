@@ -24,3 +24,7 @@ Tue May 12 2020 15:59:42 GMT+0200 (Central European Summer Time) | (Error) Could
 Tue May 12 2020 15:59:44 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
 Tue May 12 2020 15:59:51 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\undefined\thumbnail_medium\undefined.jpg'
 Tue May 12 2020 16:01:34 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\undefined\thumbnail_medium\undefined.jpg'
+Wed May 13 2020 00:32:07 GMT+0200 (Central European Summer Time) | (Error) Alias cannot be inferred: "Gallery" has multiple relations with "Image"
+Wed May 13 2020 00:46:57 GMT+0200 (Central European Summer Time) | (SequelizeEagerLoadingError) Image is associated to ThumbnailGallery using an alias. You've included an alias (thumbnail), but it does not match the alias(es) defined in your association (image).
+Wed May 13 2020 01:20:28 GMT+0200 (Central European Summer Time) | (SequelizeEagerLoadingError) Image is associated to Gallery using an alias. You've included an alias (thumbnail), but it does not match the alias(es) defined in your association (images).
+Wed May 13 2020 01:27:22 GMT+0200 (Central European Summer Time) | (SequelizeEagerLoadingError) Gallery is not associated to Gallery!
