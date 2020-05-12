@@ -2,7 +2,6 @@ import Image from '../models/image.model';
 import Lense from '../models/lense.model';
 import Camera from '../models/camera.model';
 import Gallery from '../models/gallery.model';
-import ThumbnailGallery from '../models/thumbnail-gallery.model';
 
 export default class ImageService {
 
@@ -57,19 +56,10 @@ export default class ImageService {
 
     public async delete(id: number) {
         try {
-            // Get the image is used for a thumbnail
-            const thumbnail = await ThumbnailGallery.findOne({
-                where: {idImage: id}
+            const response: number = await Image.destroy({
+                where: {id, isThumbnail: false}
             });
-            if (!thumbnail) {
-                // Response is the number of images that have been deleted
-                // We only ask for one image to be deleted
-                const response: number = await Image.destroy({
-                    where: {id}
-                });
-                return response == 1;
-            }
-            return false;
+            return response == 1;
         } catch (e) {
             throw e;
         }
