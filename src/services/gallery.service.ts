@@ -8,10 +8,7 @@ export default class GalleryService {
 
     public async getAll() {
         try {
-            const galleriesToThumbnails = await ThumbnailGallery.findAll({
-                include: [Image, Gallery]
-            });
-            return this.transformGalleryResult(galleriesToThumbnails);
+            return await this.getAllOrLimit();
         } catch (e) {
             throw e;
         }
@@ -19,35 +16,38 @@ export default class GalleryService {
 
     public async getWithLimit(limit: number) {
         try {
-            const galleriesToThumbnails = await ThumbnailGallery.findAll({
-                include: [Image, Gallery],
+            return await this.getAllOrLimit(limit);
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    private async getAllOrLimit(limit: number | undefined = undefined) {
+        try {
+            return await Gallery.findAll({
+                include: [{
+                    model: Image,
+                    where: {isThumbnail: true},
+                    as: 'thumbnail'
+                }],
                 limit
             });
-            return this.transformGalleryResult(galleriesToThumbnails);
         } catch (e) {
             throw e;
         }
     }
 
-    public async get(id: number) {
+    public async get(id: string) {
         try {
             return await Gallery.findByPk(id, {
-                include: [Image]
+                include: [{
+                    model: Image,
+                    where: {isThumbnail: true},
+                    as: 'thumbnail'
+                }]
             });
         } catch (e) {
             throw e;
         }
-    }
-
-    private transformGalleryResult(galleriesToThumbnails: ThumbnailGallery[]) {
-        return galleriesToThumbnails.map(galleryToThumbnail => {
-            const current: any = galleryToThumbnail.get({ plain: true });
-            return {
-                ...current.gallery,
-                thumbnail: {
-                    ...current.image
-                }
-            }
-        });
     }
 }
