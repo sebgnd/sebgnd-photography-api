@@ -3,7 +3,7 @@ import ImageService from '../services/image.service';
 
 const imageService = new ImageService();
 
-const getAll = async (req: Request, res: Response, next: NextFunction) => {
+export const getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const images = await imageService.getAll();
         if (images.length != 0) {
@@ -16,7 +16,7 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
-const getFromGallery = async (req: Request, res: Response, next: NextFunction) => {
+export const getFromGallery = async (req: Request, res: Response, next: NextFunction) => {
     const gallery = req.params.id;
     try {
         const images = await imageService.getFromGallery(gallery);
@@ -30,7 +30,22 @@ const getFromGallery = async (req: Request, res: Response, next: NextFunction) =
     }
 }
 
-const deleteImage = async (req: Request, res: Response, next: NextFunction) => {
+export const getKImagesFromOffset = async (req: Request, res: Response, next: NextFunction) => {
+    const offset = parseInt(req.params.offset);
+    const limit = parseInt(req.params.limit);
+    try {
+        const images = await imageService.getImagesFromOffset(offset, limit); 
+        if (images.length != 0) {
+            res.json(images);
+        } else {
+            next(new Error('Could not find any image'));
+        }
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const deleteImage = async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id);
     try {
         if (imageService.delete(id)) {
@@ -42,5 +57,3 @@ const deleteImage = async (req: Request, res: Response, next: NextFunction) => {
         next(error);
     }
 }
-
-export { getAll, getFromGallery, deleteImage };
