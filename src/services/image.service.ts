@@ -43,10 +43,12 @@ export default class ImageService {
 
     public async getFromGallery(id: string) {
         try {
-            const images = Image.findAll({
-                order: [['id', 'ASC']],
-                where: { galleryId: id }, 
-                include: [Lense, Camera]
+            const images = Gallery.findByPk(id, {
+                include: [{
+                    model: Image,
+                    as: 'images',
+                    order: [['id', 'ASC']]
+                }]
             });
             return images;
         } catch (e) {

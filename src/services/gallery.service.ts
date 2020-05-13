@@ -2,7 +2,6 @@ import Image from '../models/image.model';
 import Lense from '../models/lense.model';
 import Camera from '../models/camera.model';
 import Gallery from '../models/gallery.model';
-import ThumbnailGallery from '../models/thumbnail-gallery.model';
 
 export default class GalleryService {
 
