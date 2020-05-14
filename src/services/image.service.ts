@@ -1,7 +1,7 @@
 import Image from '../models/image.model';
 import Lense from '../models/lense.model';
 import Camera from '../models/camera.model';
-import Gallery from '../models/gallery.model';
+import Category from '../models/category.model';
 
 export default class ImageService {
 
@@ -9,7 +9,7 @@ export default class ImageService {
         try {
             const images = await Image.findAll({
                 order: [['id', 'ASC']],
-                include: [Gallery, Lense, Camera]
+                include: [Category, Lense, Camera]
             });
             return images;  
         } catch (e) {
@@ -21,7 +21,7 @@ export default class ImageService {
         try {
             const images = await Image.findAll({
                 order: [['id', 'ASC']],
-                include: [Gallery, Lense, Camera],
+                include: [Category, Lense, Camera],
                 offset,
                 limit
             });
@@ -34,7 +34,7 @@ export default class ImageService {
     public async get(id: number) {
         try {
             return await Image.findByPk(id, {
-                include: [Gallery, Lense, Camera]
+                include: [Category, Lense, Camera]
             });
         } catch (e) {
             throw e;
@@ -43,7 +43,7 @@ export default class ImageService {
 
     public async getFromGallery(id: string) {
         try {
-            const images = Gallery.findByPk(id, {
+            const images = Category.findByPk(id, {
                 include: [{
                     model: Image,
                     as: 'images',

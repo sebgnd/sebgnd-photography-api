@@ -2,7 +2,7 @@ import { Table, Column, Model, PrimaryKey, CreatedAt, HasMany, HasOne } from 'se
 import Image from './image.model';
 
 @Table
-export default class Gallery extends Model<Gallery> {
+export default class Category extends Model<Category> {
     
     @PrimaryKey
     @Column

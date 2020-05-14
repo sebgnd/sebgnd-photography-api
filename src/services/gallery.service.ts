@@ -1,7 +1,7 @@
 import Image from '../models/image.model';
 import Lense from '../models/lense.model';
 import Camera from '../models/camera.model';
-import Gallery from '../models/gallery.model';
+import Category from '../models/category.model';
 
 export default class GalleryService {
 
@@ -23,7 +23,7 @@ export default class GalleryService {
 
     private async getAllOrLimit(limit: number | undefined = undefined) {
         try {
-            return await Gallery.findAll({
+            return await Category.findAll({
                 include: [{
                     model: Image,
                     where: {isThumbnail: true},
@@ -38,7 +38,7 @@ export default class GalleryService {
 
     public async get(id: string) {
         try {
-            return await Gallery.findByPk(id, {
+            return await Category.findByPk(id, {
                 include: [{
                     model: Image,
                     where: {isThumbnail: true},

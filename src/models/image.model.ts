@@ -1,5 +1,5 @@
 import { Table, Column, Model, PrimaryKey, CreatedAt, AllowNull, BelongsTo, ForeignKey, DataType, Default } from 'sequelize-typescript';
-import Gallery from './gallery.model';
+import Category from './category.model';
 import Camera from './camera.model';
 import Lense from './lense.model';
 
@@ -27,9 +27,9 @@ export default class Image extends Model<Image> {
     })
     uploadDate!: Date;
 
-    @ForeignKey(() => Gallery)
+    @ForeignKey(() => Category)
     @Column
-    galleryId!: string;
+    categoryId!: string;
 
     @ForeignKey(() => Camera)
     @Column
@@ -39,8 +39,8 @@ export default class Image extends Model<Image> {
     @Column
     lenseId!: number;
 
-    @BelongsTo(() => Gallery)
-    gallery!: Gallery;
+    @BelongsTo(() => Category)
+    category!: Category;
 
     @Default(false)
     @Column
