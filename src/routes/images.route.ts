@@ -5,7 +5,7 @@ const images = express.Router();
 
 images.get('/', getAll);
 
-images.get('/gallery/:id', getFromGallery);
+images.get('/category/:id', getFromGallery);
 
 images.get('/:offset/:limit', getKImagesFromOffset);
 

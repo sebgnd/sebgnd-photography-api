@@ -3,7 +3,7 @@ import Lense from '../models/lense.model';
 import Camera from '../models/camera.model';
 import Category from '../models/category.model';
 
-export default class GalleryService {
+export default class CategoryService {
 
     public async getAll() {
         try {

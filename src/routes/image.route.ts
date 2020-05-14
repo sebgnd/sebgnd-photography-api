@@ -3,6 +3,6 @@ import { sendImage } from '../controllers/image.controller';
 
 const image = express.Router();
 
-image.get('/:gallery/:size/:id', sendImage);
+image.get('/:category/:size/:id', sendImage);
 
 export default image;
