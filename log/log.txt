@@ -28,3 +28,122 @@ Wed May 13 2020 00:32:07 GMT+0200 (Central European Summer Time) | (Error) Alias
 Wed May 13 2020 00:46:57 GMT+0200 (Central European Summer Time) | (SequelizeEagerLoadingError) Image is associated to ThumbnailGallery using an alias. You've included an alias (thumbnail), but it does not match the alias(es) defined in your association (image).
 Wed May 13 2020 01:20:28 GMT+0200 (Central European Summer Time) | (SequelizeEagerLoadingError) Image is associated to Gallery using an alias. You've included an alias (thumbnail), but it does not match the alias(es) defined in your association (images).
 Wed May 13 2020 01:27:22 GMT+0200 (Central European Summer Time) | (SequelizeEagerLoadingError) Gallery is not associated to Gallery!
+Wed May 13 2020 15:48:55 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\test\full_res\1.jpg'
+Wed May 13 2020 15:49:21 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\test\full_res\1.jpg'
+Wed May 13 2020 15:49:43 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\test\full_res\1.jpg'
+Wed May 13 2020 15:54:37 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\test\full_res\1.jpg'
+Wed May 13 2020 15:55:10 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\test\full_res\1.jpg'
+Wed May 13 2020 16:32:38 GMT+0200 (Central European Summer Time) | (Error) Could not find any gallery
+Wed May 13 2020 17:14:27 GMT+0200 (Central European Summer Time) | (Error) Could not find any gallery
+Wed May 13 2020 17:16:12 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:58:16 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:58:19 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:58:19 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:58:46 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:58:47 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:58:47 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:58:48 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:58:48 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:58:48 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:58:48 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:58:48 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:14 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:15 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:15 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:15 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:16 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:16 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:16 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:16 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:16 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:16 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:17 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:17 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:17 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:17 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:17 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:17 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:18 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:18 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:18 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:18 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:18 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:18 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:19 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:19 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:19 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:19 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:19 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:20 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:20 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:20 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:20 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 17:59:59 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 18:01:10 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 18:01:35 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 18:01:35 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 18:01:35 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 18:01:35 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 18:01:35 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 18:01:36 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 18:01:36 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 18:01:36 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 18:01:36 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Wed May 13 2020 18:03:22 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Wed May 13 2020 18:04:40 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Wed May 13 2020 18:04:40 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Wed May 13 2020 18:04:41 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Wed May 13 2020 18:04:41 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Wed May 13 2020 18:04:41 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Wed May 13 2020 18:06:20 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Wed May 13 2020 18:06:21 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Wed May 13 2020 18:06:21 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Wed May 13 2020 18:06:21 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Wed May 13 2020 18:06:21 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Wed May 13 2020 18:06:21 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Wed May 13 2020 18:06:21 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Wed May 13 2020 18:06:26 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Thu May 14 2020 14:06:31 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Thu May 14 2020 14:06:39 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Thu May 14 2020 14:07:06 GMT+0200 (Central European Summer Time) | (Error) Could not find any gallery
+Thu May 14 2020 14:07:28 GMT+0200 (Central European Summer Time) | (Error) Could not find any gallery
+Thu May 14 2020 14:07:41 GMT+0200 (Central European Summer Time) | (Error) Could not find any gallery
+Thu May 14 2020 14:08:10 GMT+0200 (Central European Summer Time) | (Error) Could not find any gallery
+Thu May 14 2020 14:08:10 GMT+0200 (Central European Summer Time) | (Error) Could not find any gallery
+Thu May 14 2020 14:08:10 GMT+0200 (Central European Summer Time) | (Error) Could not find any gallery
+Thu May 14 2020 14:08:11 GMT+0200 (Central European Summer Time) | (Error) Could not find any gallery
+Thu May 14 2020 14:08:11 GMT+0200 (Central European Summer Time) | (Error) Could not find any gallery
+Thu May 14 2020 14:09:14 GMT+0200 (Central European Summer Time) | (Error) Could not find any gallery
+Thu May 14 2020 14:09:15 GMT+0200 (Central European Summer Time) | (Error) Could not find any gallery
+Thu May 14 2020 14:09:15 GMT+0200 (Central European Summer Time) | (Error) Could not find any gallery
+Thu May 14 2020 14:10:28 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:11:50 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:11:51 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:11:51 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:11:51 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:14:41 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:16:57 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:16:58 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:16:58 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:16:58 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:16:59 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:16:59 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:16:59 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:16:59 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:16:59 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:17:00 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:17:00 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:17:00 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:17:00 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:17:00 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:17:00 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:17:00 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:17:01 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:17:01 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:17:01 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:17:02 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:17:02 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:17:03 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 14:17:03 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
+Thu May 14 2020 16:13:52 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Thu May 14 2020 18:54:35 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
