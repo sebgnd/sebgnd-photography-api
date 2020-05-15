@@ -21,6 +21,12 @@ export default class Image extends Model<Image> {
     @Column
     focalLength?: string;
 
+    @Column
+    height?: number;
+
+    @Column
+    width?: number;
+
     @CreatedAt
     @Column({
         type: DataType.DATE
