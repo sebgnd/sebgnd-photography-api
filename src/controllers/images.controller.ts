@@ -6,7 +6,7 @@ const imageService = new ImageService();
 export const getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const images = await imageService.getAll();
-        if (images.length != 0) {
+        if (images) {
             res.json(images);
         } else {
             next(new Error('Could not find any image'));
@@ -35,7 +35,7 @@ export const getKImagesFromOffset = async (req: Request, res: Response, next: Ne
     const limit = parseInt(req.params.limit);
     try {
         const images = await imageService.getImagesFromOffset(offset, limit); 
-        if (images.length != 0) {
+        if (images) {
             res.json(images);
         } else {
             next(new Error('Could not find any image'));
