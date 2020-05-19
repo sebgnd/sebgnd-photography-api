@@ -33,9 +33,10 @@ export default class ImageService {
 
     public async get(id: number) {
         try {
-            return await Image.findByPk(id, {
+            const image =  await Image.findByPk(id, {
                 include: [Category, Lense, Camera]
             });
+            return image;
         } catch (e) {
             throw e;
         }

@@ -57,3 +57,18 @@ export const deleteImage = async (req: Request, res: Response, next: NextFunctio
         next(error);
     }
 }
+
+export const getImage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = parseInt(req.params.id);
+        const image = await imageService.get(id);
+
+        if (image) {
+            res.json(image);
+        } else {
+            next(new Error('Cannot find this image'));
+        }
+    } catch (error) {
+        next(error);
+    }
+}
