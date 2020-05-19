@@ -147,3 +147,15 @@ Thu May 14 2020 14:17:03 GMT+0200 (Central European Summer Time) | (Error) Could
 Thu May 14 2020 14:17:03 GMT+0200 (Central European Summer Time) | (Error) Could not find any category
 Thu May 14 2020 16:13:52 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
 Thu May 14 2020 18:54:35 GMT+0200 (Central European Summer Time) | (Error) Could not find any image
+Tue May 19 2020 15:35:40 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''2', '2'' at line 1
+Tue May 19 2020 15:36:45 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''2', '2'' at line 1
+Tue May 19 2020 15:37:00 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''2', '2'' at line 1
+Tue May 19 2020 15:37:18 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''2', '2'' at line 1
+Tue May 19 2020 15:37:19 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''2', '2'' at line 1
+Tue May 19 2020 15:38:08 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''2', '2'' at line 1
+Tue May 19 2020 15:42:01 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''2'' at line 1
+Tue May 19 2020 15:42:01 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''2'' at line 1
+Tue May 19 2020 15:42:02 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''2'' at line 1
+Tue May 19 2020 15:49:15 GMT+0200 (Central European Summer Time) | (Error) ENOENT: no such file or directory, stat 'E:\PROJECT\WEB\sebgnd-photography\back-end\categories\photo_manipulation\full_res\[object SequelizeInstance:Image].jpg'
+Tue May 19 2020 15:50:50 GMT+0200 (Central European Summer Time) | (TypeError) The "path" argument must be of type string. Received undefined
+Tue May 19 2020 15:51:15 GMT+0200 (Central European Summer Time) | (TypeError) The "path" argument must be of type string. Received undefined
