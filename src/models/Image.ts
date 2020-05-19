@@ -1,7 +1,7 @@
 import { Table, Column, Model, PrimaryKey, CreatedAt, AllowNull, BelongsTo, ForeignKey, DataType, Default } from 'sequelize-typescript';
-import Category from './category.model';
-import Camera from './camera.model';
-import Lense from './lense.model';
+import Category from './Category';
+import Camera from './Camera';
+import Lense from './Lense';
 
 @Table
 export default class Image extends Model<Image> {

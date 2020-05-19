@@ -1,27 +1,27 @@
-import Image from '../models/image.model';
-import Lense from '../models/lense.model';
-import Camera from '../models/camera.model';
-import Category from '../models/category.model';
+import Image from '../models/Image';
+import Lense from '../models/Lense';
+import Camera from '../models/Camera';
+import Category from '../models/Category';
 
 export default class CategoryService {
 
     public async getAll() {
         try {
-            return await this.getAllOrLimit();
+            return await this.getAllOrFromOffset();
         } catch (e) {
             throw e;
         }
     }
 
-    public async getWithLimit(limit: number) {
+    public async getNFromOffset(n: number, offset: number) {
         try {
-            return await this.getAllOrLimit(limit);
+            return await this.getAllOrFromOffset(offset, n);
         } catch (e) {
             throw e;
         }
     }
 
-    private async getAllOrLimit(limit: number | undefined = undefined) {
+    private async getAllOrFromOffset(offset?: number, limit?: number) {
         try {
             return await Category.findAll({
                 include: [{
@@ -29,7 +29,8 @@ export default class CategoryService {
                     where: {isThumbnail: true},
                     as: 'thumbnail'
                 }],
-                limit
+                limit,
+                offset
             });
         } catch (e) {
             throw e;

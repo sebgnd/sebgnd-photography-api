@@ -1,5 +1,5 @@
 import { Table, Column, Model, CreatedAt, BelongsTo, DataType, ForeignKey, Default } from 'sequelize-typescript';
-import User from './user.model';
+import User from './User';
 
 @Table
 export default class Message extends Model<Message> {

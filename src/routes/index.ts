@@ -1,13 +1,13 @@
 import express from 'express';
 
-import imagesRoute from './images.route';
-import categoriesRoute from './categories.route';
-import imageRoute from './image.route';
+import imagesRoute from './ImageRoute';
+import categoriesRoute from './CategoryRoute';
+import fileRoute from './FileRoute';
 
 const routes = express.Router();
 
 routes.use('/images', imagesRoute);
-routes.use('/image', imageRoute)
+routes.use('/file', fileRoute)
 routes.use('/categories', categoriesRoute);
 
 export default routes;

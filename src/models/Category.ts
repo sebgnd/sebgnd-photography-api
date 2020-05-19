@@ -1,5 +1,5 @@
 import { Table, Column, Model, PrimaryKey, CreatedAt, HasMany, HasOne } from 'sequelize-typescript';
-import Image from './image.model';
+import Image from './Image';
 
 @Table
 export default class Category extends Model<Category> {

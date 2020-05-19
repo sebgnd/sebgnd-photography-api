@@ -1,23 +1,26 @@
-import Image from '../models/image.model';
-import Lense from '../models/lense.model';
-import Camera from '../models/camera.model';
-import Category from '../models/category.model';
+import Image from '../models/Image';
+import Lense from '../models/Lense';
+import Camera from '../models/Camera';
+import Category from '../models/Category';
 
 export default class ImageService {
-
     public async getAll() {
         try {
-            const images = await Image.findAll({
-                order: [['id', 'ASC']],
-                include: [Category, Lense, Camera]
-            });
-            return images;  
+            return await this.getAllOrFromOffset();
         } catch (e) {
             throw e;
         }
     }
 
-    public async getImagesFromOffset(offset: number, limit: number) {
+    public async getNFromOffset(n: number, offset: number) {
+        try {
+            return await this.getAllOrFromOffset(offset, n);
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    public async getAllOrFromOffset(offset?: number, limit?: number) {
         try {
             const images = await Image.findAll({
                 order: [['id', 'ASC']],
