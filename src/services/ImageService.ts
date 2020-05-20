@@ -2,6 +2,7 @@ import Image from '../models/Image';
 import Lense from '../models/Lense';
 import Camera from '../models/Camera';
 import Category from '../models/Category';
+import { Op, Includeable } from 'sequelize';
 
 export default class ImageService {
     public async getAll() {
@@ -40,6 +41,33 @@ export default class ImageService {
                 include: [Category, Lense, Camera]
             });
             return image;
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    public async getAdjacent(image: Image, previous: boolean, sameCategory: boolean = false) {
+        const categoryOptions: Includeable = {
+            model: Category
+        }
+
+        if (sameCategory) {
+            categoryOptions.where = {
+                id: image.categoryId
+            }
+        }
+
+        try {
+            const adjacentImage = await Image.findOne({
+                include: [categoryOptions, Lense, Camera],
+                where: {
+                    id: {
+                        [previous ? Op.lt : Op.gt]: image.id
+                    }
+                },
+                order: [['id', previous ? 'DESC' : 'ASC']]
+            });
+            return adjacentImage;
         } catch (e) {
             throw e;
         }
