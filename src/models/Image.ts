@@ -1,4 +1,4 @@
-import { Table, Column, Model, PrimaryKey, CreatedAt, AllowNull, BelongsTo, ForeignKey, DataType, Default } from 'sequelize-typescript';
+import { Table, Column, Model, UpdatedAt, CreatedAt, AllowNull, BelongsTo, ForeignKey, DataType, Default } from 'sequelize-typescript';
 import Category from './Category';
 import Camera from './Camera';
 import Lense from './Lense';
@@ -28,10 +28,19 @@ export default class Image extends Model<Image> {
     width?: number;
 
     @CreatedAt
+    @Default(DataType.NOW)
     @Column({
         type: DataType.DATE
     })
     uploadDate!: Date;
+
+
+    @UpdatedAt
+    @Default(DataType.NOW)
+    @Column({
+        type: DataType.DATE
+    })
+    updatedAt!: Date;
 
     @ForeignKey(() => Category)
     @Column
