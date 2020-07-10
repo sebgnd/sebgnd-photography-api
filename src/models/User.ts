@@ -11,20 +11,16 @@ export default class User extends Model<User> {
     @Column
     password?: string;
 
-    @HasMany(() => Message)
-    messages!: Message[];
-
-    @CreatedAt
     @Default(DataType.NOW)
-    @Column({
-        type: DataType.DATE
-    })
+    @CreatedAt
+    @Column
     createdAt!: Date;
 
-    @UpdatedAt
     @Default(DataType.NOW)
-    @Column({
-        type: DataType.DATE
-    })
+    @CreatedAt
+    @Column
     updatedAt!: Date;
+
+    @HasMany(() => Message)
+    messages!: Message[];
 }

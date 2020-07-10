@@ -73,12 +73,12 @@ export default class ImageService {
         }
     }
 
-    public async getFromGallery(id: string) {
+    public async getFromGallery(categoryId: string) {
         try {
             const images = Image.findAll({
                 order: [['id', 'ASC']],
                 include: [Category, Lense, Camera],
-                where: { categoryId: id },
+                where: { categoryId },
             });
             return images;
         } catch (e) {

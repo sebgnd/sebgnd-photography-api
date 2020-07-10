@@ -28,8 +28,8 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 export const get = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id: number = parseInt(req.params.id);
-        const withAdjacent: boolean = req.query.withAdjacent !== undefined ? req.query.withAdjacent : false;
-        const sameCategory: boolean = req.query.sameCategory !== undefined ? req.query.sameCategory : false;
+        const withAdjacent: boolean = req.query.withAdjacent ? req.query.withAdjacent === 'true' : false;
+        const sameCategory: boolean = req.query.sameCategory ? req.query.sameCategory === 'true' : false;
         const image = await imageService.get(id);
 
         if (withAdjacent && image) {

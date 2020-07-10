@@ -1,9 +1,18 @@
 import Image from '../models/Image';
-import Lense from '../models/Lense';
-import Camera from '../models/Camera';
 import Category from '../models/Category';
+import CategoryThumbnail from '../models/CategoryThumbnail';
+import { Includeable } from 'sequelize/types';
 
 export default class CategoryService {
+
+    private readonly thumbnailIncludeable: Includeable[] = [{
+        model: CategoryThumbnail,
+        attributes: ['createdAt', 'updatedAt'],
+        include: [{
+            model: Image,
+            attributes: ['id', 'uploadDate', 'height', 'width']
+        }]
+    }];
 
     public async getAll() {
         try {
@@ -24,11 +33,7 @@ export default class CategoryService {
     private async getAllOrFromOffset(offset?: number, limit?: number) {
         try {
             return await Category.findAll({
-                include: [{
-                    model: Image,
-                    where: {isThumbnail: true},
-                    as: 'thumbnail'
-                }],
+                include: this.thumbnailIncludeable,
                 limit,
                 offset
             });
@@ -40,11 +45,7 @@ export default class CategoryService {
     public async get(id: string) {
         try {
             return await Category.findByPk(id, {
-                include: [{
-                    model: Image,
-                    where: {isThumbnail: true},
-                    as: 'thumbnail'
-                }]
+                include: this.thumbnailIncludeable,
             });
         } catch (e) {
             throw e;

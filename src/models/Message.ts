@@ -8,20 +8,6 @@ export default class Message extends Model<Message> {
     @Column
     content!: string;
 
-    @CreatedAt
-    @Default(DataType.NOW)
-    @Column({
-        type: DataType.DATE
-    })
-    uploadDate!: Date;
-
-    @UpdatedAt
-    @Default(DataType.NOW)
-    @Column({
-        type: DataType.DATE
-    })
-    updatedAt!: Date;
-
     @Default(false)
     @Column
     seen!: boolean;
@@ -29,6 +15,16 @@ export default class Message extends Model<Message> {
     @ForeignKey(() => User)
     @Column
     userId!: number;
+
+    @Default(DataType.NOW)
+    @CreatedAt
+    @Column
+    createdAt!: Date;
+
+    @Default(DataType.NOW)
+    @CreatedAt
+    @Column
+    updatedAt!: Date;
 
     @BelongsTo(() => User)
     user!: User;

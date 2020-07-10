@@ -27,19 +27,14 @@ export default class Image extends Model<Image> {
     @Column
     width?: number;
 
-    @CreatedAt
     @Default(DataType.NOW)
-    @Column({
-        type: DataType.DATE
-    })
+    @CreatedAt
+    @Column
     uploadDate!: Date;
 
-
-    @UpdatedAt
     @Default(DataType.NOW)
-    @Column({
-        type: DataType.DATE
-    })
+    @CreatedAt
+    @Column
     updatedAt!: Date;
 
     @ForeignKey(() => Category)
@@ -56,10 +51,6 @@ export default class Image extends Model<Image> {
 
     @BelongsTo(() => Category)
     category!: Category;
-
-    @Default(false)
-    @Column
-    isThumbnail!: boolean;
 
     @BelongsTo(() => Camera)
     camera!: Camera;

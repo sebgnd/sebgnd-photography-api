@@ -1,6 +1,5 @@
-import { Table, Column, Model, UpdatedAt, CreatedAt, HasMany, Default, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, Default, DataType, CreatedAt } from 'sequelize-typescript';
 import Image from './Image';
-import { Sequelize } from 'sequelize';
 
 @Table
 export default class Camera extends Model<Camera> {
@@ -11,17 +10,13 @@ export default class Camera extends Model<Camera> {
     @HasMany(() => Image)
     images!: Image[];
 
+    @Default(DataType.NOW)
     @CreatedAt
-    @Default(DataType.NOW)
-    @Column({
-        type: DataType.DATE
-    })
-    createdAt!: Date
+    @Column
+    createdAt!: Date;
 
-    @UpdatedAt
     @Default(DataType.NOW)
-    @Column({
-        type: DataType.DATE
-    })
+    @CreatedAt
+    @Column
     updatedAt!: Date;
 }

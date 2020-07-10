@@ -9,18 +9,14 @@ export default class Lense extends Model<Lense> {
     @Column
     displayName!: string;
 
-    @CreatedAt
     @Default(DataType.NOW)
-    @Column({
-        type: DataType.DATE
-    })
+    @CreatedAt
+    @Column
     createdAt!: Date;
 
-    @UpdatedAt
     @Default(DataType.NOW)
-    @Column({
-        type: DataType.DATE
-    })
+    @CreatedAt
+    @Column
     updatedAt!: Date;
 
     @HasMany(() => Image)
