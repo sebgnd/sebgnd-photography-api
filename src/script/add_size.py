@@ -50,7 +50,8 @@ def main():
             host = host,
             user = user,
             password = password,
-            database = DB
+            database = DB,
+            auth_plugin='mysql_native_password'
         )
 
         if db.is_connected():
