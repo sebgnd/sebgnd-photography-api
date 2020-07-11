@@ -21,9 +21,9 @@ export const sendImage = async (req: Request, res: Response, next: NextFunction)
 
             const imgPath = path.join(__dirname, '..', '..', 'categories', categoryId, rightType, `${id}.jpg`);
             res.sendFile(imgPath);
+        } else {
+            res.status(404);
         }
-
-        res.status(404);
 
     } catch (error) {
         next(error);

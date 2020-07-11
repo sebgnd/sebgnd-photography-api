@@ -13,9 +13,9 @@ export default class ImageService {
         }
     }
 
-    public async getNFromOffset(n: number, offset: number) {
+    public async getKFromOffset(k: number, offset: number) {
         try {
-            return await this.getAllOrFromOffset(offset, n);
+            return await this.getAllOrFromOffset(offset, k);
         } catch (e) {
             throw e;
         }
@@ -24,7 +24,7 @@ export default class ImageService {
     public async getAllOrFromOffset(offset?: number, limit?: number) {
         try {
             const images = await Image.findAll({
-                order: [['id', 'ASC']],
+                order: [['id', 'DESC']],
                 include: [Category, Lense, Camera],
                 offset,
                 limit

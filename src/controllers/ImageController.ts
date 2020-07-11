@@ -8,12 +8,12 @@ const categoryService = new CategoryService();
 
 export const getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const offset = req.query.offset;
-        const n = req.query.n;
+        const offset = parseInt(req.query.offset);
+        const k = parseInt(req.query.k);
         let images;
 
-        if (offset && n) {
-            images = await imageService.getNFromOffset(n, offset);
+        if (offset >= 0 && k >= 0) {
+            images = await imageService.getKFromOffset(k, offset);
         } else {
             images = await imageService.getAll();
         }

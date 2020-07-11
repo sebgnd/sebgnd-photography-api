@@ -22,9 +22,9 @@ export default class CategoryService {
         }
     }
 
-    public async getNFromOffset(n: number, offset: number) {
+    public async getKFromOffset(k: number, offset: number) {
         try {
-            return await this.getAllOrFromOffset(offset, n);
+            return await this.getAllOrFromOffset(offset, k);
         } catch (e) {
             throw e;
         }
