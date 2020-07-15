@@ -24,8 +24,9 @@ export default class ImageService {
     public async getAllOrFromOffset(offset?: number, limit?: number) {
         try {
             const images = await Image.findAll({
+                attributes: ['id', 'width', 'height', 'uploadDate'],
                 order: [['id', 'DESC']],
-                include: [Category, Lense, Camera],
+                include: [Category],
                 offset,
                 limit
             });
@@ -76,8 +77,9 @@ export default class ImageService {
     public async getFromGallery(categoryId: string) {
         try {
             const images = Image.findAll({
-                order: [['id', 'ASC']],
-                include: [Category, Lense, Camera],
+                attributes: ['id', 'width', 'height', 'uploadDate'],
+                order: [['id', 'DESC']],
+                include: [Category],
                 where: { categoryId },
             });
             return images;
