@@ -15,7 +15,7 @@ export default class Lense extends Model<Lense> {
     createdAt!: Date;
 
     @Default(DataType.NOW)
-    @CreatedAt
+    @UpdatedAt
     @Column
     updatedAt!: Date;
 

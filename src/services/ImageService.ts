@@ -38,7 +38,7 @@ export default class ImageService {
 
     public async get(id: number) {
         try {
-            const image =  await Image.findByPk(id, {
+            const image = await Image.findByPk(id, {
                 include: [Category, Lense, Camera]
             });
             return image;
@@ -54,7 +54,7 @@ export default class ImageService {
 
         if (sameCategory) {
             categoryOptions.where = {
-                id: image.categoryId
+                id: image.category.id
             }
         }
 

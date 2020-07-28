@@ -1,30 +1,30 @@
-import { Table, Column, Model, ForeignKey, Default, CreatedAt, DataType, BelongsTo } from 'sequelize-typescript';
+import { Table, Column, Model, ForeignKey, Default, CreatedAt, DataType, BelongsTo, UpdatedAt } from 'sequelize-typescript';
 import Image from './Image';
 import Category from './Category';
 
 @Table
 export default class CategoryThumbnail extends Model<CategoryThumbnail> {
-    @ForeignKey(() => Category)
-    @Column
-    categoryId!: string;
-
-    @ForeignKey(() => Image)
-    @Column
-    imageId!: number;
-
-    @BelongsTo(() => Category)
-    category!: Category;
-
-    @BelongsTo(() => Image)
-    image!: Image;
-
     @Default(DataType.NOW)
     @CreatedAt
     @Column
     createdAt!: Date;
 
     @Default(DataType.NOW)
-    @CreatedAt
+    @UpdatedAt
     @Column
     updatedAt!: Date;
+
+    // Foreign Keys
+
+    @ForeignKey(() => Category)
+    categoryId!: string;
+
+    @BelongsTo(() => Category)
+    category!: Category;
+
+    @ForeignKey(() => Image)
+    imageId!: number;
+
+    @BelongsTo(() => Image)
+    image!: Image;
 }

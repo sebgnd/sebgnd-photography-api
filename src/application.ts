@@ -21,7 +21,7 @@ app.use('/', routes);
 // Error handling
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     logger.add(err);
-    res.json({
+    res.status(500).json({
         error: {
             message: err.message
         }

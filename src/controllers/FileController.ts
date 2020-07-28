@@ -12,7 +12,7 @@ export const sendImage = async (req: Request, res: Response, next: NextFunction)
         const image = await imageService.get(parseInt(id));
 
         if (image) {
-            const categoryId = image.categoryId;
+            const categoryId = image.category.id;
             let rightType = types[0];
 
             if (types.includes(type)) {

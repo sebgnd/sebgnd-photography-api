@@ -1,4 +1,4 @@
-import { Table, Column, Model, PrimaryKey, CreatedAt, HasMany, HasOne, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, PrimaryKey, CreatedAt, HasMany, HasOne, DataType, UpdatedAt, Default } from 'sequelize-typescript';
 import Image from './Image';
 import CategoryThumbnail from './CategoryThumbnail';
 
@@ -12,14 +12,14 @@ export default class Category extends Model<Category> {
     @Column
     displayName!: string;
     
+    @Default(DataType.NOW)
     @CreatedAt
     @Column
     createdAt!: Date;
 
-    @CreatedAt
-    @Column({
-        type: DataType.DATE
-    })
+    @Default(DataType.NOW)
+    @UpdatedAt
+    @Column
     updatedAt!: Date;
 
     @HasMany(() => Image)

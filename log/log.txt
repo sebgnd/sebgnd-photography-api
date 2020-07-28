@@ -180,3 +180,8 @@ Sat Jul 11 2020 12:07:43 GMT+0200 (Central European Summer Time) | (SequelizeDat
 Sat Jul 11 2020 12:07:49 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''0', '5'' at line 1
 Sat Jul 11 2020 12:07:55 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''0', '5'' at line 1
 Sat Jul 11 2020 12:09:13 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''0', '5'' at line 1
+Tue Jul 28 2020 23:02:57 GMT+0200 (Central European Summer Time) | (SequelizeValidationError) Validation error: Validation len on name failed
+Tue Jul 28 2020 23:04:52 GMT+0200 (Central European Summer Time) | (SequelizeValidationError) Validation error: Validation len on name failed
+Tue Jul 28 2020 23:05:01 GMT+0200 (Central European Summer Time) | (SequelizeValidationError) Validation error: Validation len on name failed
+Tue Jul 28 2020 23:05:10 GMT+0200 (Central European Summer Time) | (SequelizeValidationError) Validation error: Validation len on name failed
+Tue Jul 28 2020 23:06:02 GMT+0200 (Central European Summer Time) | (SequelizeValidationError) Validation error: Validation len on name failed

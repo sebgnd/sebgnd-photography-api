@@ -1,9 +1,10 @@
-import { Table, Column, Model, Default, CreatedAt, HasMany, AllowNull, DataType, UpdatedAt } from 'sequelize-typescript';
+import { Table, Column, Model, Default, CreatedAt, HasMany, AllowNull, DataType, UpdatedAt, Length } from 'sequelize-typescript';
 import Message from './Message';
 
 @Table
 export default class User extends Model<User> {
     
+    @Length({ min: 1, max: 25 })
     @Column
     name!: string;
 
@@ -17,7 +18,7 @@ export default class User extends Model<User> {
     createdAt!: Date;
 
     @Default(DataType.NOW)
-    @CreatedAt
+    @UpdatedAt
     @Column
     updatedAt!: Date;
 

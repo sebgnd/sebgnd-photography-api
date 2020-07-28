@@ -33,12 +33,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         const image = await imageService.get(id);
 
         if (withAdjacent && image) {
-            console.log('Sending adjacents images');
             const response = await getAdjacentJson(image, sameCategory);
             res.json(response);
         } else {
-
-            console.log('Sending image');
             res.json(image);
         }
 
@@ -60,7 +57,7 @@ const getAdjacentJson: any = async (image: Image, sameCategory: boolean) => {
 
         return response;
 
-    } catch (e) {
-        throw e;
+    } catch (err) {
+        throw err;
     }
 }

@@ -22,10 +22,10 @@ export default class Image extends Model<Image> {
     focalLength?: string;
 
     @Column
-    height?: number;
+    height!: number;
 
     @Column
-    width?: number;
+    width!: number;
 
     @Default(DataType.NOW)
     @CreatedAt
@@ -33,27 +33,26 @@ export default class Image extends Model<Image> {
     uploadDate!: Date;
 
     @Default(DataType.NOW)
-    @CreatedAt
+    @UpdatedAt
     @Column
     updatedAt!: Date;
 
+    // Foreign Keys
+
     @ForeignKey(() => Category)
-    @Column
-    categoryId!: string;
-
-    @ForeignKey(() => Camera)
-    @Column
-    cameraId!: number;
-
-    @ForeignKey(() => Lense)
-    @Column
-    lenseId!: number;
+    categoryId!: number;
 
     @BelongsTo(() => Category)
     category!: Category;
 
+    @ForeignKey(() => Camera)
+    cameraId!: number;
+
     @BelongsTo(() => Camera)
     camera!: Camera;
+
+    @ForeignKey(() => Lense)
+    lenseId!: number;
 
     @BelongsTo(() => Lense)
     lense!: Lense;
