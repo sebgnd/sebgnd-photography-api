@@ -1,5 +1,6 @@
 import express from 'express';
 import { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import routes from './routes';
 import ErrorLogger from './utils/errors/logger';
@@ -7,8 +8,9 @@ import ErrorLogger from './utils/errors/logger';
 const app = express();
 const logger = new ErrorLogger();
 
+app.use(cors());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');

@@ -13,7 +13,7 @@ images.post('/', [
         .trim()
         .escape()
         .notEmpty().withMessage('Cannot be empty')
-        .isAlpha().withMessage('Cannot contain special characters')
+        .matches(/^[A-Za-z0-9 ]+$/).withMessage('Cannot contain special characters')
         .isLength({ max: 25 }).withMessage('Cannot be over 25 characters'),
     check('message')
         .trim()
