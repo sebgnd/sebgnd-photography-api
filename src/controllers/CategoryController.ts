@@ -35,7 +35,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         if (category) {
             res.status(200).json(category); 
         } else {
-            throw new HttpError(404, 'Ressource not found.');
+            throw new HttpError(404, 'Category not found.');
         }
     } catch (error) {
         next(error);

@@ -37,7 +37,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         } else if (image) {
             res.status(200).json(image);
         } else {
-            throw new HttpError(404, 'Ressource not found.');
+            throw new HttpError(404, 'Image not found.');
         }
 
     } catch (error) {
