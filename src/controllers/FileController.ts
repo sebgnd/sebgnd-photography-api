@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import HttpError from '../utils/errors/HttpError';
 import path from 'path';
 import ImageService from '../services/ImageService';
 
@@ -20,9 +21,10 @@ export const sendImage = async (req: Request, res: Response, next: NextFunction)
             }
 
             const imgPath = path.join(__dirname, '..', '..', 'categories', categoryId, rightType, `${id}.jpg`);
-            res.sendFile(imgPath);
+            res.status(200).sendFile(imgPath);
+
         } else {
-            res.status(404);
+            throw new HttpError(404, 'Image not found.');
         }
 
     } catch (error) {

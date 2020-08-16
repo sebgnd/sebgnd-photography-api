@@ -37,7 +37,7 @@ export const postMessage = async (req: Request, res: Response, next: NextFunctio
             const { name, message } = body;
             const createdMessage = await messageService.createMessage(message, name);
 
-            res.send(createdMessage);
+            res.status(201).send(createdMessage);
         }
     } catch (error) {
         next(error);

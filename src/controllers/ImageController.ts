@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import ImageService from '../services/ImageService';
-import CategoryService from '../services/CategoryService';
 import Image from '../models/Image';
+import HttpError from '../utils/errors/HttpError';
 
 const imageService = new ImageService();
-const categoryService = new CategoryService();
 
 export const getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -18,7 +17,7 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
             images = await imageService.getAll();
         }
 
-        res.json(images);
+        res.status(200).json(images);
         
     } catch (error) {
         next(error);
@@ -30,13 +29,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         const id: number = parseInt(req.params.id);
         const withAdjacent: boolean = req.query.withAdjacent ? req.query.withAdjacent === 'true' : false;
         const sameCategory: boolean = req.query.sameCategory ? req.query.sameCategory === 'true' : false;
-        const image = await imageService.get(id);
+        const image: Image | null = await imageService.get(id);
 
         if (withAdjacent && image) {
             const response = await getAdjacentJson(image, sameCategory);
-            res.json(response);
+            res.status(200).json(response);
+        } else if (image) {
+            res.status(200).json(image);
         } else {
-            res.json(image);
+            throw new HttpError(404, 'Ressource not found.');
         }
 
     } catch (error) {

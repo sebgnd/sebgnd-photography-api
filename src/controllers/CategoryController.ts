@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import HttpError from '../utils/errors/HttpError';
 import CategoryService from '../services/CategoryService';
 import ImageService from '../services/ImageService';
 import Category from '../models/Category';
@@ -19,7 +20,7 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
             categories = await categoryService.getAll();
         }
 
-        res.json(categories);
+        res.status(200).json(categories);
 
     } catch (error) {
         next(error);
@@ -30,7 +31,12 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id: string = req.params.id;
         const category: Category | null = await categoryService.get(id);
-        res.json(category);
+
+        if (category) {
+            res.status(200).json(category); 
+        } else {
+            throw new HttpError(404, 'Ressource not found.');
+        }
     } catch (error) {
         next(error);
     }
@@ -40,7 +46,7 @@ export const getImages = async (req: Request, res: Response, next: NextFunction)
     try {
         const id = req.params.id;
         const images: Image[] = await imageService.getFromGallery(id);
-        res.json(images);
+        res.status(200).json(images);
     } catch(error) {
         next(error);
     }

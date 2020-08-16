@@ -237,3 +237,6 @@ Sat Aug 01 2020 17:35:03 GMT+0200 (Central European Summer Time) | (SequelizeCon
 Sat Aug 01 2020 17:35:03 GMT+0200 (Central European Summer Time) | (SequelizeConnectionRefusedError) connect ECONNREFUSED 127.0.0.1:3306
 Sat Aug 01 2020 17:43:36 GMT+0200 (Central European Summer Time) | (SequelizeConnectionRefusedError) connect ECONNREFUSED 127.0.0.1:3306
 Sat Aug 01 2020 17:43:36 GMT+0200 (Central European Summer Time) | (SequelizeConnectionRefusedError) connect ECONNREFUSED 127.0.0.1:3306
+Sun Aug 16 2020 22:28:11 GMT+0200 (Central European Summer Time) | (Error) Ressource not found.
+Sun Aug 16 2020 22:28:49 GMT+0200 (Central European Summer Time) | (Error) Ressource not found.
+Sun Aug 16 2020 22:29:09 GMT+0200 (Central European Summer Time) | (Error) Ressource not found.
