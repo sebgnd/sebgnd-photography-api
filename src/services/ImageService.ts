@@ -5,6 +5,31 @@ import Category from '../models/Category';
 import { Op, Includeable } from 'sequelize';
 
 export default class ImageService {
+    public async get(id: number) {
+        try {
+            const image = await Image.findByPk(id, {
+                include: [Category, Lense, Camera]
+            });
+            return image;
+        } catch (e) {
+            throw e;
+        }
+    }
+
+    public async getFromGallery(categoryId: string) {
+        try {
+            const images = Image.findAll({
+                attributes: ['id', 'width', 'height', 'uploadDate'],
+                order: [['id', 'DESC']],
+                include: [Category],
+                where: { categoryId },
+            });
+            return images;
+        } catch (e) {
+            throw e;
+        }
+    }
+
     public async getAll() {
         try {
             return await this.getAllOrFromOffset();
@@ -36,23 +61,28 @@ export default class ImageService {
         }
     }
 
-    public async get(id: number) {
+    public async getWithAdjacent(image: Image, isSameCategory: boolean) {
         try {
-            const image = await Image.findByPk(id, {
-                include: [Category, Lense, Camera]
-            });
-            return image;
-        } catch (e) {
-            throw e;
+            const previous = await this.getNextOrPrevious(image, 'previous', isSameCategory);
+            const next = await this.getNextOrPrevious(image, 'next', isSameCategory);
+
+            return {
+                previous,
+                image,
+                next
+            }
+        } catch (error) {
+            throw error;
         }
     }
 
-    public async getAdjacent(image: Image, previous: boolean, sameCategory: boolean = false) {
+    public async getNextOrPrevious(image: Image, side: 'next' | 'previous', isSameCategory: boolean = false) {
+        const previous = side === 'previous';
         const categoryOptions: Includeable = {
             model: Category
         }
 
-        if (sameCategory) {
+        if (isSameCategory) {
             categoryOptions.where = {
                 id: image.category.id
             }
@@ -74,18 +104,11 @@ export default class ImageService {
         }
     }
 
-    public async getFromGallery(categoryId: string) {
-        try {
-            const images = Image.findAll({
-                attributes: ['id', 'width', 'height', 'uploadDate'],
-                order: [['id', 'DESC']],
-                include: [Category],
-                where: { categoryId },
-            });
-            return images;
-        } catch (e) {
-            throw e;
-        }
+    public async getCount(categoryId?: string) {
+        const nbImages = Image.count({
+            where: categoryId ? { categoryId } : undefined
+        });
+        return nbImages;
     }
 
     public async delete(id: number) {

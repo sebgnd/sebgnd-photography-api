@@ -7,18 +7,38 @@ const imageService = new ImageService();
 
 export const getAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const offset = parseInt(req.query.offset);
-        const k = parseInt(req.query.k);
-        let images;
+        if (req.query.page !== undefined) {
+            const page: number = parseInt(req.query.page) - 1;
+            const imagesPerPage: number = req.query.itemsPerPage 
+                ? parseInt(req.query.itemsPerPage) 
+                : 5;
 
-        if (offset >= 0 && k >= 0) {
-            images = await imageService.getKFromOffset(k, offset);
+            if (page < 0) {
+                throw new HttpError(422, 'Page must be a positive integer');
+            } else if (imagesPerPage <= 0) {
+                throw new HttpError(422, 'Amout of image per page must be a positive integer');
+            } else {
+                const offset = imagesPerPage * page;
+                const images = await imageService.getKFromOffset(imagesPerPage + 1, offset);
+                const total = await imageService.getCount();
+                const hasNext = images[imagesPerPage] !== undefined;
+
+                if (hasNext) images.pop();
+
+                const result = {
+                    data: images,
+                    page: page + 1,
+                    total,
+                    hasNext
+                };
+
+                res.status(200).json(result);
+            }
         } else {
-            images = await imageService.getAll();
-        }
+           const images = await imageService.getAll();
 
-        res.status(200).json(images);
-        
+           res.status(200).json(images);
+        }
     } catch (error) {
         next(error);
     }
@@ -32,7 +52,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         const image: Image | null = await imageService.get(id);
 
         if (withAdjacent && image) {
-            const response = await getAdjacentJson(image, sameCategory);
+            const response = await imageService.getWithAdjacent(image, sameCategory);
             res.status(200).json(response);
         } else if (image) {
             res.status(200).json(image);
@@ -42,23 +62,5 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     } catch (error) {
         next(error);
-    }
-}
-
-const getAdjacentJson: any = async (image: Image, sameCategory: boolean) => {
-    try {
-        const previous = await imageService.getAdjacent(image, true, sameCategory);
-        const next = await imageService.getAdjacent(image, false, sameCategory);
-
-        const response = {
-            previous,
-            image,
-            next
-        }
-
-        return response;
-
-    } catch (err) {
-        throw err;
     }
 }
