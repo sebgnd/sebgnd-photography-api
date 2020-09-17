@@ -245,3 +245,4 @@ Sun Aug 16 2020 22:49:34 GMT+0200 (Central European Summer Time) | (Error) Resso
 Sun Aug 16 2020 22:50:25 GMT+0200 (Central European Summer Time) | (Error) Ressource not found.
 Sun Aug 16 2020 22:52:18 GMT+0200 (Central European Summer Time) | (Error) Ressource not found.
 Thu Sep 17 2020 19:48:30 GMT+0200 (Central European Summer Time) | (SequelizeDatabaseError) Undeclared variable: NaN
+Thu Sep 17 2020 20:32:27 GMT+0200 (Central European Summer Time) | (Error) Page must be a positive integer
