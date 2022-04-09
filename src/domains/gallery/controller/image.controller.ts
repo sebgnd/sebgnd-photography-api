@@ -1,24 +1,40 @@
 import express, { Request, Response } from 'express';
 
+import { doesCategoryWithNameExist, findAllCategories } from '../database/category/category.repository';
 import { findImage, findImagePaginated, getTotalImages } from '../database/image/image.repository';
 
 export const imageController = express.Router();
 
 imageController.get('/', async (req: Request, res: Response) => {
-	const { limit, offset } = req.query;
+	const { limit, offset, category } = req.query;
 
 	if (limit === undefined || offset == undefined) {
 		return res.status(400).json({
 			error: {
 				message: 'Your must provide `offset` and `limit`',
 			}
-		})
+		});
+	}
+
+	if (category) {
+		const categoryExists = await doesCategoryWithNameExist(category.toString());
+
+		if (!categoryExists) {
+			return res.status(400).json({
+				error: {
+					message: 'Category does not exist',
+					details: {
+						requestedCategory: category,
+					},
+				},
+			});
+		}
 	}
 
 	const parsedLimit = parseInt(limit.toString());
 	const parseOffset = parseInt(offset.toString());
 
-	const images = await findImagePaginated(parsedLimit, parseOffset);
+	const images = await findImagePaginated(parsedLimit, parseOffset, category?.toString());
 	const total = await getTotalImages();
 
 	return res.status(200).json({

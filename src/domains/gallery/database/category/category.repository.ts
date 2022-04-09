@@ -17,3 +17,9 @@ export const findCategory = async (id: string) => {
 
 	return categoryMapper.fromOrmEntity(category as CategoryOrmEntity);
 }
+
+export const doesCategoryWithNameExist = async (name: string) => {
+	const category = await CategoryModel.findOne({ name });
+
+	return category !== null;
+}
