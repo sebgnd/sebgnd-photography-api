@@ -1,11 +1,28 @@
-import app from './application';
-import sequelize from './sequelize';
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
 
-const port = process.env.port || 8000;
+import { galleryEntrypoint } from './domains/gallery/gallery.entrypoint';
 
-// Setup sequelize and start the app on port 8000
-sequelize.sync().then(() => {
-    app.listen(port, () => {
-        console.log(`Server started on port ${port}`);
-    })
-})
+import { categoryController } from './domains/gallery/controller/category/category.controller';
+import { imageController } from './domains/gallery/controller/image/image.controller';
+
+import { initDatabase } from './database';
+
+const initApp = async () => {
+  await initDatabase();
+
+	const app = express();
+
+	app.use(bodyParser.urlencoded());
+	app.use(bodyParser.json());
+	app.use(cors());
+
+	app.use('/api', galleryEntrypoint);
+
+	app.listen(8000, () => {
+		console.log('Server started on port 8000')
+	});
+}
+
+initApp();
