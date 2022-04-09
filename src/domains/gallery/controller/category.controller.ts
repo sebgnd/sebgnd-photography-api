@@ -1,6 +1,6 @@
 import app, { Request, Response } from 'express';
 
-import { findAllCategories, findCategory } from '../../database/category/category.repository';
+import { findAllCategories, findCategory } from '../database/category/category.repository';
 
 export const categoryController = app.Router();
 

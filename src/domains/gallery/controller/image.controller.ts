@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 
-import { findImage, findImagePaginated, getTotalImages } from '../../database/image/image.repository';
+import { findImage, findImagePaginated, getTotalImages } from '../database/image/image.repository';
 
 export const imageController = express.Router();
 
