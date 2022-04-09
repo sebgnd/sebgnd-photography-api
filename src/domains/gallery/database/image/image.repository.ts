@@ -3,6 +3,8 @@ import { ImageModel, ImageOrmEntity } from '../../../../database/entities/image'
 
 import { imageMapper } from '../../database/image/image.mapper';
 
+import { Image } from '../../../gallery/types';
+
 export const findImage = async (id: string) => {
   const image = await ImageModel.findById(id);
 
@@ -19,7 +21,7 @@ export const findImagePaginated = async (limit: number, offset: number, category
 	const images = await ImageModel
 		.find(
 			categoryName
-				? { category:  categoryWithName!.id }
+				? { category: categoryWithName!.id }
 				: {}
 		)
 		.skip(offset)
@@ -29,6 +31,22 @@ export const findImagePaginated = async (limit: number, offset: number, category
 		});
 
 	return images.map((img) => imageMapper.fromOrmEntity(img as ImageOrmEntity));
+}
+
+export const saveImage = async (image: Image, categoryId: string) => {
+	const category = await CategoryModel.findById(categoryId);
+
+	if (!category) {
+		throw new Error('Category not found');
+	}
+
+	const imageOrmEntity = imageMapper.fromBusinessEntity(image);
+
+	imageOrmEntity.category = category.id;
+
+	const savedImage = await imageOrmEntity.save();
+
+	return imageMapper.fromOrmEntity(savedImage);
 }
 
 export const getTotalImages = async () => ImageModel.count();

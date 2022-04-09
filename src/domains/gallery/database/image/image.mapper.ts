@@ -18,7 +18,22 @@ const fromOrmEntity: OrmEntityMapperFn<ImageOrmEntity, Image> = (image: ImageOrm
 });
 
 const fromBusinessEntity: BusinessEntityMapperFn<Image, ImageOrmEntity> = (image: Image) => {
-	const ormImage = new ImageModel();
+	const ormImage = new ImageModel() as ImageOrmEntity;
+
+	if (image.id) {
+		ormImage._id = image.id;
+		ormImage.createdAt = image.createdAt!.toString();
+		ormImage.updatedAt = image.updatedAt!.toString();
+	}
+
+	ormImage.exif = image.exif
+		? {
+			iso: image.exif.iso,
+			shutterSpeed: image.exif.shutterSpeed,
+			aperture: image.exif.aperture,
+			focalLength: image.exif.focalLength,
+		}
+		: undefined;
 
 	return ormImage as ImageOrmEntity;
 }

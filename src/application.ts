@@ -1,5 +1,7 @@
 import express from 'express';
+import formidable from 'express-formidable';
 import bodyParser from 'body-parser';
+import morgan from 'morgan';
 import cors from 'cors';
 
 import { initDatabase } from './database';
@@ -11,6 +13,8 @@ export const createApplication = () => {
 
 	app.use(bodyParser.urlencoded());
 	app.use(bodyParser.json());
+	app.use(morgan('dev'));
+	app.use(formidable({ multiples: true }))
 	app.use(cors());
 
 	return {
