@@ -1,3 +1,4 @@
+
 import exifr from 'exifr';
 import express, { Request, Response } from 'express';
 import * as fs from 'fs';
@@ -7,6 +8,7 @@ import { isJpg, isPng } from '../../../libs/file/mimetype';
 
 import { doesCategoryWithNameExist, findCategory } from '../database/category/category.repository';
 import { findImage, findImagePaginated, getTotalImages, saveImage } from '../database/image/image.repository';
+
 import { Image } from '../types';
 
 export const imageController = express.Router();
@@ -137,7 +139,7 @@ imageController.post('/', async (req: Request, res: Response) => {
 			await new Promise((resolve, reject) => {
 				const oldPath = filepath;
 				const extension = path.extname(name);
-				const newPath = `files/images/full_res/${savedImage.id}${extension}`;
+				const newPath = `files/images/full/original/${savedImage.id}${extension}`;
 
 				fs.copyFile(oldPath, newPath, (err) => {
 					if (err) {

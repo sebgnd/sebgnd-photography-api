@@ -1,3 +1,5 @@
+import { ClientSession } from 'mongoose';
+
 import { CategoryModel } from '../../../../database/entities/category';
 import { ImageModel, ImageOrmEntity } from '../../../../database/entities/image';
 

@@ -6,7 +6,10 @@ import cors from 'cors';
 
 import { initDatabase } from './database';
 
-export let expressApp = null;
+export type Domain = {
+	router: express.Router,
+	type: 'api' | 'file',
+};
 
 export const createApplication = () => {
 	const app = express();
@@ -21,11 +24,11 @@ export const createApplication = () => {
 		instance: app,
 		emit: app.emit,
 		on: app.on,
-		start: async (routers: express.Router[]) => {
+		start: async (domains: Domain[]) => {
 			await initDatabase();
 
-			routers.forEach((router) => {
-				app.use('/api', router);
+			domains.forEach(({ router, type }) => {
+				app.use(`/${type}`, router);
 			});
 
 			app.listen(8000, () => {
