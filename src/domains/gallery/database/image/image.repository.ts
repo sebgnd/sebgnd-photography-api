@@ -45,6 +45,7 @@ export const saveImage = async (image: Image, categoryId: string) => {
 	const imageOrmEntity = imageMapper.fromBusinessEntity(image);
 
 	imageOrmEntity.category = category.id;
+	imageOrmEntity.processing = true;
 
 	const savedImage = await imageOrmEntity.save();
 

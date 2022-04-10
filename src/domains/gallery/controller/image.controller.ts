@@ -4,6 +4,8 @@ import express, { Request, Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { app } from '../../../application';
+
 import { isJpg, isPng } from '../../../libs/file/mimetype';
 
 import { doesCategoryWithNameExist, findCategory } from '../database/category/category.repository';
@@ -135,27 +137,25 @@ imageController.post('/', async (req: Request, res: Response) => {
 					}
 					: undefined,
 			}, categoryId);
-
-			await new Promise((resolve, reject) => {
-				const oldPath = filepath;
-				const extension = path.extname(name);
-				const newPath = `files/images/full/original/${savedImage.id}${extension}`;
-
-				fs.copyFile(oldPath, newPath, (err) => {
-					if (err) {
-						reject(err);
-					}
-
-					resolve(undefined);
-				});
-			});
 			
-			return savedImage;
+			return {
+				saved: savedImage,
+				name: name as string,
+				filepath: filepath as string,
+			};
 		})
 	);
 
+	app.emit('images-uploaded', {
+		images: images.map(({ saved, filepath, name }) => ({
+			id: saved.id,
+			originalName: name,
+			temporaryPath: filepath,
+		})),
+	});
+
 	return res.status(201).json({
-		items: images.map((img) => ({
+		items: images.map(({ saved: img }) => ({
 			id: img.id,
 			createdAt: img.createdAt,
 			updatedAt: img.updatedAt,

@@ -12,6 +12,7 @@ interface Exif {
 
 interface Image {
   exif?: Exif;
+  processing: boolean,
   category: Schema.Types.ObjectId,
 }
 
@@ -28,6 +29,10 @@ const imageSchema = new Schema<Image>({
     type: Schema.Types.ObjectId,
     required: true,
     ref: CATEGORY_SCHEMA_NAME,
+  },
+  processing: {
+	  type: Boolean,
+	  required: true,
   }
 }, { timestamps: true });
 

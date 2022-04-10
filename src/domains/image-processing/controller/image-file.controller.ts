@@ -4,7 +4,7 @@ import * as fs from 'fs'
 
 export const imageFileController = express.Router();
 
-imageFileController.get('/images/:format/:size/:id', (req: Request, res: Response) => {
+imageFileController.get('/file/images/:format/:size/:id', (req: Request, res: Response) => {
 	const { format, size, id } = req.params;
 	const availableFormats = ['thumbnail', 'full'];
 	const availableSizes = ['small', 'medium', 'original'];

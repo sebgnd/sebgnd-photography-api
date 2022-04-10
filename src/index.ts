@@ -6,7 +6,7 @@ import { imageProcessingDomain } from './domains/image-processing/image-processi
 const initApp = async () => {
 	await app.start([
 		{ router: galleryDomain, type: 'api' },
-		{ router: imageProcessingDomain, type: 'file' },
+		{ router: imageProcessingDomain, type: 'api' },
 	]);
 }
 
