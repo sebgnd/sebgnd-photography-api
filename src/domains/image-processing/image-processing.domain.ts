@@ -2,6 +2,6 @@ import express from 'express';
 
 import { imageFileController } from './controller/image-file.controller';
 
-export const fileDomain = express.Router();
+export const imageProcessingDomain = express.Router();
 
-fileDomain.use(imageFileController);
+imageProcessingDomain.use(imageFileController);
