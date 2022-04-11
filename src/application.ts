@@ -52,6 +52,10 @@ export const createApplication = () => {
 				app.use(`/${type}`, router);
 			});
 
+			/**
+			 * For now, the images will be saved inside the server itself. Later need to
+			 * be in a different location
+			 */
 			initFileSystem();
 
 			app.listen(8000, () => {
