@@ -3,6 +3,7 @@ import formidable from 'express-formidable';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import cors from 'cors';
+import * as fs from 'fs';
 
 import { initDatabase } from './database';
 
@@ -10,6 +11,26 @@ export type Domain = {
 	router: express.Router,
 	type: 'api' | 'file',
 };
+
+export const initFileSystem = () => {
+	const paths = [
+		'files/images/full/400',
+		'files/images/full/1080',
+		'files/images/full/original',
+		'files/images/thumbnail/80',
+		'files/images/thumbnail/400',
+	];
+
+	console.log('Initializing file system ...');
+
+	for (const dirPath of paths) {
+		if (!fs.existsSync(dirPath)) {
+			fs.mkdirSync(dirPath, {
+				recursive: true,
+			});
+		}
+	}
+}
 
 export const createApplication = () => {
 	const app = express();
@@ -30,6 +51,8 @@ export const createApplication = () => {
 			domains.forEach(({ router, type }) => {
 				app.use(`/${type}`, router);
 			});
+
+			initFileSystem();
 
 			app.listen(8000, () => {
 				console.log('App started on port 8000');

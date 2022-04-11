@@ -15,6 +15,11 @@ import { Image } from '../types';
 
 export const imageController = express.Router();
 
+/**
+ * TODO:
+ * Move some of that logic into entities, services
+ */
+
 imageController.get('/', async (req: Request, res: Response) => {
 	const { limit, offset, category } = req.query;
 
