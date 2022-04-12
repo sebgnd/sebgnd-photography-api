@@ -16,7 +16,7 @@ categoryController.get('/', async (req: Request, res: Response) => {
 				displayName: category.formattedName,
 				name: category.name,
 				thumbnail: {
-					url: category.thumbnail ? category.thumbnail.url : null,
+					id: category.thumbnail ? category.thumbnail.id : null,
 				},
 			};
 		})

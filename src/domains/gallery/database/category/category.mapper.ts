@@ -12,7 +12,7 @@ const fromOrmEntity: OrmEntityMapperFn<CategoryOrmEntity, Category> = (category:
 	name: category.name,
 	formattedName: category.formattedName,
 	thumbnail: category.thumbnail
-		? { url: category.thumbnail.url }
+		? { id: category.thumbnail.id }
 		: undefined,
 	images: category.images ? category.images.map((img) => {
 		return imageMapper.fromOrmEntity(img as ImageOrmEntity)
@@ -28,7 +28,7 @@ const fromBusinessEntity: BusinessEntityMapperFn<Category, CategoryOrmEntity> = 
 	ormCategory.name = category.name;
 	ormCategory.formattedName = category.formattedName;
 	ormCategory.thumbnail = category.thumbnail
-		? { url: category.thumbnail.url }
+		? { id: category.thumbnail.id }
 		: undefined;
 
 	return ormCategory as CategoryOrmEntity;

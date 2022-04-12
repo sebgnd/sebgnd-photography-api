@@ -12,7 +12,7 @@ export type Category = PersistedEntity & {
 }
 
 export type Thumbnail = {
-	url: string,
+	id: string,
 }
 
 export type Exif = {

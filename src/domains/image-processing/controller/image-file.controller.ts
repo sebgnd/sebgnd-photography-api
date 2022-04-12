@@ -7,7 +7,7 @@ export const imageFileController = express.Router();
 imageFileController.get('/file/images/:format/:size/:id', (req: Request, res: Response) => {
 	const { format, size, id } = req.params;
 	const availableFormats = ['thumbnail', 'full'];
-	const availableSizes = ['small', 'medium', 'original'];
+	const availableSizes = ['400', '1080', '80'];
 	
 	if (!availableFormats.includes(format) || !availableSizes.includes(size)) {
 		return res.status(400).json({

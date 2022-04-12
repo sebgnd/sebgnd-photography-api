@@ -6,7 +6,7 @@ import { OrmEntity } from '..//types';
 import { ImageOrmEntity } from './image';
 
 interface CategoryThumbnail {
- 	url: string,
+ 	id: string,
 }
 
 interface Category {
@@ -31,7 +31,7 @@ const categorySchema = new Schema<Category>({
 	thumbnail: {
 		default: null,
 		type: {
-			url: String,
+			id: Schema.Types.ObjectId,
 		},
 	},
 	images: [{

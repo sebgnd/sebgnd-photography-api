@@ -133,7 +133,7 @@ imageController.post('/', async (req: Request, res: Response) => {
 			]);
 
 			const savedImage = await saveImage({
-				exif: imageExif.ISO
+				exif: imageExif
 					? {
 						iso: imageExif.ISO,
 						shutterSpeed: imageExif.ShutterSpeedValue.toString(),
