@@ -31,6 +31,7 @@ categoryController.get('/:id/images', async (req: Request, res: Response) => {
 		items: category.images?.map((img) => {
 			return {
 				id: img.id,
+				categoryId: img.categoryId,
 				createdAt: img.createdAt,
 				updatedAt: img.updatedAt,
 			};

@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 
 import { CATEGORY_SCHEMA_NAME, IMAGE_SCHEMA_NAME } from '../constant';
 import { OrmEntity } from '../types';
@@ -13,7 +13,7 @@ interface Exif {
 interface Image {
 	exif?: Exif;
 	processing: boolean,
-	category: Schema.Types.ObjectId,
+	category: Types.ObjectId,
 }
 
 const imageSchema = new Schema<Image>({

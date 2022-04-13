@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 
 import { CATEGORY_SCHEMA_NAME, IMAGE_SCHEMA_NAME } from '../constant';
 import { OrmEntity } from '..//types';
@@ -13,7 +13,7 @@ interface Category {
 	name: string;
 	formattedName: string;
 	thumbnail?: CategoryThumbnail;
-	images?: (Schema.Types.ObjectId | ImageOrmEntity)[],
+	images?: (Types.ObjectId | ImageOrmEntity)[],
 }
 
 const categorySchema = new Schema<Category>({

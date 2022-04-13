@@ -1,21 +1,26 @@
+import { Types } from 'mongoose';
+
 import { BusinessEntityMapperFn, Mapper, OrmEntityMapperFn } from '../../../../database/utils/mapper/mapper';
 
 import { ImageModel, ImageOrmEntity } from '../../../../database/entities/image'
 import { Image } from '../../../gallery/types';
 
-const fromOrmEntity: OrmEntityMapperFn<ImageOrmEntity, Image> = (image: ImageOrmEntity): Image => ({
-	id: image._id,
-	exif: image.exif
-		? {
-			iso: image.exif.iso,
-			aperture: image.exif.aperture,
-			focalLength: image.exif.focalLength,
-			shutterSpeed: image.exif.shutterSpeed,
-		}
-		: undefined,
-	createdAt: new Date(image.createdAt),
-  	updatedAt: new Date(image.updatedAt),
-});
+const fromOrmEntity: OrmEntityMapperFn<ImageOrmEntity, Image> = (image: ImageOrmEntity): Image => {
+	return {
+		id: image._id,
+		exif: image.exif
+			? {
+				iso: image.exif.iso,
+				aperture: image.exif.aperture,
+				focalLength: image.exif.focalLength,
+				shutterSpeed: image.exif.shutterSpeed,
+			}
+			: undefined,
+		createdAt: new Date(image.createdAt),
+		updatedAt: new Date(image.updatedAt),
+		categoryId: image.category.toString(),
+	}
+};
 
 const fromBusinessEntity: BusinessEntityMapperFn<Image, ImageOrmEntity> = (image: Image) => {
 	const ormImage = new ImageModel() as ImageOrmEntity;
@@ -26,6 +31,7 @@ const fromBusinessEntity: BusinessEntityMapperFn<Image, ImageOrmEntity> = (image
 		ormImage.updatedAt = image.updatedAt!.toString();
 	}
 
+	ormImage.category = new Types.ObjectId(image.categoryId);
 	ormImage.exif = image.exif
 		? {
 			iso: image.exif.iso,

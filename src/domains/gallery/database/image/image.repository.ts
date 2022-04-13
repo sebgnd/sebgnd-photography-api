@@ -35,16 +35,9 @@ export const findImagePaginated = async (limit: number, offset: number, category
 	return images.map((img) => imageMapper.fromOrmEntity(img as ImageOrmEntity));
 }
 
-export const saveImage = async (image: Image, categoryId: string) => {
-	const category = await CategoryModel.findById(categoryId);
-
-	if (!category) {
-		throw new Error('Category not found');
-	}
-
+export const saveImage = async (image: Image) => {
 	const imageOrmEntity = imageMapper.fromBusinessEntity(image);
 
-	imageOrmEntity.category = category.id;
 	imageOrmEntity.processing = true;
 
 	const savedImage = await imageOrmEntity.save();

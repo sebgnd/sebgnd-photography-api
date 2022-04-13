@@ -1,17 +1,13 @@
 
 import exifr from 'exifr';
 import express, { Request, Response } from 'express';
-import * as fs from 'fs';
-import * as path from 'path';
 
 import { app } from '../../../application';
 
 import { isJpg, isPng } from '../../../libs/file/mimetype';
 
-import { doesCategoryWithNameExist, findCategory } from '../database/category/category.repository';
+import { doesCategoryWithNameExist, findCategory, addImagesToCategory } from '../database/category/category.repository';
 import { findImage, findImagePaginated, getTotalImages, saveImage } from '../database/image/image.repository';
-
-import { Image } from '../types';
 
 export const imageController = express.Router();
 
@@ -132,7 +128,9 @@ imageController.post('/', async (req: Request, res: Response) => {
 				'FocalLength',
 			]);
 
+			// Can be replace by a saveMany ?
 			const savedImage = await saveImage({
+				categoryId,
 				exif: imageExif
 					? {
 						iso: imageExif.ISO,
@@ -141,7 +139,7 @@ imageController.post('/', async (req: Request, res: Response) => {
 						focalLength: imageExif.FocalLength.toString(),
 					}
 					: undefined,
-			}, categoryId);
+			});
 			
 			return {
 				saved: savedImage,
@@ -150,6 +148,8 @@ imageController.post('/', async (req: Request, res: Response) => {
 			};
 		})
 	);
+
+	await addImagesToCategory(category.id!, images.map((img) => img.saved.id!));
 
 	app.emit('images-uploaded', {
 		images: images.map(({ saved, filepath, name }) => ({

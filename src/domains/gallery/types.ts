@@ -2,6 +2,7 @@ import { PersistedEntity } from '../../libs/types'
 
 export type Image = PersistedEntity & {
   exif?: Exif;
+  categoryId: string,
 }
 
 export type Category = PersistedEntity & {

@@ -14,9 +14,11 @@ const fromOrmEntity: OrmEntityMapperFn<CategoryOrmEntity, Category> = (category:
 	thumbnail: category.thumbnail
 		? { id: category.thumbnail.id }
 		: undefined,
-	images: category.images ? category.images.map((img) => {
-		return imageMapper.fromOrmEntity(img as ImageOrmEntity)
-	}) : [],
+	images: category.images
+		? category.images.map((img) => {
+			return imageMapper.fromOrmEntity(img as ImageOrmEntity)
+		})
+		: [],
 	createdAt: new Date(category.createdAt),
 	updatedAt: new Date(category.updatedAt),
 });
