@@ -92,7 +92,7 @@ imageController.post('/', async (req: Request, res: Response) => {
 			error: {
 				message: 'Invalid form data for uploading images',
 				details: {
-					category: 'A category must be provided',
+					category: 'A gallery must be provided',
 					images: 'You must provided the images to be uploaded'
 				}
 			},
@@ -113,7 +113,7 @@ imageController.post('/', async (req: Request, res: Response) => {
 	if (!category) {
 		return res.status(400).json({
 			error: {
-				message: 'The category does not exist',
+				message: 'The gallery does not exist',
 				details: { categoryId }
 			},
 		});
