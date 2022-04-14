@@ -1,7 +1,15 @@
 import { PersistedEntity } from '../../libs/types' 
 
+export type Exif = {
+  iso: number;
+  shutterSpeed: number;
+  aperture: number;
+  focalLength: number;
+}
+
 export type Image = PersistedEntity & {
   exif?: Exif;
+  type?: 'portrait' | 'landscape',
   categoryId: string,
 }
 
@@ -14,11 +22,4 @@ export type Category = PersistedEntity & {
 
 export type Thumbnail = {
 	id: string,
-}
-
-export type Exif = {
-  iso: number;
-  shutterSpeed: number;
-  aperture: number;
-  focalLength: number;
 }

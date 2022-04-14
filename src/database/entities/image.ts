@@ -3,26 +3,36 @@ import mongoose, { Schema, Types } from 'mongoose';
 import { CATEGORY_SCHEMA_NAME, IMAGE_SCHEMA_NAME } from '../constant';
 import { OrmEntity } from '../types';
 
-interface Exif {
-	iso: number;
-	shutterSpeed: number;
-	aperture: number;
-	focalLength: number;
-}
-
 interface Image {
-	exif?: Exif;
+	exif?: {
+		iso: number,
+		shutterSpeed: number,
+		aperture: number,
+		focalLength: number,
+	};
+	dimension: {
+		width: number,
+		height: number,
+	},
 	processing: boolean,
 	category: Types.ObjectId,
 }
 
 const imageSchema = new Schema<Image>({
 	exif: {
+		required: false,
 		type: {
 			iso: Number,
 			shutterSpeed: String,
 			aperture: String,
 			focalLength: String,
+		},
+	},
+	dimension: {
+		required: false,
+		type: {
+			width: Number,
+			height: Number,
 		},
 	},
 	category: {

@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import Jimp from 'jimp';
-import { updateImageProcessing } from '../database/image/image.repository';
+
+import { updateImageProcessedData } from '../database/image/image.repository';
 
 export type ImageUploaded = {
 	id: string,
@@ -47,6 +48,9 @@ export const handleImageUploaded = async (images: ImageUploaded[]) => {
 		const fullResolutions = [400, 1080];
 		const thumbnailResolutions = [400, 80];
 
+		const width = jimpImage.getWidth();
+		const height = jimpImage.getHeight();
+
 		for (const height of fullResolutions) {
 			console.log(`Creating full ${height} of ${id} ...`);
 
@@ -60,7 +64,7 @@ export const handleImageUploaded = async (images: ImageUploaded[]) => {
 		for (const heightAndWidth of thumbnailResolutions) {
 			console.log(`Creating thumbnail ${heightAndWidth} of ${id} ...`);
 
-			const isLandscape = jimpImage.getHeight() < jimpImage.getWidth(); 
+			const isLandscape = height < width 
 			
 			const resized = jimpImage
 				.clone()
@@ -77,6 +81,9 @@ export const handleImageUploaded = async (images: ImageUploaded[]) => {
 			await cropped.writeAsync(`files/images/thumbnail/${heightAndWidth}/${id}.jpg`);
 		}
 
-		await updateImageProcessing(id, false);
+		await updateImageProcessedData(id, false, {
+			width,
+			height,
+		});
 	});
 };

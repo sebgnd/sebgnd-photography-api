@@ -6,6 +6,10 @@ import { ImageModel, ImageOrmEntity } from '../../../../database/entities/image'
 import { Image } from '../../../gallery/types';
 
 const fromOrmEntity: OrmEntityMapperFn<ImageOrmEntity, Image> = (image: ImageOrmEntity): Image => {
+	const imageType = image.dimension?.height >= image.dimension?.width
+		? 'portrait'
+		: 'landscape';
+
 	return {
 		id: image._id,
 		exif: image.exif
@@ -16,6 +20,7 @@ const fromOrmEntity: OrmEntityMapperFn<ImageOrmEntity, Image> = (image: ImageOrm
 				shutterSpeed: image.exif.shutterSpeed,
 			}
 			: undefined,
+		type: image.dimension ? imageType : undefined,
 		createdAt: new Date(image.createdAt),
 		updatedAt: new Date(image.updatedAt),
 		categoryId: image.category.toString(),

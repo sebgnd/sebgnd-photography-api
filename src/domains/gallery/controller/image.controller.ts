@@ -52,6 +52,7 @@ imageController.get('/', async (req: Request, res: Response) => {
 		items: images.map((img) => ({
 			id: img.id,
 			categoryId: img.categoryId,
+			type: img.type,
 			createdAt: img.createdAt,
 			updatedAt: img.updatedAt,
 		})),
@@ -128,6 +129,8 @@ imageController.post('/', async (req: Request, res: Response) => {
 				'ApertureValue',
 				'FocalLength',
 			]);
+
+			console.log('here');
 
 			// Can be replace by a saveMany ?
 			const savedImage = await saveImage({

@@ -33,5 +33,5 @@ export const addImagesToCategory = async(categoryId: string, imageIds: string[])
 		}
 	});
 
-	return categoryMapper.fromOrmEntity(updatedCategory as CategoryOrmEntity);
+	return true;
 }
