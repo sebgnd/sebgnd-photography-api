@@ -51,6 +51,7 @@ imageController.get('/', async (req: Request, res: Response) => {
 	return res.status(200).json({
 		items: images.map((img) => ({
 			id: img.id,
+			categoryId: img.categoryId,
 			createdAt: img.createdAt,
 			updatedAt: img.updatedAt,
 		})),
