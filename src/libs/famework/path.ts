@@ -3,7 +3,9 @@ export const removeTrailingAndLeadingSlash = (path: string) => {
 }
 
 export const buildFullPath = (...pathElements: string[]) => {
-	return pathElements
+	const path = pathElements
 		.map((element) => removeTrailingAndLeadingSlash(element))
 		.join('/');
+
+	return `/${path}`;
 }

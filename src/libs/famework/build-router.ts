@@ -1,4 +1,5 @@
-import { Router } from 'express';
+import express from 'express';
+import type { Router } from 'express';
 
 import type { Controller } from './controller';
 import type { RequestMethod } from './http';
@@ -18,19 +19,19 @@ export const getRouterMethodFunction = (
 
 export const buildRouter = (controllers: Controller[]) => {
 	const flattenedEndpoints = flattenEndpointsFromControllers(controllers);
-	const router = Router();
+	const router = express.Router();
 
 	return Object
 		.entries(flattenedEndpoints)
 		.reduce(
-			(acc, [method, endpoints]) => {
-				const routerFn = getRouterMethodFunction(
-					acc,
-					method as Lowercase<RequestMethod>
-				);
-				
+			(acc, [method, endpoints]) => {				
 				endpoints.forEach((endpoint) => {
-					routerFn(endpoint.route, endpoint.handler);
+					/**
+					 * Temporary, making a function to get the right
+					 * router function does not work for some reason
+					 */
+					(router as any)[method](endpoint.route, endpoint.handler);
+
 					console.log(`ENDPOINT | [${method.toUpperCase()}] - ${endpoint.route} => init`);
 				});
 

@@ -1,18 +1,17 @@
-import express from 'express';
 import formidable from 'express-formidable';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import cors from 'cors';
 import * as fs from 'fs';
 
+import { createApplication } from './libs/famework/application';
+
+import { galleryControllers } from './domains/gallery/gallery.domain';
+import { imageProcessingControllers } from './domains/image-processing/image-processing.domain';
+
 import { initDatabase } from './database';
 
-export type Domain = {
-	router: express.Router,
-	type: 'api' | 'file',
-};
-
-export const initFileSystem = () => {
+const initFileSystem = async () => {
 	const paths = [
 		'files/images/full/400',
 		'files/images/full/1080',
@@ -21,7 +20,7 @@ export const initFileSystem = () => {
 		'files/images/thumbnail/400',
 	];
 
-	console.log('Initializing file system ...');
+	console.log('SYSTEM | Initializing file system');
 
 	for (const dirPath of paths) {
 		if (!fs.existsSync(dirPath)) {
@@ -30,39 +29,28 @@ export const initFileSystem = () => {
 			});
 		}
 	}
+
+  return Promise.resolve('fdsafdsa');
 }
 
-export const createApplication = () => {
-	const app = express();
-
-	app.use(bodyParser.urlencoded());
-	app.use(bodyParser.json());
-	app.use(morgan('dev'));
-	app.use(formidable({ multiples: true }))
-	app.use(cors());
-
-	return {
-		instance: app,
-		emit: app.emit,
-		on: app.on,
-		start: async (domains: Domain[]) => {
-			await initDatabase();
-
-			domains.forEach(({ router, type }) => {
-				app.use(`/${type}`, router);
-			});
-
-			/**
-			 * For now, the images will be saved inside the server itself. Later need to
-			 * be in a different location
-			 */
-			initFileSystem();
-
-			app.listen(8000, () => {
-				console.log('App started on port 8000');
-			});
-		}
-	};
-};
-
-export const app = createApplication();
+export const app = createApplication({
+	port: 8000,
+	routePrefix: 'api',
+	controllers: [
+		...galleryControllers,
+		...imageProcessingControllers,
+	],
+	middlewares: [
+		bodyParser.urlencoded(),
+		bodyParser.json(),
+		morgan('dev'),
+		formidable({ multiples: true }),
+		cors(),
+	],
+	beforeStart: async () => {
+    await Promise.all([
+      initDatabase(),
+      initFileSystem(),
+    ]);
+  },
+});

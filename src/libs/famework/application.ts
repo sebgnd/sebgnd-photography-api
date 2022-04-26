@@ -3,6 +3,7 @@ import type { Request, Response, NextFunction } from 'express';
 import { Controller } from './controller';
 import { buildRouter } from './build-router';
 import { removeTrailingAndLeadingSlash } from './path';
+import { executeFunctionOrPromise } from '../utils/function';
 
 export type Middleware = (req: Request, res: Response, next: NextFunction) => void;
 
@@ -11,8 +12,8 @@ export type ApplicationConfig = {
 	routePrefix?: string,
 	controllers: Controller[],
 	middlewares?: Middleware[],
-	afterStart?: () => void;
-	beforeStart?: () => void;
+	afterStart?: () => void | Promise<void>;
+	beforeStart?: () => any;
 };
 
 export const createApplication = (config: ApplicationConfig) => {
@@ -33,11 +34,12 @@ export const createApplication = (config: ApplicationConfig) => {
 			const router = buildRouter(controllers);
 			const prefix = removeTrailingAndLeadingSlash(routePrefix);
 
-			config.beforeStart?.();
+			await executeFunctionOrPromise(() => config.beforeStart?.());
 
-			expressInstance.use(`/${prefix}/`, router);
-			expressInstance.listen(port, () => {
-				config.afterStart?.();
+			expressInstance.use(`/${prefix}`, router);
+			expressInstance.listen(port, async () => {
+        await executeFunctionOrPromise(() => config.afterStart?.());
+
 				console.log(`SYSTEM | Application started on port ${port}`)
 			});
 		},

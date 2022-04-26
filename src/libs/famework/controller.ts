@@ -3,7 +3,7 @@ import type { RequestMethod } from './http';
 
 import { buildFullPath } from './path';
 
-export type EndpointHandler = <T>(req: Request, res: Response) => void | T;
+export type EndpointHandler = (req: Request, res: Response) => void | Promise<void>;
 export type Endpoint = {
 	route: string,
 	handler: EndpointHandler,
@@ -15,11 +15,11 @@ export type ControllerBuilderOptions = {
 };
 
 export type ControllerBuilder = {
-	request: (endpoint: string, options: ControllerBuilderOptions) => void,
-	post: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => void,
-	get: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => void,
-	put: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => void,
-	delete: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => void,
+	request: (endpoint: string, options: ControllerBuilderOptions) => ControllerBuilder,
+	post: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => ControllerBuilder,
+	get: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => ControllerBuilder,
+	put: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => ControllerBuilder,
+	delete: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => ControllerBuilder,
 };
 
 export type CreateControllerCallbackOptions = {
@@ -31,6 +31,8 @@ export type Controller = {
 	name: string,
 	endpoints: Record<Lowercase<RequestMethod>, Endpoint[]>,
 };
+
+
 
 export const flattenEndpointsFromControllers = (
 	controllers: Controller[]
