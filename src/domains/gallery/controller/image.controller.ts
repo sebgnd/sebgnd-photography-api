@@ -165,6 +165,7 @@ export const imageController = createController('images', ({ builder }) => {
 
 				await addImagesToCategory(category.id!, images.map((img) => img.saved.id!));
 
+				// TODO: Call this through an event dispatched in the controller callback
 				// app.instance.emit('images-uploaded', {
 				// 	images: images.map(({ saved, filepath, name }) => ({
 				// 		id: saved.id,
