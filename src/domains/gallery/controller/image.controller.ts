@@ -1,5 +1,5 @@
 
-import { readExifFromImage } from '@libs/file/exif';
+import { readExifFromImage } from '../../../libs/file/exif';
 import { createController } from '../../../libs/famework/controller';
 
 import { filterFileByMimetype, Mimetype } from '../../../libs/file/mimetype';
@@ -12,7 +12,7 @@ import { Image } from '../types';
  * TODO:
  * Move some of that logic into entities, services
  */
-export const imageController = createController('images', ({ builder }) => {
+export const imageController = createController('images', ({ builder, eventDispatcher }) => {
 	builder
 		.get('/', {
 			handler: async (req, res) => {
@@ -153,14 +153,13 @@ export const imageController = createController('images', ({ builder }) => {
 
 				await addImagesToCategory(category.id!, savedImages.map((img) => img.id!));
 
-				// TODO: Call this through an event dispatched in the controller callback
-				// app.instance.emit('images-uploaded', {
-				// 	images: images.map(({ saved, filepath, name }) => ({
-				// 		id: saved.id,
-				// 		originalName: name,
-				// 		temporaryPath: filepath,
-				// 	})),
-				// });
+				eventDispatcher.dispatch('images-uploaded', {
+					images: images.map(({ temporaryFile }, index) => ({
+						id: savedImages[index].id,
+						originalName: temporaryFile!.name,
+						temporaryPath: temporaryFile!.path,
+					})),
+				});
 
 				res.status(201).json({
 					items: savedImages.map((img) => ({

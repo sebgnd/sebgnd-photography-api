@@ -18,8 +18,13 @@ export const getRouterMethodFunction = (
 }
 
 export const buildRouter = (controllers: Controller[]) => {
-	const flattenedEndpoints = flattenEndpointsFromControllers(controllers);
 	const router = express.Router();
+
+	controllers.forEach((controller) => {
+		controller.init();
+	});
+
+	const flattenedEndpoints = flattenEndpointsFromControllers(controllers);
 
 	return Object
 		.entries(flattenedEndpoints)
@@ -32,7 +37,7 @@ export const buildRouter = (controllers: Controller[]) => {
 					 */
 					(router as any)[method](endpoint.route, endpoint.handler);
 
-					console.log(`ENDPOINT | [${method.toUpperCase()}] - ${endpoint.route} => init`);
+					console.log(`ENDPOINT | [${method.toUpperCase()}] - ${endpoint.route} initialized`);
 				});
 
 				return acc;

@@ -19,7 +19,7 @@ const fromOrmEntity: OrmEntityMapperFn<ImageOrmEntity, Image> = (image: ImageOrm
 				focalLength: image.exif.focalLength,
 				shutterSpeed: image.exif.shutterSpeed,
 			}
-			: undefined,
+			: null,
 		type: image.dimension ? imageType : undefined,
 		createdAt: new Date(image.createdAt),
 		updatedAt: new Date(image.updatedAt),

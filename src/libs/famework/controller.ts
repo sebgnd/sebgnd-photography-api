@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import type { RequestMethod } from './http';
 
 import { buildFullPath } from './path';
+import { EventDispatcher, eventDispatcherBuilder } from './event-dispatcher';
 
 export type EndpointHandler = (req: Request, res: Response) => void | Promise<void>;
 export type Endpoint = {
@@ -22,12 +23,14 @@ export type ControllerBuilder = {
 
 export type CreateControllerCallbackOptions = {
 	builder: ControllerBuilder,
+	eventDispatcher: EventDispatcher,
 };
 export type CreateControllerCallback = (options: CreateControllerCallbackOptions) => void;
 
 export type Controller = {
 	name: string,
-	endpoints: Record<Lowercase<RequestMethod>, Endpoint[]>,
+	getEndpoints: () => Record<Lowercase<RequestMethod>, Endpoint[]>,
+	init: () => void;
 };
 
 export const flattenEndpointsFromControllers = (
@@ -41,7 +44,7 @@ export const flattenEndpointsFromControllers = (
 	};
 	return controllers.reduce(
 		(acc, controller) => {
-			const { endpoints } = controller;
+			const endpoints = controller.getEndpoints();
 			return {
 				get: [...acc.get, ...endpoints.get],
 				post: [...acc.post, ...endpoints.post],
@@ -80,6 +83,8 @@ export const createController = (
 	name: string,
 	callback: CreateControllerCallback
 ) => {
+	let initialized = false;
+
 	const endpoints: Record<Lowercase<RequestMethod>, Endpoint[]> = {
 		get: [],
 		post: [],
@@ -106,11 +111,26 @@ export const createController = (
 		}),
 	};
 
-	callback({ builder });
-
 	const controller: Controller = {
 		name,
-		endpoints,
+		getEndpoints: () => {
+			if (!initialized) {
+				throw new Error('Cannot get endpoints before initialization');
+			}
+
+			return endpoints;
+		},
+		init: () => {
+			if (initialized) {
+				return;
+			}
+
+			callback({
+				builder,
+				eventDispatcher: eventDispatcherBuilder.build(),
+			});
+			initialized = true;
+		}
 	}
 
 	return controller;
