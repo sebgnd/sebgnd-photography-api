@@ -11,11 +11,9 @@ export type Endpoint = {
 
 export type ControllerBuilderOptions = {
 	handler: EndpointHandler,
-	method: RequestMethod,
 };
 
 export type ControllerBuilder = {
-	request: (endpoint: string, options: ControllerBuilderOptions) => ControllerBuilder,
 	post: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => ControllerBuilder,
 	get: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => ControllerBuilder,
 	put: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => ControllerBuilder,
@@ -31,8 +29,6 @@ export type Controller = {
 	name: string,
 	endpoints: Record<Lowercase<RequestMethod>, Endpoint[]>,
 };
-
-
 
 export const flattenEndpointsFromControllers = (
 	controllers: Controller[]
@@ -57,6 +53,29 @@ export const flattenEndpointsFromControllers = (
 	);
 };
 
+export type ControllerBuildingContext = {
+	endpoints: Record<Lowercase<RequestMethod>, Endpoint[]>,
+	getBuilder: () => ControllerBuilder,
+}
+
+export const makeControllerHandler = (
+	method: Lowercase<RequestMethod>,
+	controllerName: string,
+	context: ControllerBuildingContext
+) => {
+	return (endpoint: string, options: ControllerBuilderOptions) => {
+		const { handler } = options;
+		const { endpoints, getBuilder } = context;
+
+		endpoints[method].push({
+			route: buildFullPath(controllerName, endpoint),
+			handler,
+		});
+
+		return getBuilder();
+	}
+}
+
 export const createController = (
 	name: string,
 	callback: CreateControllerCallback
@@ -69,32 +88,21 @@ export const createController = (
 	};
 
 	const builder: ControllerBuilder = {
-		request: (endpoint: string, options: ControllerBuilderOptions) => {
-			const { method, handler } = options;
-			const loweredMethod = method.toLowerCase() as Lowercase<RequestMethod>;
-
-			endpoints[loweredMethod].push({
-				route: buildFullPath(name, endpoint),
-				handler,
-			});
-
-			return builder;
-		},
-		post: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => builder.request(endpoint, {
-			...options,
-			method: 'post',
+		post: makeControllerHandler('post', name, {
+			getBuilder: () => builder,
+			endpoints
 		}),
-		get: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => builder.request(endpoint, {
-			...options,
-			method: 'get',
+		get: makeControllerHandler('get', name, {
+			getBuilder: () => builder,
+			endpoints
 		}),
-		delete: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => builder.request(endpoint, {
-			...options,
-			method: 'delete',
+		delete: makeControllerHandler('delete', name, {
+			getBuilder: () => builder,
+			endpoints
 		}),
-		put: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => builder.request(endpoint, {
-			...options,
-			method: 'put',
+		put: makeControllerHandler('put', name, {
+			getBuilder: () => builder,
+			endpoints
 		}),
 	};
 
