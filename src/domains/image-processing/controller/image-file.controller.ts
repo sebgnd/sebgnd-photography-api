@@ -1,5 +1,11 @@
-import * as path from 'path';
-import * as fs from 'fs'
+import {
+	getImagePathIfExist,
+	validFormatAndSize,
+	availableFormats,
+	availableSizes,
+	ImageFormat,
+	ImageSize,
+} from '../../../domains/image-processing/services/image-file-manager';
 
 import { createController } from '../../../libs/famework/controller';
 
@@ -7,16 +13,14 @@ export const imageFileController = createController('files/images', ({ builder }
 	builder.get('/:format/:size/:id', {
 		handler: (req, res) => {
 			const { format, size, id } = req.params;
-			const availableFormats = ['thumbnail', 'full'];
-			const availableSizes = ['400', '1080', '80'];
 			
-			if (!availableFormats.includes(format) || !availableSizes.includes(size)) {
+			if (!validFormatAndSize(format, size)) {
 				res.status(400).json({
 					error: {
 						message: 'Invalid image',
 						details: {
-							format: 'Must be thumbnail or full',
-							size: 'Must be small, medium or original',
+							format: `Must be one of: ${availableFormats.join(',')}`,
+							size: `Must be one of: ${availableSizes.join(',')}`,
 						},
 					},
 				});
@@ -24,10 +28,15 @@ export const imageFileController = createController('files/images', ({ builder }
 				return;
 			}
 
-			const imagePath = path.join('files', 'images', format, size, id) + '.jpg';
-			const imagePathExist = fs.existsSync(imagePath);
+			/**
+			 * At that point we know that format and size have the right types
+			 */
+			const imagePath = getImagePathIfExist(id, {
+				format: format as ImageFormat,
+				size: size as ImageSize,
+			});
 
-			if (!imagePathExist) {
+			if (!imagePath) {
 				res.status(404).json({
 					error: {
 						message: 'Image does not exist',

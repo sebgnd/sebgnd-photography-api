@@ -19,6 +19,4 @@ export const updateImageProcessedData = async (id: string, processing: boolean, 
 	if (!image) {
 		throw new Error('Cannot find image');
 	}
-
-	return processing;
 };
