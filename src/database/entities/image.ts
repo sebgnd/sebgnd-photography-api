@@ -43,6 +43,7 @@ const imageSchema = new Schema<Image>({
 	processing: {
 		type: Boolean,
 		required: true,
+		default: true,
 	}
 }, { timestamps: true });
 

@@ -35,14 +35,11 @@ export const findImagePaginated = async (limit: number, offset: number, category
 	return images.map((img) => imageMapper.fromOrmEntity(img as ImageOrmEntity));
 }
 
-export const saveImage = async (image: Image) => {
-	const imageOrmEntity = imageMapper.fromBusinessEntity(image);
+export const saveManyImages = async (images: Image[]) => {
+	const ormEntities = images.map(imageMapper.fromBusinessEntity);
+	const savedEntities = await ImageModel.insertMany(ormEntities);
 
-	imageOrmEntity.processing = true;
-
-	const savedImage = await imageOrmEntity.save();
-
-	return imageMapper.fromOrmEntity(savedImage);
+	return savedEntities.map((img) => imageMapper.fromOrmEntity(img as ImageOrmEntity));
 }
 
 export const getTotalImages = async () => ImageModel.count();

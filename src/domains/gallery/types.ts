@@ -8,9 +8,13 @@ export type Exif = {
 }
 
 export type Image = PersistedEntity & {
-  exif?: Exif;
+  exif: Exif | null;
   type?: 'portrait' | 'landscape',
   categoryId: string,
+	temporaryFile?: {
+		name: string,
+		path: string,
+	},
 }
 
 export type Category = PersistedEntity & {

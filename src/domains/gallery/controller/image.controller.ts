@@ -1,14 +1,12 @@
 
-import exifr from 'exifr';
-
+import { readExifFromImage } from '@libs/file/exif';
 import { createController } from '../../../libs/famework/controller';
 
-import { app } from '../../../application';
-
-import { isJpg, isPng } from '../../../libs/file/mimetype';
+import { filterFileByMimetype, Mimetype } from '../../../libs/file/mimetype';
 
 import { doesCategoryWithNameExist, findCategory, addImagesToCategory } from '../database/category/category.repository';
-import { findImage, findImagePaginated, getTotalImages, saveImage } from '../database/image/image.repository';
+import { findImage, findImagePaginated, getTotalImages, saveManyImages } from '../database/image/image.repository';
+import { Image } from '../types';
 
 /**
  * TODO:
@@ -49,9 +47,11 @@ export const imageController = createController('images', ({ builder }) => {
 			
 				const parsedLimit = parseInt(limit.toString());
 				const parseOffset = parseInt(offset.toString());
-			
-				const images = await findImagePaginated(parsedLimit, parseOffset, category?.toString());
-				const total = await getTotalImages();
+				
+				const [images, total] = await Promise.all([
+					findImagePaginated(parsedLimit, parseOffset, category?.toString()),
+					getTotalImages(),
+				]);
 			
 				res.status(200).json({
 					items: images.map((img) => ({
@@ -129,41 +129,29 @@ export const imageController = createController('images', ({ builder }) => {
 					return;
 				}
 
-				const fileImagesOnly = files.images.filter((file) => {
-					return isPng((file as any).type) || isJpg((file as any).type);
-				});
+				const fileImagesOnly = filterFileByMimetype(files.images, [
+					Mimetype.JPG,
+					Mimetype.PNG,
+				]);
 
-				const images = await Promise.all(
-					fileImagesOnly.map(async ({ path: filepath, name }: any) => {
-						const imageExif = await exifr.parse(filepath, [
-							'ISO',
-							'ShutterSpeedValue',
-							'ApertureValue',
-							'FocalLength',
-						]);
+				const images: Image[] = await Promise.all(
+					fileImagesOnly.map(async (image) => {
+						const { name, filepath } = image as any;
+						const exif = await readExifFromImage(image);
 
-						// Can be replace by a saveMany ?
-						const savedImage = await saveImage({
-							categoryId,
-							exif: imageExif
-								? {
-									iso: imageExif.ISO,
-									shutterSpeed: imageExif.ShutterSpeedValue.toString(),
-									aperture: imageExif.ApertureValue.toString(),
-									focalLength: imageExif.FocalLength.toString(),
-								}
-								: undefined,
-						});
-						
 						return {
-							saved: savedImage,
-							name: name as string,
-							filepath: filepath as string,
-						};
+							categoryId,
+							exif,
+							temporaryFile: {
+								path: filepath,
+								name,
+							},
+						}
 					})
 				);
+				const savedImages = await saveManyImages(images);
 
-				await addImagesToCategory(category.id!, images.map((img) => img.saved.id!));
+				await addImagesToCategory(category.id!, savedImages.map((img) => img.id!));
 
 				// TODO: Call this through an event dispatched in the controller callback
 				// app.instance.emit('images-uploaded', {
@@ -175,7 +163,7 @@ export const imageController = createController('images', ({ builder }) => {
 				// });
 
 				res.status(201).json({
-					items: images.map(({ saved: img }) => ({
+					items: savedImages.map((img) => ({
 						id: img.id,
 						createdAt: img.createdAt,
 						updatedAt: img.updatedAt,
