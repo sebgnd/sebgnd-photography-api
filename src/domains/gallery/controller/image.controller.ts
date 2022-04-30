@@ -8,10 +8,6 @@ import { doesCategoryWithNameExist, findCategory, addImagesToCategory } from '..
 import { findImage, findImagePaginated, getTotalImages, saveManyImages } from '../database/image/image.repository';
 import { Image } from '../types';
 
-/**
- * TODO:
- * Move some of that logic into entities, services
- */
 export const imageController = createController('images', ({ builder, eventDispatcher }) => {
 	builder
 		.get('/', {
@@ -129,33 +125,36 @@ export const imageController = createController('images', ({ builder, eventDispa
 					return;
 				}
 
-				const fileImagesOnly = filterFileByMimetype(files.images, [
-					Mimetype.JPG,
-					Mimetype.PNG,
-				]);
+				const fileImagesOnly = filterFileByMimetype(
+					files.images.map((file) => {
+						return { ...file, mimetype: (file as any).type };
+					}),
+					[Mimetype.JPG, Mimetype.PNG]
+				);
 
 				const images: Image[] = await Promise.all(
 					fileImagesOnly.map(async (image) => {
-						const { name, filepath } = image as any;
-						const exif = await readExifFromImage(image);
+						const { name, path } = image as any;
+						const exif = await readExifFromImage(image as any);
 
 						return {
 							categoryId,
 							exif,
 							temporaryFile: {
-								path: filepath,
+								path,
 								name,
 							},
 						}
 					})
 				);
+
 				const savedImages = await saveManyImages(images);
 
 				await addImagesToCategory(category.id!, savedImages.map((img) => img.id!));
 
-				eventDispatcher.dispatch('images-uploaded', {
+				eventDispatcher.dispatch('images:uploaded', {
 					images: images.map(({ temporaryFile }, index) => ({
-						id: savedImages[index].id,
+						id: savedImages[index].id?.toString(),
 						originalName: temporaryFile!.name,
 						temporaryPath: temporaryFile!.path,
 					})),

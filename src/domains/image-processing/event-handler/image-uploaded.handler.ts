@@ -11,12 +11,11 @@ export type ImageUploaded = {
 	temporaryPath: string,
 };
 
-/**
- * TODO:
- * Once the custom framework is created, create an event class/object that
- * can be shared across domains.
- */
-export const handleImageUploaded = async (images: ImageUploaded[]) => {
+export type ImageUploadBody = {
+	images: ImageUploaded[]
+};
+
+export const handleImageUploaded = async ({ images }: ImageUploadBody) => {
 	await Promise.all(
 		images.map(async ({ id, originalName, temporaryPath }) => {
 			await new Promise((resolve, reject) => {

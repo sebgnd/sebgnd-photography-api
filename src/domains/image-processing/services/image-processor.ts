@@ -63,7 +63,7 @@ export const createImageVersions = async (imageId: string, config: ImageVersionC
 	const height = jimpImage.getHeight();
 	
 	const fullResolutionPromises = fullResolutions.map(async (fullHeight) => {
-		console.log(`Creating full ${fullHeight} of ${imageId} ...`);
+		console.log(`APPLICATION | Creating full ${fullHeight} of ${imageId} ...`);
 
 		/**
 		 * TODO: Create this path in the file manager service
@@ -77,7 +77,7 @@ export const createImageVersions = async (imageId: string, config: ImageVersionC
 	});
 
 	const thumbnailPromises = thumbnailResolutions.map(async (thumbnailSize) => {
-		console.log(`Creating thumbnail ${thumbnailSize} of ${imageId} ...`);
+		console.log(`APPLICATION | Creating thumbnail ${thumbnailSize} of ${imageId} ...`);
 
 		const isLandscape = height < width 
 		const resized = jimpImage

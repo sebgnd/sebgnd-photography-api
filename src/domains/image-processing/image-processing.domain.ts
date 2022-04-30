@@ -1,13 +1,12 @@
-import { app } from '../../application';
+import { createDomain } from '../../libs/famework/domain';
 
 import { imageFileController } from './controller/image-file.controller';
 import { handleImageUploaded } from './event-handler/image-uploaded.handler';
 
-export const imageProcessingControllers = [imageFileController];
-
-// TODO: add domain utils in to add event handlers
-// app.instance.on('images-uploaded', (message: Record<string, any>) => {
-// 	if (message.images) {
-// 		handleImageUploaded(message.images);
-// 	}
-// });
+export const imageProcessingDomain = createDomain({
+	name: 'image-processing',
+	controllers: [imageFileController],
+	eventHandlers: {
+		'images:uploaded': handleImageUploaded,
+	},
+});

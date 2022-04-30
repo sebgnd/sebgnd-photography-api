@@ -1,7 +1,7 @@
 import exifr from 'exifr';
 
 export type WithPath = {
-	filepath: string,
+	path: string,
 }
 
 /**
@@ -12,9 +12,9 @@ export type WithPath = {
  * aperture and focal length
  */
 export const readExifFromImage = async <File extends WithPath>(file: File) => {
-	const { filepath } = file;
+	const { path } = file;
 
-	const exifRaw = await exifr.parse(filepath, [
+	const exifRaw = await exifr.parse(path, [
 		'ISO',
 		'ShutterSpeedValue',
 		'ApertureValue',

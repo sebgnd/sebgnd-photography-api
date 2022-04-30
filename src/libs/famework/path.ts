@@ -1,5 +1,7 @@
 export const removeTrailingAndLeadingSlash = (path: string) => {
-	return path.replace(/^\/*|\/*$/, '');
+	return path
+		.replace(/^\/*/, '')
+		.replace(/\/*$/, '');
 }
 
 export const buildFullPath = (...pathElements: string[]) => {
@@ -7,5 +9,5 @@ export const buildFullPath = (...pathElements: string[]) => {
 		.map((element) => removeTrailingAndLeadingSlash(element))
 		.join('/');
 
-	return `/${path}`;
+	return `/${removeTrailingAndLeadingSlash(path)}`;
 }

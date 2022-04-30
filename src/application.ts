@@ -6,8 +6,8 @@ import * as fs from 'fs';
 
 import { createApplication } from './libs/famework/application';
 
-import { galleryControllers } from './domains/gallery/gallery.domain';
-import { imageProcessingControllers } from './domains/image-processing/image-processing.domain';
+import { galleryDomain } from './domains/gallery/gallery.domain';
+import { imageProcessingDomain } from './domains/image-processing/image-processing.domain';
 
 import { initDatabase } from './database';
 
@@ -30,15 +30,15 @@ const initFileSystem = async () => {
 		}
 	}
 
-  return Promise.resolve('fdsafdsa');
+  return Promise.resolve();
 }
 
 export const app = createApplication({
 	port: 8000,
 	routePrefix: 'api',
-	controllers: [
-		...galleryControllers,
-		...imageProcessingControllers,
+	domains: [
+		galleryDomain,
+		imageProcessingDomain,
 	],
 	middlewares: [
 		bodyParser.urlencoded(),
