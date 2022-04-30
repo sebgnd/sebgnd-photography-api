@@ -1,11 +1,9 @@
-import { ClientSession } from 'mongoose';
+import { CategoryModel } from '@database/entities/category';
+import { ImageModel, ImageOrmEntity } from '@database/entities/image';
 
-import { CategoryModel } from '../../../../database/entities/category';
-import { ImageModel, ImageOrmEntity } from '../../../../database/entities/image';
+import { imageMapper } from '@domains/gallery/database/image/image.mapper';
 
-import { imageMapper } from '../../database/image/image.mapper';
-
-import { Image } from '../../../gallery/types';
+import { Image } from '@domains/gallery/types';
 
 export const findImage = async (id: string) => {
   const image = await ImageModel.findById(id);

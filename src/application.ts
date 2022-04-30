@@ -4,12 +4,12 @@ import morgan from 'morgan';
 import cors from 'cors';
 import * as fs from 'fs';
 
-import { createApplication } from './libs/famework/application';
+import { createApplication } from '@libs/famework/application';
 
-import { galleryDomain } from './domains/gallery/gallery.domain';
-import { imageProcessingDomain } from './domains/image-processing/image-processing.domain';
+import { galleryDomain } from '@domains/gallery/gallery.domain';
+import { imageProcessingDomain } from '@domains/image-processing/image-processing.domain';
 
-import { initDatabase } from './database';
+import { initDatabase } from '@database/index';
 
 const initFileSystem = async () => {
 	const paths = [

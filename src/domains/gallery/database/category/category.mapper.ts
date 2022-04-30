@@ -1,11 +1,11 @@
-import { BusinessEntityMapperFn, Mapper, OrmEntityMapperFn } from '../../../../database/utils/mapper/mapper';
+import { BusinessEntityMapperFn, Mapper, OrmEntityMapperFn } from '@database/utils/mapper/mapper';
 
-import { CategoryModel, CategoryOrmEntity } from '../../../../database/entities/category';
-import { ImageOrmEntity } from '../../../../database/entities/image';
+import { CategoryModel, CategoryOrmEntity } from '@database/entities/category';
+import { ImageOrmEntity } from '@database/entities/image';
 
-import { Category } from '../../../gallery/types';
+import { Category } from '@domains/gallery/types';
 
-import { imageMapper } from '../image/image.mapper';
+import { imageMapper } from '@domains/gallery/database/image/image.mapper';
 
 const fromOrmEntity: OrmEntityMapperFn<CategoryOrmEntity, Category> = (category: CategoryOrmEntity): Category => ({
 	id: category._id,

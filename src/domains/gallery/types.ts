@@ -1,4 +1,4 @@
-import { PersistedEntity } from '../../libs/types' 
+import { PersistedEntity } from '@libs/types' 
 
 export type Exif = {
   iso: number;

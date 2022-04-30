@@ -1,10 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { updateImageProcessedData } from '../database/image/image.repository';
-import { createImageVersions } from '../services/image-processor';
-import { EventHandler } from '../../../libs/famework/event-handler';
-import { Locality } from '../../../libs/famework/event-dispatcher';
+import { updateImageProcessedData } from '@domains/image-processing/database/image/image.repository';
+import { createImageVersions } from '@domains/image-processing/services/image-processor';
+
+import { EventHandler } from '@libs/famework/event-handler';
+import { Locality } from '@libs/famework/event-dispatcher';
 
 export type ImageUploaded = {
 	id: string,
@@ -16,7 +17,7 @@ export type ImageUploadBody = {
 	images: ImageUploaded[]
 };
 
-export const handleImageUploaded: EventHandler<ImageUploadBody> = async ({ images }, eventHandler) => {
+export const handleImageUploaded: EventHandler<ImageUploadBody> = async ({ images }, eventDispatcher) => {
 	await Promise.all(
 		images.map(async ({ id, originalName, temporaryPath }) => {
 			await new Promise((resolve, reject) => {
@@ -50,7 +51,7 @@ export const handleImageUploaded: EventHandler<ImageUploadBody> = async ({ image
 			height: imageData.height,
 		});
 
-		eventHandler.dispatch({
+		eventDispatcher.dispatch({
 			name: 'image-processing:image-processed',
 			locality: Locality.EXTERNAL,
 			data: {

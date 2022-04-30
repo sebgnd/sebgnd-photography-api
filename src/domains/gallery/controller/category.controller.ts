@@ -1,4 +1,5 @@
-import { createController } from '../../../libs/famework/controller';
+import { createController } from '@libs/famework/controller';
+
 import { findAllCategories, findCategory } from '../database/category/category.repository';
 
 export const categoryController = createController('categories', ({ builder }) => {

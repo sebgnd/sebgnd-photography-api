@@ -19,7 +19,7 @@ export type ApplicationConfig = {
 	domains: Domain[],
 	middlewares?: Middleware[],
 	afterStart?: () => void | Promise<void>;
-	beforeStart?: () => any;
+	beforeStart?: () => void | Promise<void>;
 };
 
 export type DomainEvent = {

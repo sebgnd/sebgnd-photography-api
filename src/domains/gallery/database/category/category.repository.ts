@@ -1,4 +1,4 @@
-import { CategoryModel, CategoryOrmEntity } from '../../../../database/entities/category';
+import { CategoryModel, CategoryOrmEntity } from '@database/entities/category';
 
 import { categoryMapper } from './category.mapper';
 

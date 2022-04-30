@@ -1,7 +1,7 @@
 import mongoose, { Schema, Types } from 'mongoose';
 
 import { CATEGORY_SCHEMA_NAME, IMAGE_SCHEMA_NAME } from '../constant';
-import { OrmEntity } from '..//types';
+import { OrmEntity } from '../types';
 
 import { ImageOrmEntity } from './image';
 

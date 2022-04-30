@@ -1,11 +1,12 @@
 
-import { readExifFromImage } from '../../../libs/file/exif';
-import { createController } from '../../../libs/famework/controller';
-import { Locality } from '../../../libs/famework/event-dispatcher';
-import { filterFileByMimetype, Mimetype } from '../../../libs/file/mimetype';
+import { readExifFromImage } from '@libs/file/exif';
+import { createController } from '@libs/famework/controller';
+import { Locality } from '@libs/famework/event-dispatcher';
+import { filterFileByMimetype, Mimetype } from '@libs/file/mimetype';
 
 import { doesCategoryWithNameExist, findCategory, addImagesToCategory } from '../database/category/category.repository';
 import { findImage, findImagePaginated, getTotalImages, saveManyImages } from '../database/image/image.repository';
+
 import { Image } from '../types';
 
 export const imageController = createController('images', ({ builder, eventDispatcher }) => {

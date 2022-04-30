@@ -5,9 +5,9 @@ import {
 	availableSizes,
 	ImageFormat,
 	ImageSize,
-} from '../../../domains/image-processing/services/image-file-manager';
+} from '@domains/image-processing/services/image-file-manager';
 
-import { createController } from '../../../libs/famework/controller';
+import { createController } from '@libs/famework/controller';
 
 export const imageFileController = createController('files/images', ({ builder }) => {
 	builder.get('/:format/:size/:id', {

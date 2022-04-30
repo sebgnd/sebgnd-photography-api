@@ -1,9 +1,9 @@
 import { Types } from 'mongoose';
 
-import { BusinessEntityMapperFn, Mapper, OrmEntityMapperFn } from '../../../../database/utils/mapper/mapper';
+import { BusinessEntityMapperFn, Mapper, OrmEntityMapperFn } from '@database/utils/mapper/mapper';
+import { ImageModel, ImageOrmEntity } from '@database/entities/image'
 
-import { ImageModel, ImageOrmEntity } from '../../../../database/entities/image'
-import { Image } from '../../../gallery/types';
+import { Image } from '@domains/gallery/types';
 
 const fromOrmEntity: OrmEntityMapperFn<ImageOrmEntity, Image> = (image: ImageOrmEntity): Image => {
 	const imageType = image.dimension?.height >= image.dimension?.width

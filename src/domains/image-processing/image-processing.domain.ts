@@ -1,4 +1,4 @@
-import { createDomain } from '../../libs/famework/domain';
+import { createDomain } from '@libs/famework/domain';
 
 import { imageFileController } from './controller/image-file.controller';
 import { handleImageUploaded } from './event-handler/image-uploaded.handler';
