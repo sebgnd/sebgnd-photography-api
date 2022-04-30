@@ -4,6 +4,7 @@ import type { Router } from 'express';
 import type { Controller } from './controller';
 import type { RequestMethod } from './http';
 import { flattenEndpointsFromControllers } from './controller';
+import { EventDispatcher } from './event-dispatcher';
 
 export const getRouterMethodFunction = (
 	router: Router,
@@ -17,11 +18,11 @@ export const getRouterMethodFunction = (
 	}
 }
 
-export const buildRouter = (controllers: Controller[]) => {
+export const buildRouter = (controllers: Controller[], eventDispatcher: EventDispatcher) => {
 	const router = express.Router();
 
 	controllers.forEach((controller) => {
-		controller.init();
+		controller.init({ eventDispatcher });
 	});
 
 	const flattenedEndpoints = flattenEndpointsFromControllers(controllers);

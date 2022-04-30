@@ -2,7 +2,7 @@ import type { Request, Response } from 'express';
 import type { RequestMethod } from './http';
 
 import { buildFullPath } from './path';
-import { EventDispatcher, eventDispatcherBuilder } from './event-dispatcher';
+import { EventDispatcher } from './event-dispatcher';
 
 export type EndpointHandler = (req: Request, res: Response) => void | Promise<void>;
 export type Endpoint = {
@@ -15,23 +15,33 @@ export type ControllerBuilderOptions = {
 };
 
 export type ControllerBuilder = {
-	post: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => ControllerBuilder,
-	get: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => ControllerBuilder,
-	put: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => ControllerBuilder,
-	delete: (endpoint: string, options: Omit<ControllerBuilderOptions, 'method'>) => ControllerBuilder,
+	post: (endpoint: string, options: ControllerBuilderOptions) => ControllerBuilder,
+	get: (endpoint: string, options: ControllerBuilderOptions) => ControllerBuilder,
+	put: (endpoint: string, options: ControllerBuilderOptions) => ControllerBuilder,
+	delete: (endpoint: string, options: ControllerBuilderOptions) => ControllerBuilder,
 };
 
 export type CreateControllerCallbackOptions = {
 	builder: ControllerBuilder,
 	eventDispatcher: EventDispatcher,
 };
+
 export type CreateControllerCallback = (options: CreateControllerCallbackOptions) => void;
+
+export type ControllerInitializationConfig = {
+	eventDispatcher: EventDispatcher,
+}
 
 export type Controller = {
 	name: string,
 	getEndpoints: () => Record<Lowercase<RequestMethod>, Endpoint[]>,
-	init: () => void;
+	init: (config: ControllerInitializationConfig) => void;
 };
+
+export type ControllerBuildingContext = {
+	endpoints: Record<Lowercase<RequestMethod>, Endpoint[]>,
+	getBuilder: () => ControllerBuilder,
+}
 
 export const flattenEndpointsFromControllers = (
 	controllers: Controller[]
@@ -56,11 +66,6 @@ export const flattenEndpointsFromControllers = (
 	);
 };
 
-export type ControllerBuildingContext = {
-	endpoints: Record<Lowercase<RequestMethod>, Endpoint[]>,
-	getBuilder: () => ControllerBuilder,
-}
-
 export const makeControllerHandler = (
 	method: Lowercase<RequestMethod>,
 	controllerName: string,
@@ -83,8 +88,6 @@ export const createController = (
 	name: string,
 	callback: CreateControllerCallback
 ) => {
-	let initialized = false;
-
 	const endpoints: Record<Lowercase<RequestMethod>, Endpoint[]> = {
 		get: [],
 		post: [],
@@ -113,23 +116,12 @@ export const createController = (
 
 	const controller: Controller = {
 		name,
-		getEndpoints: () => {
-			if (!initialized) {
-				throw new Error('Cannot get endpoints before initialization');
-			}
-
-			return endpoints;
-		},
-		init: () => {
-			if (initialized) {
-				return;
-			}
-
+		getEndpoints: () => endpoints,
+		init: (config: ControllerInitializationConfig) => {
 			callback({
 				builder,
-				eventDispatcher: eventDispatcherBuilder.build(),
+				eventDispatcher: config.eventDispatcher,
 			});
-			initialized = true;
 		}
 	}
 

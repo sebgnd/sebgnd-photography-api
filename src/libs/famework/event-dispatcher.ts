@@ -1,40 +1,43 @@
 import { Express } from 'express';
+import { Server as ServerIO } from 'socket.io';
+
+export type ServerInjection = {
+	app: Express,
+	io: ServerIO,
+}
+
+export enum Locality {
+	WIDE,
+	INTERNAL,
+	EXTERNAL,
+};
+
+export type DispatchedEvent<T> = {
+	name: string,
+	locality: Locality,
+	data: T,
+}
 
 export type EventDispatcher = {
-	dispatch: <T = any>(eventName: string, message: T) => void,
+	dispatch: <T = any>(event: DispatchedEvent<T>) => void,
 }
 
-export const createEventDispatcherBuilder = () => {
-	let builtEventDispatchers: Record<string, EventDispatcher> = {};
-	let injectedApp: Express | null = null;
-
+export const initEventDispatcher = (app: Express, io: ServerIO): EventDispatcher => {
 	return {
-		injectApp: (app: Express) => {
-			injectedApp = app;
-		},
-		build: (scope: string = 'global'): EventDispatcher => {
-			if (!injectedApp) {
-				throw new Error('Canont create event dispatcher without application initialization');
+		dispatch: <T = any>(event: DispatchedEvent<T>) => {
+			const { name, data, locality } = event;
+
+			if (locality === Locality.WIDE || locality === Locality.INTERNAL) {
+				app.emit(name, {
+					data,
+				});
 			}
 
-			if (builtEventDispatchers[scope]) {
-				return builtEventDispatchers[scope];
+			if (locality === Locality.WIDE || locality === Locality.EXTERNAL) {
+				io.emit(name, {
+					data
+				});
 			}
-
-			console.log(`SYSTEM | Event dispatcher for scope ${scope} initialized`)
-
-			builtEventDispatchers[scope] = {
-				dispatch: <T = any>(eventName: string, data: T) => {
-					injectedApp?.emit(eventName, {
-						scope,
-						data,
-					});
-				},
-			};
-
-			return builtEventDispatchers[scope];
 		},
-	};
+	}
 }
-
-export const eventDispatcherBuilder = createEventDispatcherBuilder();

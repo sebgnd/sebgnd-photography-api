@@ -21,7 +21,7 @@ export const readExifFromImage = async <File extends WithPath>(file: File) => {
 		'FocalLength',
 	]);
 
-	if (!exifr) {
+	if (!exifRaw) {
 		return null;
 	}
 

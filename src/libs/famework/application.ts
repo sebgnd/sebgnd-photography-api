@@ -1,10 +1,12 @@
 import express from 'express';
+import * as http from 'http';
+import { Server } from 'socket.io';
 import type { Request, Response, NextFunction } from 'express';
 
 import { buildRouter } from './build-router';
 import { removeTrailingAndLeadingSlash } from './path';
 import { executeFunctionOrPromise } from '../utils/function';
-import { eventDispatcherBuilder } from './event-dispatcher';
+import { initEventDispatcher } from './event-dispatcher';
 import { Domain } from './domain';
 import { Controller } from './controller';
 import { EventHandler, makeEventHandler } from './event-handler';
@@ -60,31 +62,37 @@ export const createApplication = (config: ApplicationConfig) => {
 		{ events: new Set<string>(), handlers: {} } as DomainEvent,
 	);
 
-	const expressInstance = express();
-
-	eventDispatcherBuilder.injectApp(expressInstance);
-
-	middlewares?.forEach((middleware) => {
-		expressInstance.use(middleware);
-	});
-
 	return {
-		instance: expressInstance,
 		start: async () => {
-			const router = buildRouter(controllers);
-			const prefix = removeTrailingAndLeadingSlash(routePrefix);
+			const expressInstance = express();
+			const expressServer = http.createServer(expressInstance);
+			const socketServer = new Server(expressServer);
 
 			await executeFunctionOrPromise(() => config.beforeStart?.());
+
+			const eventDispatcher = initEventDispatcher(expressInstance, socketServer);
+			const router = buildRouter(controllers, eventDispatcher);
+			const prefix = removeTrailingAndLeadingSlash(routePrefix);
+
+			middlewares?.forEach((middleware) => {
+				expressInstance.use(middleware);
+			});
 			
 			events.forEach((event) => {
 				console.log(`SYSTEM | Subscribe to ${event} event`);
 
 				handlers[event].forEach((handler) => {
-					expressInstance.on(event, makeEventHandler(handler));
+					expressInstance.on(event, makeEventHandler(handler, eventDispatcher));
 				});
 			});
 			expressInstance.use(`/${prefix}`, router);
-			expressInstance.listen(port, async () => {
+			socketServer.on('connection', (socket) => {
+				console.log(`APPLICATION | user ${socket.id} connected`);
+				socket.on('disconnect', () => {
+					console.log(`APPLICATION | user ${socket.id} disconnected`);
+				});
+			});
+			expressServer.listen(port, async () => {
         await executeFunctionOrPromise(() => config.afterStart?.());
 
 				console.log(`SYSTEM | Application started on port ${port}`)

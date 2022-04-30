@@ -1,7 +1,7 @@
 
 import { readExifFromImage } from '../../../libs/file/exif';
 import { createController } from '../../../libs/famework/controller';
-
+import { Locality } from '../../../libs/famework/event-dispatcher';
 import { filterFileByMimetype, Mimetype } from '../../../libs/file/mimetype';
 
 import { doesCategoryWithNameExist, findCategory, addImagesToCategory } from '../database/category/category.repository';
@@ -152,12 +152,18 @@ export const imageController = createController('images', ({ builder, eventDispa
 
 				await addImagesToCategory(category.id!, savedImages.map((img) => img.id!));
 
-				eventDispatcher.dispatch('images:uploaded', {
-					images: images.map(({ temporaryFile }, index) => ({
-						id: savedImages[index].id?.toString(),
-						originalName: temporaryFile!.name,
-						temporaryPath: temporaryFile!.path,
-					})),
+				const imagesForEvent = images.map(({ temporaryFile }, index) => ({
+					id: savedImages[index].id?.toString(),
+					originalName: temporaryFile!.name,
+					temporaryPath: temporaryFile!.path,
+				}));
+
+				eventDispatcher.dispatch({
+					name: 'images:uploaded',
+					locality: Locality.INTERNAL,
+					data: {
+						images: imagesForEvent,
+					},
 				});
 
 				res.status(201).json({
