@@ -9,7 +9,7 @@ import {
 
 import { createController } from '@libs/famework/controller';
 
-export const imageFileController = createController('files/images', ({ builder }) => {
+export const imageFileController = createController('file/images', ({ builder }) => {
 	builder.get('/:format/:size/:id', {
 		handler: (req, res) => {
 			const { format, size, id } = req.params;
