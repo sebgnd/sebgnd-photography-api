@@ -32,12 +32,10 @@ export const doesCategoryExist = (id: string) => {
 	});
 }
 
-export const addImagesToCategory = async(categoryId: string, imageIds: string[]) => {
+export const addImageToCategory = async(categoryId: string, imageId: string) => {
 	await CategoryModel.findByIdAndUpdate(categoryId, {
 		$push: {
-			images: imageIds,
+			images: imageId,
 		}
 	});
-
-	return true;
 }

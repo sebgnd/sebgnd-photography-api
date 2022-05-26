@@ -3,10 +3,6 @@ export enum Mimetype {
 	PNG = 'image/png',
 }
 
-export type WithMimetype = {
-	mimetype: string | null,
-};
-
 export const isPng = (mimetype: string): mimetype is Mimetype.JPG => {
 	return mimetype === Mimetype.JPG;
 }
@@ -15,25 +11,25 @@ export const isJpg = (mimetype: string): mimetype is Mimetype.PNG => {
 	return mimetype === Mimetype.PNG;
 }
 
-export const isFileMimetype = <File extends WithMimetype>(
+export const isFileMimetype = (
 	file: File,
 	mimetypes: Mimetype[]
 ) => {	
-	if (file.mimetype === null) {
+	if (file.type === null) {
 		return false;
 	}
 
-	return (mimetypes as string[]).includes(file.mimetype);
+	return (mimetypes as string[]).includes(file.type);
 }
 
-export const validateFileMimetypes = <File extends WithMimetype>(
+export const validateFileMimetypes = (
 	files: File[],
 	mimetypes: Mimetype[]
 ) => {
 	return files.every((file) => isFileMimetype(file, mimetypes));
 }
 
-export const filterFileByMimetype = <File extends WithMimetype>(
+export const filterFileByMimetype = (
 	files: File[],
 	mimetypes: Mimetype[]
 ) => {

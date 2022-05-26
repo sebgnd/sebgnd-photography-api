@@ -2,12 +2,13 @@
 import { readExifFromImage } from '@libs/file/exif';
 import { createController } from '@libs/famework/controller';
 import { Locality } from '@libs/famework/event-dispatcher';
-import { filterFileByMimetype, Mimetype } from '@libs/file/mimetype';
+import { filterFileByMimetype, isFileMimetype, Mimetype } from '@libs/file/mimetype';
 
-import { doesCategoryExist, findCategory, addImagesToCategory } from '../database/category/category.repository';
-import { findImage, findImagePaginated, getTotalImages, saveManyImages } from '../database/image/image.repository';
+import { doesCategoryExist, findCategory, addImageToCategory } from '../database/category/category.repository';
+import { findImage, findImagePaginated, getTotalImages, saveImage } from '../database/image/image.repository';
 
 import { Image } from '../types';
+import ExpressFormidable from 'express-formidable';
 
 export const imageController = createController('images', ({ builder, eventDispatcher }) => {
 	builder
@@ -88,24 +89,14 @@ export const imageController = createController('images', ({ builder, eventDispa
 			handler: async (req, res) => {
 				const { files, fields } = req;
 
-				if (!files || !fields || !fields.categoryId || Array.isArray(fields.categoryId) || (files && !files.images)) {
+				if (!files || !fields || !fields.categoryId || Array.isArray(fields.categoryId) || (files && !files.image) || Array.isArray(files.image)) {
 					res.status(400).json({
 						error: {
-							message: 'Invalid form data for uploading images',
+							message: 'Invalid form data for uploading image',
 							details: {
-								category: 'A gallery must be provided',
-								images: 'You must provided the images to be uploaded'
+								category: 'A category must be provided',
+								images: 'You must provided the image to be uploaded'
 							}
-						},
-					});
-
-					return;
-				}
-
-				if (!Array.isArray(files.images)) {
-					res.status(400).json({
-						error: {
-							message: 'You must provide the `images` array in the form data',
 						},
 					});
 
@@ -126,53 +117,60 @@ export const imageController = createController('images', ({ builder, eventDispa
 					return;
 				}
 
-				const fileImagesOnly = filterFileByMimetype(
-					files.images.map((file) => {
-						return { ...file, mimetype: (file as any).type };
-					}),
-					[Mimetype.JPG, Mimetype.PNG]
-				);
+				const isCorrectMimetype = isFileMimetype(files.image as any, [
+					Mimetype.JPG,
+					Mimetype.PNG,
+				]);
 
-				const images: Image[] = await Promise.all(
-					fileImagesOnly.map(async (image) => {
-						const { name, path } = image as any;
-						const exif = await readExifFromImage(image as any);
+				if (!isCorrectMimetype) {
+					res.status(400).json({
+						error: {
+							message: 'Invalid image',
+							details: {
+								mimetype: 'You must provide a JPG or PNG image',
+							}
+						},
+					});
 
-						return {
-							categoryId,
-							exif,
-							temporaryFile: {
-								path,
-								name,
-							},
-						}
-					})
-				);
+					return;
+				}
 
-				const savedImages = await saveManyImages(images);
+				/**
+				 * Cast image as any because wrong typing library
+				 * TODO: Update typing
+				 */
+				const uploadedImage = files.image as unknown as File;
+				const exif = await readExifFromImage(uploadedImage as any);
+				const image: Image = {
+					categoryId,
+					exif,
+					temporaryFile: {
+						path: (uploadedImage as any).path,
+						name: uploadedImage.name,
+					},
+				}
+				const savedImage = await saveImage(image);
 
-				await addImagesToCategory(category.id!, savedImages.map((img) => img.id!));
-
-				const imagesForEvent = images.map(({ temporaryFile }, index) => ({
-					id: savedImages[index].id?.toString(),
-					originalName: temporaryFile!.name,
-					temporaryPath: temporaryFile!.path,
-				}));
+				await addImageToCategory(category.id!, savedImage.id!);
 
 				eventDispatcher.dispatch({
 					name: 'images:uploaded',
 					locality: Locality.INTERNAL,
 					data: {
-						images: imagesForEvent,
+						image: {
+							id: savedImage.id?.toString(),
+							originalName: image.temporaryFile!.name,
+							temporaryPath: image.temporaryFile!.path,
+						},
 					},
 				});
 
 				res.status(201).json({
-					items: savedImages.map((img) => ({
-						id: img.id,
-						createdAt: img.createdAt,
-						updatedAt: img.updatedAt,
-					}))
+					item: {
+						id: savedImage.id?.toString(),
+						createdAt: savedImage.createdAt,
+						updatedAt: savedImage.updatedAt,
+					},
 				})
 			}
 		})

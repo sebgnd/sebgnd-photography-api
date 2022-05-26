@@ -14,50 +14,46 @@ export type ImageUploaded = {
 };
 
 export type ImageUploadBody = {
-	images: ImageUploaded[]
+	image: ImageUploaded
 };
 
-export const handleImageUploaded: EventHandler<ImageUploadBody> = async ({ images }, eventDispatcher) => {
-	await Promise.all(
-		images.map(async ({ id, originalName, temporaryPath }) => {
-			await new Promise((resolve, reject) => {
-				const oldPath = temporaryPath;
-				const extension = path.extname(originalName);
-				const newPath = `files/images/full/original/${id}${extension}`;
+export const handleImageUploaded: EventHandler<ImageUploadBody> = async ({ image }, eventDispatcher) => {
+	const { id, originalName, temporaryPath } = image;
 
-				fs.copyFile(oldPath, newPath, (err) => {
-					if (err) {
-						reject(err);
-					}
-	
-					resolve(undefined);
-				});
-			});
-		}),
-	);
+	await new Promise((resolve, reject) => {
+		const oldPath = temporaryPath;
+		const extension = path.extname(originalName);
+		const newPath = `files/images/full/original/${id}${extension}`;
 
-	images.forEach(async ({ id }) => {
-		const { processed, imageData } = await createImageVersions(id, {
-			thumbnail: {
-				heights: [400, 80],
-			},
-			full: {
-				heights: [400, 1080]
-			},
+		fs.copyFile(oldPath, newPath, (err) => {
+			if (err) {
+				reject(err);
+			}
+
+			resolve(undefined);
 		});
+	});
 
-		await updateImageProcessedData(id, !processed, {
-			width: imageData.width,
-			height: imageData.height,
-		});
+	const { processed, imageData } = await createImageVersions(id, {
+		thumbnail: {
+			heights: [400, 80],
+		},
+		full: {
+			heights: [400, 1080]
+		},
+	});
 
-		eventDispatcher.dispatch({
-			name: 'image-processing:image-processed',
-			locality: Locality.EXTERNAL,
-			data: {
-				processed,
-				id,
-			},
-		});
+	await updateImageProcessedData(id, !processed, {
+		width: imageData.width,
+		height: imageData.height,
+	});
+
+	eventDispatcher.dispatch({
+		name: 'image-processing:image-processed',
+		locality: Locality.EXTERNAL,
+		data: {
+			processed,
+			id,
+		},
 	});
 };
