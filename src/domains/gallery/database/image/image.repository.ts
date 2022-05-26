@@ -11,17 +11,11 @@ export const findImage = async (id: string) => {
   return imageMapper.fromOrmEntity(image as ImageOrmEntity);
 }
 
-export const findImagePaginated = async (limit: number, offset: number, categoryName?: string) => {
-	const categoryWithName = await CategoryModel.findOne({ name: categoryName });
-
-	if (categoryName && !categoryWithName) {
-		return [];
-	}
-
+export const findImagePaginated = async (limit: number, offset: number, categoryId?: string) => {
 	const images = await ImageModel
 		.find(
-			categoryName
-				? { category: categoryWithName!.id }
+			categoryId
+				? { category: categoryId }
 				: {}
 		)
 		.skip(offset)
@@ -40,4 +34,8 @@ export const saveManyImages = async (images: Image[]) => {
 	return savedEntities.map((img) => imageMapper.fromOrmEntity(img as ImageOrmEntity));
 }
 
-export const getTotalImages = async () => ImageModel.count();
+export const getTotalImages = async (categoryId?: string) => ImageModel.count(
+	categoryId
+		? { category: categoryId }
+		: {}
+);

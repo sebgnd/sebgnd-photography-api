@@ -26,8 +26,14 @@ export const doesCategoryWithNameExist = async (name: string) => {
 	return category !== null;
 }
 
+export const doesCategoryExist = (id: string) => {
+	return CategoryModel.exists({
+		_id: id,
+	});
+}
+
 export const addImagesToCategory = async(categoryId: string, imageIds: string[]) => {
-	const updatedCategory = await CategoryModel.findByIdAndUpdate(categoryId, {
+	await CategoryModel.findByIdAndUpdate(categoryId, {
 		$push: {
 			images: imageIds,
 		}

@@ -4,7 +4,7 @@ import { createController } from '@libs/famework/controller';
 import { Locality } from '@libs/famework/event-dispatcher';
 import { filterFileByMimetype, Mimetype } from '@libs/file/mimetype';
 
-import { doesCategoryWithNameExist, findCategory, addImagesToCategory } from '../database/category/category.repository';
+import { doesCategoryExist, findCategory, addImagesToCategory } from '../database/category/category.repository';
 import { findImage, findImagePaginated, getTotalImages, saveManyImages } from '../database/image/image.repository';
 
 import { Image } from '../types';
@@ -26,7 +26,7 @@ export const imageController = createController('images', ({ builder, eventDispa
 				}
 			
 				if (category) {
-					const categoryExists = await doesCategoryWithNameExist(category.toString());
+					const categoryExists = await doesCategoryExist(category.toString());
 			
 					if (!categoryExists) {
 						res.status(400).json({
@@ -47,7 +47,7 @@ export const imageController = createController('images', ({ builder, eventDispa
 				
 				const [images, total] = await Promise.all([
 					findImagePaginated(parsedLimit, parseOffset, category?.toString()),
-					getTotalImages(),
+					getTotalImages(category?.toString()),
 				]);
 			
 				res.status(200).json({
