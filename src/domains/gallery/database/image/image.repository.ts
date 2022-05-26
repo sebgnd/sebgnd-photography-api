@@ -11,12 +11,24 @@ export const findImage = async (id: string) => {
   return imageMapper.fromOrmEntity(image as ImageOrmEntity);
 }
 
-export const findImagePaginated = async (limit: number, offset: number, categoryId?: string) => {
+export type PaginationParameters = {
+	limit: number,
+	offset: number,
+	status: string,
+	categoryId?: string,
+}
+
+export const getFilterOptions = (status: string, categoryId?: string) => {
+	return {
+		...(categoryId ? { category: categoryId } : {}),
+		...(status !== 'all' ? { status } : {})
+	};
+}
+
+export const findImagePaginated = async ({ limit, offset, categoryId, status}: PaginationParameters) => {
 	const images = await ImageModel
 		.find(
-			categoryId
-				? { category: categoryId }
-				: {}
+			getFilterOptions(status, categoryId)
 		)
 		.skip(offset)
 		.limit(limit)
@@ -34,8 +46,8 @@ export const saveImage = async (image: Image) => {
 	return imageMapper.fromOrmEntity(savedEntity as ImageOrmEntity)
 }
 
-export const getTotalImages = async (categoryId?: string) => ImageModel.count(
-	categoryId
-		? { category: categoryId }
-		: {}
-);
+export const getTotalImages = async (status: string, categoryId?: string) => {
+	return ImageModel.count(
+		getFilterOptions(status, categoryId)
+	);
+}

@@ -8,18 +8,25 @@ import { doesCategoryExist, findCategory, addImageToCategory } from '../database
 import { findImage, findImagePaginated, getTotalImages, saveImage } from '../database/image/image.repository';
 
 import { Image } from '../types';
-import ExpressFormidable from 'express-formidable';
+
+/**
+ * TODO: Move this outside the controller
+ */
+const AVAILABLE_STATUS = ['all', 'valid', 'processing', 'error'];
 
 export const imageController = createController('images', ({ builder, eventDispatcher }) => {
 	builder
 		.get('/', {
 			handler: async (req, res) => {
 				const { limit, offset, category } = req.query;
+				const imageStatus = req.query.status?.toString() || 'all';
 
-				if (limit === undefined || offset == undefined) {
+				if (limit === undefined || offset == undefined || !AVAILABLE_STATUS.includes(imageStatus)) {
 					res.status(400).json({
 						error: {
-							message: 'Your must provide `offset` and `limit`',
+							offset: 'offset is required and must be a number',
+							limit: 'limit is required and must be a number',
+							status: 'status must be one of the following values: all, valid, processing, error',
 						}
 					});
 
@@ -47,8 +54,13 @@ export const imageController = createController('images', ({ builder, eventDispa
 				const parseOffset = parseInt(offset.toString());
 				
 				const [images, total] = await Promise.all([
-					findImagePaginated(parsedLimit, parseOffset, category?.toString()),
-					getTotalImages(category?.toString()),
+					findImagePaginated({
+						limit: parsedLimit,
+						offset: parseOffset,
+						categoryId: category?.toString(),
+						status: imageStatus, 
+					}),
+					getTotalImages(imageStatus, category?.toString()),
 				]);
 			
 				res.status(200).json({
@@ -58,6 +70,7 @@ export const imageController = createController('images', ({ builder, eventDispa
 						type: img.type,
 						createdAt: img.createdAt,
 						updatedAt: img.updatedAt,
+						status: img.status,
 					})),
 					total,
 					limit: parsedLimit,
@@ -170,6 +183,7 @@ export const imageController = createController('images', ({ builder, eventDispa
 						id: savedImage.id?.toString(),
 						createdAt: savedImage.createdAt,
 						updatedAt: savedImage.updatedAt,
+						status: savedImage.status,
 					},
 				})
 			}

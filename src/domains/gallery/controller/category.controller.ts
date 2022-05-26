@@ -30,15 +30,17 @@ export const categoryController = createController('categories', ({ builder }) =
         const category = await findCategory(id);
 
         res.status(200).json({
-          items: category.images?.map((img) => {
-            return {
-              id: img.id,
-              type: img.type,
-              categoryId: img.categoryId,
-              createdAt: img.createdAt,
-              updatedAt: img.updatedAt,
-            };
-          }) || [],
+          items: (category.images || [])
+						.filter((img) => img.status === 'valid')
+						.map((img) => {
+							return {
+								id: img.id,
+								type: img.type,
+								categoryId: img.categoryId,
+								createdAt: img.createdAt,
+								updatedAt: img.updatedAt,
+							};
+						}),
         });
       }
     })

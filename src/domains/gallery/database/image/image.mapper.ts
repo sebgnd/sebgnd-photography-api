@@ -24,6 +24,7 @@ const fromOrmEntity: OrmEntityMapperFn<ImageOrmEntity, Image> = (image: ImageOrm
 		createdAt: new Date(image.createdAt),
 		updatedAt: new Date(image.updatedAt),
 		categoryId: image.category.toString(),
+		status: image.status,
 	}
 };
 
@@ -34,6 +35,10 @@ const fromBusinessEntity: BusinessEntityMapperFn<Image, ImageOrmEntity> = (image
 		ormImage._id = image.id;
 		ormImage.createdAt = image.createdAt!.toString();
 		ormImage.updatedAt = image.updatedAt!.toString();
+	}
+
+	if (image.status !== undefined) {
+		ormImage.status = image.status;
 	}
 
 	ormImage.category = new Types.ObjectId(image.categoryId);

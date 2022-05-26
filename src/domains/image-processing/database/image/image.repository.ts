@@ -9,7 +9,7 @@ export const updateImageProcessedData = async (id: string, processing: boolean, 
 	const { width, height } = dimension;
 
 	const image = await ImageModel.findByIdAndUpdate(id, {
-		processing,
+		status: processing ? 'processing' : 'valid',
 		dimension: {
 			width,
 			height,

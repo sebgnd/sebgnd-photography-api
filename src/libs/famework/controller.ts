@@ -10,6 +10,9 @@ export type Endpoint = {
 	handler: EndpointHandler,
 }
 
+/**
+ * TODO: Handle automatic request param parsing + error handling
+ */
 export type ControllerBuilderOptions = {
 	handler: EndpointHandler,
 };

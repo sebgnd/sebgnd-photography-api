@@ -3,7 +3,8 @@ import mongoose, { Schema, Types } from 'mongoose';
 import { CATEGORY_SCHEMA_NAME, IMAGE_SCHEMA_NAME } from '../constant';
 import { OrmEntity } from '../types';
 
-interface Image {
+type ImageStatus = 'processing' | 'valid' | 'error';
+type Image = {
 	exif?: {
 		iso: number,
 		shutterSpeed: number,
@@ -14,7 +15,7 @@ interface Image {
 		width: number,
 		height: number,
 	},
-	processing: boolean,
+	status: ImageStatus,
 	category: Types.ObjectId,
 }
 
@@ -40,10 +41,11 @@ const imageSchema = new Schema<Image>({
 		required: true,
 		ref: CATEGORY_SCHEMA_NAME,
 	},
-	processing: {
-		type: Boolean,
+	status: {
+		type: String,
+		enum: ['processing', 'valid', 'error'],
 		required: true,
-		default: true,
+		default: 'processing',
 	}
 }, { timestamps: true });
 

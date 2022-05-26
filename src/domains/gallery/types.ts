@@ -11,6 +11,7 @@ export type Image = PersistedEntity & {
   exif: Exif | null;
   type?: 'portrait' | 'landscape',
   categoryId: string,
+	status?: 'processing' | 'valid' | 'error',
 	temporaryFile?: {
 		name: string,
 		path: string,
