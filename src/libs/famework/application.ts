@@ -66,7 +66,12 @@ export const createApplication = (config: ApplicationConfig) => {
 		start: async () => {
 			const expressInstance = express();
 			const expressServer = http.createServer(expressInstance);
-			const socketServer = new Server(expressServer);
+			const socketServer = new Server(expressServer, {
+				cors: {
+					origin: 'http://localhost:3000',
+					methods: ['GET', 'POST'],
+				}
+			});
 
 			await executeFunctionOrPromise(() => config.beforeStart?.());
 
