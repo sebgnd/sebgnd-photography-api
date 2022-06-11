@@ -1,8 +1,6 @@
-import * as fs from 'fs';
-import * as path from 'path';
-
 import { updateImageProcessedData } from '@domains/image-processing/database/image/image.repository';
 import { createImageVersions } from '@domains/image-processing/services/image-processor';
+import { buildImagePath, copyOriginalImage, getImagePathIfExist, ImageSize } from '@domains/image-processing/services/image-file-manager';
 
 import { EventHandler } from '@libs/famework/event-handler';
 import { Locality } from '@libs/famework/event-dispatcher';
@@ -20,26 +18,33 @@ export type ImageUploadBody = {
 export const handleImageUploaded: EventHandler<ImageUploadBody> = async ({ image }, eventDispatcher) => {
 	const { id, originalName, temporaryPath } = image;
 
-	await new Promise((resolve, reject) => {
-		const oldPath = temporaryPath;
-		const extension = path.extname(originalName);
-		const newPath = `files/images/full/original/${id}${extension}`;
+	/**
+	 * TODO: Transfrom it in JPG before
+	 */
+	copyOriginalImage(id, temporaryPath);
 
-		fs.copyFile(oldPath, newPath, (err) => {
-			if (err) {
-				reject(err);
-			}
-
-			resolve(undefined);
-		});
+	const initialImagePath = getImagePathIfExist(id, {
+		format: 'full',
+		size: 'original',
 	});
 
+	if (!initialImagePath) {
+		throw new Error('Error copying orignal image');
+	}
+
 	const { processed, imageData } = await createImageVersions(id, {
+		initialImagePath,
 		thumbnail: {
 			heights: [400, 80],
+			pathFactory: (height: number) => {
+				return buildImagePath(id, 'full', height.toString() as ImageSize);
+			}
 		},
 		full: {
-			heights: [400, 1080]
+			heights: [400, 1080],
+			pathFactory: (height: number) => {
+				return buildImagePath(id, 'thumbnail', height.toString() as ImageSize);
+			}
 		},
 	});
 

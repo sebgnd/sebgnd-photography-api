@@ -1,14 +1,14 @@
 import Jimp from 'jimp';
 
-import { getImagePathIfExist } from './image-file-manager';
-
 export type ImageVersionConfig = {
+	initialImagePath: string,
 	thumbnail: {
 		/**
 		 * The thumbnail is a square. Its height is
 		 * the same as its width.
 		 */
 		heights: number[],
+		pathFactory: (height: number) => string,
 	},
 	full: {
 		/**
@@ -17,6 +17,7 @@ export type ImageVersionConfig = {
 		 * as the original image.
 		 */
 		heights: number[],
+		pathFactory: (height: number) => string,
 	},
 }
 
@@ -38,37 +39,31 @@ export const getCroppedCoordinatesForThumbnail = (info: ImageInfo) => {
 
 	return { x, y }
 }
-export const getYCoordinates = () => {}
 
 /**
  * TODO: See if there is a way to imprive the logic
  */
 export const createImageVersions = async (imageId: string, config: ImageVersionConfig) => {
-	const imagePath = getImagePathIfExist(imageId, {
-		format: 'full',
-		size: 'original',
-	});
+	const { thumbnail, full, initialImagePath } = config;
+	const {
+		heights: thumbnailResolutions,
+		pathFactory: thumbnailPathFactory,
+	} = thumbnail;
 
-	if (!imagePath) {
-		throw new Error('Original image not found');
-	}
+	const {
+		heights: fullResolutions,
+		pathFactory: fullPathFactory,
+	} = full;
 
-	const { thumbnail, full } = config;
-	const { heights: thumbnailResolutions } = thumbnail;
-	const { heights: fullResolutions } = full;
-
-	const jimpImage = await Jimp.read(imagePath);
+	const jimpImage = await Jimp.read(initialImagePath);
 	
 	const width = jimpImage.getWidth();
 	const height = jimpImage.getHeight();
 	
 	const fullResolutionPromises = fullResolutions.map(async (fullHeight) => {
-		console.log(`APPLICATION | Creating full ${fullHeight} of ${imageId} ...`);
+		console.log(`APPLICATION | Creating full ${fullHeight} of ${imageId}`);
 
-		/**
-		 * TODO: Create this path in the file manager service
-		 */
-		const resizedPath = `files/images/full/${fullHeight}/${imageId}.jpg`;
+		const resizedPath = fullPathFactory(fullHeight);
 		const resized = jimpImage
 			.clone()
 			.resize(Jimp.AUTO, fullHeight);
@@ -77,7 +72,7 @@ export const createImageVersions = async (imageId: string, config: ImageVersionC
 	});
 
 	const thumbnailPromises = thumbnailResolutions.map(async (thumbnailSize) => {
-		console.log(`APPLICATION | Creating thumbnail ${thumbnailSize} of ${imageId} ...`);
+		console.log(`APPLICATION | Creating thumbnail ${thumbnailSize} of ${imageId}`);
 
 		const isLandscape = height < width 
 		const resized = jimpImage
@@ -97,10 +92,7 @@ export const createImageVersions = async (imageId: string, config: ImageVersionC
 
 		const cropped = resized.crop(x, y, thumbnailSize, thumbnailSize);
 
-		/**
-		 * TODO: Create this path in the file manager service
-		 */
-		const thumbnailPath = `files/images/thumbnail/${thumbnailSize}/${imageId}.jpg`
+		const thumbnailPath = thumbnailPathFactory(thumbnailSize);
 
 		await cropped.writeAsync(thumbnailPath);
 	});

@@ -39,3 +39,11 @@ export const addImageToCategory = async(categoryId: string, imageId: string) => 
 		}
 	});
 }
+
+export const removeImageFromCategory = async(categoryId: string, imageId: string) => {
+	return CategoryModel.updateOne({ id: categoryId }, {
+		$pull: {
+			images: imageId,
+		},
+	})
+}

@@ -51,3 +51,7 @@ export const getTotalImages = async (status: string, categoryId?: string) => {
 		getFilterOptions(status, categoryId)
 	);
 }
+
+export const deleteImage = async (id: string) => {
+	await ImageModel.deleteOne({ id });
+}

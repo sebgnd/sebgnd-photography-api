@@ -2,10 +2,10 @@
 import { readExifFromImage } from '@libs/file/exif';
 import { createController } from '@libs/famework/controller';
 import { Locality } from '@libs/famework/event-dispatcher';
-import { filterFileByMimetype, isFileMimetype, Mimetype } from '@libs/file/mimetype';
+import { isFileMimetype, Mimetype } from '@libs/file/mimetype';
 
-import { doesCategoryExist, findCategory, addImageToCategory } from '../database/category/category.repository';
-import { findImage, findImagePaginated, getTotalImages, saveImage } from '../database/image/image.repository';
+import { doesCategoryExist, findCategory, addImageToCategory, findAllCategories, removeImageFromCategory } from '../database/category/category.repository';
+import { findImage, findImagePaginated, getTotalImages, saveImage, deleteImage } from '../database/image/image.repository';
 
 import { Image } from '../types';
 
@@ -187,5 +187,50 @@ export const imageController = createController('images', ({ builder, eventDispa
 					},
 				})
 			}
+		})
+		.delete(':id', {
+			handler: async (req, res) => {
+				const { id } = req.params;
+
+				const image = await findImage(id);
+
+				if (!image) {
+					res.status(404).json({
+						error: {
+							message: 'Image not found',
+						},
+					});
+				}
+
+				const category = await findCategory(image.categoryId);
+				const isImageThumbnail = category!.thumbnail?.id !== image.id;
+
+				if (isImageThumbnail) {
+					res.status(400).json({
+						error: {
+							message: 'Cannot delete an image used as a thumbnail',
+							details: {
+								imageId: id,
+								thumbnailCategoryId: category?.id,
+							},
+						},
+					});
+				}
+
+				await Promise.all([
+					deleteImage(id),
+					removeImageFromCategory(category!.id!, id),
+				]);
+
+				eventDispatcher.dispatch({
+					name: 'images:deleted',
+					locality: Locality.INTERNAL,
+					data: {
+						image: { id },
+					},
+				});
+
+				res.status(200).json({ id })
+			},
 		})
 });
