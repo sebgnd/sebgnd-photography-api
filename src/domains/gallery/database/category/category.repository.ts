@@ -40,10 +40,20 @@ export const addImageToCategory = async(categoryId: string, imageId: string) => 
 	});
 }
 
-export const removeImageFromCategory = async(categoryId: string, imageId: string) => {
-	return CategoryModel.updateOne({ id: categoryId }, {
+export const removeImageFromCategory = async (categoryId: string, imageId: string) => {
+	await CategoryModel.updateOne({ id: categoryId }, {
 		$pull: {
 			images: imageId,
 		},
 	})
+}
+
+export const setThumbnail = async (categoryId: string, imageId: string) => {
+	await CategoryModel.updateOne({ id: categoryId }, {
+		$set: {
+			thumbnail: {
+				id: imageId,
+			}
+		}
+	});
 }

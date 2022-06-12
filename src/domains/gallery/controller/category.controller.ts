@@ -1,6 +1,7 @@
 import { createController } from '@libs/famework/controller';
 
-import { findAllCategories, findCategory } from '../database/category/category.repository';
+import { findAllCategories, findCategory, setThumbnail } from '../database/category/category.repository';
+import { findImage } from '../database/image/image.repository';
 
 export const categoryController = createController('categories', ({ builder }) => {
 	builder
@@ -44,4 +45,65 @@ export const categoryController = createController('categories', ({ builder }) =
         });
       }
     })
+		.put('/:id/thumbnail', {
+			handler: async (req, res) => {
+				const { id } = req.params;
+				const { imageId } = req.body;
+
+				if (!imageId && typeof imageId === 'string') {
+					res.status(404).json({
+						error: {
+							message: 'You must provide an imageId',
+							details: {
+								imageId: 'Must be a string and correspond to an existing image',
+							}
+						},
+					});
+				}
+
+				const [category, image] = await Promise.all([
+					findCategory(id),
+					findImage(imageId),
+				]);
+
+				if (!category) {
+					res.status(404).json({
+						error: {
+							message: 'Category not found',
+						},
+					});
+
+					return;
+				}
+
+				if (!image) {
+					res.status(400).json({
+						error: {
+							message: 'The image does not exist',
+						},
+					});
+
+					return;
+				}
+
+				if (image.categoryId !== id) {
+					res.status(400).json({
+						error: {
+							message: 'The image does not have the right category to be the thumbnail',
+						},
+					});
+
+					return;
+				}
+
+				await setThumbnail(id, imageId);
+
+				res.status(200).json({
+					id,
+					thumbnail: {
+						id: imageId,
+					},
+				})
+			},
+		})
 });

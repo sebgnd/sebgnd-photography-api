@@ -200,6 +200,8 @@ export const imageController = createController('images', ({ builder, eventDispa
 							message: 'Image not found',
 						},
 					});
+
+					return;
 				}
 
 				const category = await findCategory(image.categoryId);
@@ -215,6 +217,8 @@ export const imageController = createController('images', ({ builder, eventDispa
 							},
 						},
 					});
+
+					return;
 				}
 
 				await Promise.all([
