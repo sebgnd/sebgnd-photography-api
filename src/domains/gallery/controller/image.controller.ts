@@ -205,7 +205,7 @@ export const imageController = createController('images', ({ builder, eventDispa
 				}
 
 				const category = await findCategory(image.categoryId);
-				const isImageThumbnail = category!.thumbnail?.id !== image.id;
+				const isImageThumbnail = category!.thumbnail?.id === image.id;
 
 				if (isImageThumbnail) {
 					res.status(400).json({
