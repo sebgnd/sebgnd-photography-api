@@ -14,6 +14,7 @@ export type ImagePathConfig = {
 };
 
 const deleteFile = utils.promisify(fs.unlink);
+const copyFile = utils.promisify(fs.copyFile);
 
 export const validFormatAndSize = (format: string, size: string) => {
 	return availableFormats.includes(format as any) || availableSizes.includes(size as any);
@@ -36,11 +37,11 @@ export const getImagePathIfExist = (imageId: string, config: ImagePathConfig) =>
 	return null;
 }
 
-export const copyOriginalImage = (imageId: string, temporaryPath: string) => {
+export const copyOriginalImage = async (imageId: string, temporaryPath: string) => {
 	const oldPath = temporaryPath;
 	const newPath = buildImagePath(imageId, 'full', 'original');
 
-	fs.copyFileSync(oldPath, newPath);
+	await copyFile(oldPath, newPath);
 }
 
 export const deleteImage = async (imageId: string) => {

@@ -10,6 +10,6 @@ export type ImageDeleteBody = {
 	image: ImageDeleted
 };
 
-export const handleImageUploaded: EventHandler<ImageDeleteBody> = async ({ image }) => {
+export const handleImageDeleted: EventHandler<ImageDeleteBody> = async ({ image }) => {
 	await deleteImage(image.id);
 };

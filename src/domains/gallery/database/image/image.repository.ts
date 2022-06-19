@@ -1,4 +1,3 @@
-import { CategoryModel } from '@database/entities/category';
 import { ImageModel, ImageOrmEntity } from '@database/entities/image';
 
 import { imageMapper } from '@domains/gallery/database/image/image.mapper';
@@ -53,5 +52,5 @@ export const getTotalImages = async (status: string, categoryId?: string) => {
 }
 
 export const deleteImage = async (id: string) => {
-	await ImageModel.deleteOne({ id });
+	await ImageModel.deleteOne({ _id: id });
 }

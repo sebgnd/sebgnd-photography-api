@@ -1,4 +1,6 @@
 import Jimp from 'jimp';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export type ImageVersionConfig = {
 	initialImagePath: string,
@@ -38,6 +40,25 @@ export const getCroppedCoordinatesForThumbnail = (info: ImageInfo) => {
 	const y = isLandscape ? 0 : (resizedHeight / 2) - (thumbnailSize / 2);
 
 	return { x, y }
+}
+
+export const convertImageToPng = async (imagePath: string) => {
+	const imageExist = fs.existsSync(imagePath);
+
+	if (!imageExist) {
+		throw new Error('Invalid path');
+	}
+
+	const image = await Jimp.read(imagePath);
+
+	const imageDirectory = path.dirname(imagePath);
+	const [imageName] = path.basename(imagePath).split('.');
+
+	const newPath = path.join(imageDirectory, `${imageName}.jpg`);
+
+	await image.writeAsync(newPath);
+
+	return newPath;
 }
 
 /**
@@ -109,4 +130,4 @@ export const createImageVersions = async (imageId: string, config: ImageVersionC
 			width,
 		},
 	};
-}
+};
