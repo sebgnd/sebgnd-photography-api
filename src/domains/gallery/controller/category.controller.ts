@@ -48,10 +48,10 @@ export const categoryController = createController('categories', ({ builder }) =
 		.put('/:id/thumbnail', {
 			handler: async (req, res) => {
 				const { id } = req.params;
-				const { imageId } = req.body;
+				const { imageId: receivedImageId } = req.fields!;
 
-				if (!imageId && typeof imageId === 'string') {
-					res.status(404).json({
+				if (!receivedImageId || typeof receivedImageId !== 'string') {
+					res.status(400).json({
 						error: {
 							message: 'You must provide an imageId',
 							details: {
@@ -60,6 +60,8 @@ export const categoryController = createController('categories', ({ builder }) =
 						},
 					});
 				}
+
+				const imageId = receivedImageId as string;
 
 				const [category, image] = await Promise.all([
 					findCategory(id),

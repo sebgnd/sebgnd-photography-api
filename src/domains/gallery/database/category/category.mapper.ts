@@ -8,11 +8,11 @@ import { Category } from '@domains/gallery/types';
 import { imageMapper } from '@domains/gallery/database/image/image.mapper';
 
 const fromOrmEntity: OrmEntityMapperFn<CategoryOrmEntity, Category> = (category: CategoryOrmEntity): Category => ({
-	id: category._id,
+	id: category._id.toString(),
 	name: category.name,
 	formattedName: category.formattedName,
 	thumbnail: category.thumbnail
-		? { id: category.thumbnail.id }
+		? { id: category.thumbnail.id.toString() }
 		: undefined,
 	images: category.images
 		? category.images.map((img) => {

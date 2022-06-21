@@ -41,11 +41,13 @@ export const app = createApplication({
 		imageProcessingDomain,
 	],
 	middlewares: [
-		bodyParser.urlencoded(),
-		bodyParser.json(),
 		morgan('dev'),
-		formidable({ multiples: true }),
-		cors(),
+		formidable({
+			multiples: true,
+		}),
+		cors({
+			origin: 'http://localhost:3000'
+		}),
 	],
 	beforeStart: async () => {
     await Promise.all([

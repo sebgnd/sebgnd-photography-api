@@ -41,7 +41,7 @@ export const addImageToCategory = async(categoryId: string, imageId: string) => 
 }
 
 export const removeImageFromCategory = async (categoryId: string, imageId: string) => {
-	await CategoryModel.updateOne({ id: categoryId }, {
+	await CategoryModel.updateOne({ _id: categoryId }, {
 		$pull: {
 			images: imageId,
 		},
@@ -49,7 +49,7 @@ export const removeImageFromCategory = async (categoryId: string, imageId: strin
 }
 
 export const setThumbnail = async (categoryId: string, imageId: string) => {
-	await CategoryModel.updateOne({ id: categoryId }, {
+	await CategoryModel.updateOne({ _id: categoryId }, {
 		$set: {
 			thumbnail: {
 				id: imageId,

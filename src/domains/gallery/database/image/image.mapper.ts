@@ -11,7 +11,7 @@ const fromOrmEntity: OrmEntityMapperFn<ImageOrmEntity, Image> = (image: ImageOrm
 		: 'landscape';
 
 	return {
-		id: image._id,
+		id: image._id.toString(),
 		exif: image.exif
 			? {
 				iso: image.exif.iso,
