@@ -1,3 +1,5 @@
+import { File } from 'formidable';
+
 export enum Mimetype {
 	JPG = 'image/jpeg',
 	PNG = 'image/png',
@@ -15,11 +17,11 @@ export const isFileMimetype = (
 	file: File,
 	mimetypes: Mimetype[]
 ) => {	
-	if (file.type === null) {
+	if (file.mimetype === null) {
 		return false;
 	}
 
-	return (mimetypes as string[]).includes(file.type);
+	return (mimetypes as string[]).includes(file.mimetype);
 }
 
 export const validateFileMimetypes = (

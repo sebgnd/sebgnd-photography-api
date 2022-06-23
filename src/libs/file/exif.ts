@@ -23,7 +23,7 @@ export const readExifFromImage = async <File extends WithPath>(file: File) => {
 
 
 	const exifRaw = await exifr.parse(path, EXIF_PROPERTIES);
-	const isExifValid = exifRaw && Object.keys(exifRaw).length === EXIF_PROPERTIES.length;
+	const isExifValid = Object.keys(exifRaw || {}).length === EXIF_PROPERTIES.length;
 	
 	if (!isExifValid) {
 		return null;

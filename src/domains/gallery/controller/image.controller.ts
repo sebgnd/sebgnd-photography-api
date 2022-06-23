@@ -1,17 +1,14 @@
 
-import { readExifFromImage } from '@libs/file/exif';
 import { createController } from '@libs/famework/controller';
 import { Locality } from '@libs/famework/event-dispatcher';
-import { isFileMimetype, Mimetype } from '@libs/file/mimetype';
 
-import { doesCategoryExist, findCategory, addImageToCategory, findAllCategories, removeImageFromCategory } from '../database/category/category.repository';
-import { findImage, findImagePaginated, getTotalImages, saveImage, deleteImage } from '../database/image/image.repository';
+import { doesCategoryExist, findCategory, addImageToCategory, removeImageFromCategory } from '@domains/gallery/database/category/category.repository';
+import { findImage, findImagePaginated, getTotalImages, saveImage, deleteImage } from '@domains/gallery/database/image/image.repository';
 
-import { Image } from '../types';
+import { isImageThumbnail } from '@domains/gallery/entities/category.entity';
+import { createImageFromFile } from '@domains/gallery/entities/image.entity';
 
-/**
- * TODO: Move this outside the controller
- */
+
 const AVAILABLE_STATUS = ['all', 'valid', 'processing', 'error'];
 
 export const imageController = createController('images', ({ builder, eventDispatcher }) => {
@@ -108,7 +105,7 @@ export const imageController = createController('images', ({ builder, eventDispa
 							message: 'Invalid form data for uploading image',
 							details: {
 								category: 'A category must be provided',
-								images: 'You must provided the image to be uploaded'
+								image: 'You must provided the image to be uploaded'
 							}
 						},
 					});
@@ -130,17 +127,17 @@ export const imageController = createController('images', ({ builder, eventDispa
 					return;
 				}
 
-				const isCorrectMimetype = isFileMimetype(files.image as any, [
-					Mimetype.JPG,
-					Mimetype.PNG,
-				]);
+				const { error, image: createdImage } = await createImageFromFile(files.image, categoryId);
 
-				if (!isCorrectMimetype) {
+				if (error) {
+					/**
+					 * Only handles incorrect mimetype for now.
+					 */
 					res.status(400).json({
 						error: {
 							message: 'Invalid image',
 							details: {
-								mimetype: 'You must provide a JPG or PNG image',
+								mimetype: error.message,
 							}
 						},
 					});
@@ -148,23 +145,9 @@ export const imageController = createController('images', ({ builder, eventDispa
 					return;
 				}
 
-				/**
-				 * Cast image as any because wrong typing library
-				 * TODO: Update typing
-				 */
-				const uploadedImage = files.image as unknown as File;
-				const exif = await readExifFromImage(uploadedImage as any);
-				const image: Image = {
-					categoryId,
-					exif,
-					temporaryFile: {
-						path: (uploadedImage as any).path,
-						name: uploadedImage.name,
-					},
-				}
-				const savedImage = await saveImage(image);
+				const savedImage = await saveImage(createdImage!);
 
-				await addImageToCategory(category.id!, savedImage.id!);
+				await addImageToCategory(categoryId, savedImage.id!);
 
 				eventDispatcher.dispatch({
 					name: 'images:uploaded',
@@ -172,8 +155,8 @@ export const imageController = createController('images', ({ builder, eventDispa
 					data: {
 						image: {
 							id: savedImage.id?.toString(),
-							originalName: image.temporaryFile!.name,
-							temporaryPath: image.temporaryFile!.path,
+							originalName: createdImage.temporaryFile!.name,
+							temporaryPath: createdImage.temporaryFile!.path,
 						},
 					},
 				});
@@ -205,9 +188,9 @@ export const imageController = createController('images', ({ builder, eventDispa
 				}
 
 				const category = await findCategory(image.categoryId);
-				const isImageThumbnail = category!.thumbnail?.id === image.id;
 
-				if (isImageThumbnail) {
+				// The 
+				if (isImageThumbnail(category, id)) {
 					res.status(400).json({
 						error: {
 							message: 'Cannot delete an image used as a thumbnail',

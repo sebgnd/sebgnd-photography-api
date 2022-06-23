@@ -1,7 +1,9 @@
 import { createController } from '@libs/famework/controller';
 
-import { findAllCategories, findCategory, setThumbnail } from '../database/category/category.repository';
-import { findImage } from '../database/image/image.repository';
+import { findAllCategories, findCategory, setThumbnail } from '@domains/gallery/database/category/category.repository';
+import { findImage } from '@domains/gallery/database/image/image.repository';
+
+import { doesImageBelongToCategory } from '@domains/gallery/entities/category.entity';
 
 export const categoryController = createController('categories', ({ builder }) => {
 	builder
@@ -88,7 +90,7 @@ export const categoryController = createController('categories', ({ builder }) =
 					return;
 				}
 
-				if (image.categoryId !== id) {
+				if (!doesImageBelongToCategory(category, image)) {
 					res.status(400).json({
 						error: {
 							message: 'The image does not have the right category to be the thumbnail',

@@ -2,7 +2,7 @@ import { ImageModel, ImageOrmEntity } from '@database/entities/image';
 
 import { imageMapper } from '@domains/gallery/database/image/image.mapper';
 
-import { Image } from '@domains/gallery/types';
+import { Image } from '@domains/gallery/entities/image.entity';
 
 export const findImage = async (id: string) => {
   const image = await ImageModel.findById(id);

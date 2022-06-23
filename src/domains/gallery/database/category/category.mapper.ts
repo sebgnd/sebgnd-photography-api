@@ -3,7 +3,7 @@ import { BusinessEntityMapperFn, Mapper, OrmEntityMapperFn } from '@database/uti
 import { CategoryModel, CategoryOrmEntity } from '@database/entities/category';
 import { ImageOrmEntity } from '@database/entities/image';
 
-import { Category } from '@domains/gallery/types';
+import { Category } from '@domains/gallery/entities/category.entity';
 
 import { imageMapper } from '@domains/gallery/database/image/image.mapper';
 
