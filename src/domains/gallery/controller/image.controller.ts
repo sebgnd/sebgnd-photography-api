@@ -155,8 +155,8 @@ export const imageController = createController('images', ({ builder, eventDispa
 					data: {
 						image: {
 							id: savedImage.id?.toString(),
-							originalName: createdImage.temporaryFile!.name,
-							temporaryPath: createdImage.temporaryFile!.path,
+							originalName: createdImage!.temporaryFile!.name,
+							temporaryPath: createdImage!.temporaryFile!.path,
 						},
 					},
 				});

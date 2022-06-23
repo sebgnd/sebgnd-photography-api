@@ -17,6 +17,8 @@ export const isFileMimetype = (
 	file: File,
 	mimetypes: Mimetype[]
 ) => {	
+	console.log(file);
+
 	if (file.mimetype === null) {
 		return false;
 	}

@@ -40,6 +40,7 @@ export const app = createApplication({
 		galleryDomain,
 		imageProcessingDomain,
 	],
+	// TODO: Use body parse and multer instead of formidable
 	middlewares: [
 		morgan('dev'),
 		formidable({

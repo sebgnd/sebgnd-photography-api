@@ -32,6 +32,7 @@ export type ImageCreationResult =
 	| { image: undefined, error: ImageCreationError }
 	| { image: Image, error: undefined };
 
+	// TODO: Update file type
 export const createImageFromFile = async (file: File, categoryId: string): Promise<ImageCreationResult> => {
 	const isFileCorrectMimetype = isFileMimetype(file, [
 		Mimetype.JPG,
