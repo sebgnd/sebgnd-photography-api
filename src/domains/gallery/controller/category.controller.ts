@@ -50,7 +50,7 @@ export const categoryController = createController('categories', ({ builder }) =
 		.put('/:id/thumbnail', {
 			handler: async (req, res) => {
 				const { id } = req.params;
-				const { imageId: receivedImageId } = req.fields!;
+				const { imageId: receivedImageId } = req.body;
 
 				if (!receivedImageId || typeof receivedImageId !== 'string') {
 					res.status(400).json({

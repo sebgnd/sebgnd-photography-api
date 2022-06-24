@@ -73,6 +73,13 @@ export const createApplication = (config: ApplicationConfig) => {
 				}
 			});
 
+			await Promise.all([
+				executeFunctionOrPromise(() => config.beforeStart?.()),
+				...domains.map(async (domain) => {
+					return domain.init?.();
+				}),
+			]);
+
 			await executeFunctionOrPromise(() => config.beforeStart?.());
 
 			const eventDispatcher = initEventDispatcher(expressInstance, socketServer);

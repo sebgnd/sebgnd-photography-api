@@ -1,5 +1,7 @@
+import * as fs from 'fs';
+
 import { updateImageProcessedData } from '@domains/image-processing/database/image/image.repository';
-import { convertImageToPng, createImageVersions } from '@domains/image-processing/services/image-processor';
+import { convertImageToJpg, createImageVersions } from '@domains/image-processing/services/image-processor';
 import { buildImagePath, copyOriginalImage, getImagePathIfExist, ImageSize } from '@domains/image-processing/services/image-file-manager';
 
 import { EventHandler } from '@libs/famework/event-handler';
@@ -18,7 +20,7 @@ export type ImageUploadBody = {
 export const handleImageUploaded: EventHandler<ImageUploadBody> = async ({ image }, eventDispatcher) => {
 	const { id, temporaryPath } = image;
 
-	const jpgPath = await convertImageToPng(temporaryPath);
+	const jpgPath = await convertImageToJpg(temporaryPath);
 
 	await copyOriginalImage(id, jpgPath);
 
@@ -51,6 +53,9 @@ export const handleImageUploaded: EventHandler<ImageUploadBody> = async ({ image
 		width: imageData.width,
 		height: imageData.height,
 	});
+
+	fs.unlinkSync(temporaryPath);
+	fs.unlinkSync(jpgPath);
 
 	eventDispatcher.dispatch({
 		name: 'image-processing:image-processed',

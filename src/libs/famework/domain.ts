@@ -5,6 +5,7 @@ export type Domain = {
 	name: string,
 	controllers: Controller[],
 	eventHandlers?: Record<string, EventHandler>,
+	init?: () => Promise<void>,
 }
 
 export const createDomain = (config: Domain) => {

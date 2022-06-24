@@ -8,6 +8,7 @@ import { findImage, findImagePaginated, getTotalImages, saveImage, deleteImage }
 import { isImageThumbnail } from '@domains/gallery/entities/category.entity';
 import { createImageFromFile } from '@domains/gallery/entities/image.entity';
 
+import { upload } from '@root/application';
 
 const AVAILABLE_STATUS = ['all', 'valid', 'processing', 'error'];
 
@@ -96,10 +97,13 @@ export const imageController = createController('images', ({ builder, eventDispa
 			}
 		})
 		.post('/', {
+			middlewares: [
+				upload.single('image'),
+			],
 			handler: async (req, res) => {
-				const { files, fields } = req;
+				const { body, file } = req;
 
-				if (!files || !fields || !fields.categoryId || Array.isArray(fields.categoryId) || (files && !files.image) || Array.isArray(files.image)) {
+				if (!file || !body.categoryId) {
 					res.status(400).json({
 						error: {
 							message: 'Invalid form data for uploading image',
@@ -113,7 +117,7 @@ export const imageController = createController('images', ({ builder, eventDispa
 					return;
 				}
 
-				const { categoryId } = fields;
+				const categoryId = body.categoryId as string;
 				const category = await findCategory(categoryId);
 
 				if (!category) {
@@ -127,7 +131,7 @@ export const imageController = createController('images', ({ builder, eventDispa
 					return;
 				}
 
-				const { error, image: createdImage } = await createImageFromFile(files.image, categoryId);
+				const { error, image: createdImage } = await createImageFromFile(file, categoryId);
 
 				if (error) {
 					/**
@@ -189,7 +193,6 @@ export const imageController = createController('images', ({ builder, eventDispa
 
 				const category = await findCategory(image.categoryId);
 
-				// The 
 				if (isImageThumbnail(category, id)) {
 					res.status(400).json({
 						error: {

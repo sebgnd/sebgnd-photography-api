@@ -1,5 +1,3 @@
-import { File } from 'formidable';
-
 import { PersistedEntity } from '@libs/types'
 
 import { readExifFromImage } from '@libs/file/exif';
@@ -10,6 +8,12 @@ export type Exif = {
   shutterSpeed: number;
   aperture: number;
   focalLength: number;
+}
+
+export type File = {
+	path: string,
+	mimetype: string,
+	originalname: string,
 }
 
 export type Image = PersistedEntity & {
@@ -32,12 +36,13 @@ export type ImageCreationResult =
 	| { image: undefined, error: ImageCreationError }
 	| { image: Image, error: undefined };
 
-	// TODO: Update file type
 export const createImageFromFile = async (file: File, categoryId: string): Promise<ImageCreationResult> => {
 	const isFileCorrectMimetype = isFileMimetype(file, [
 		Mimetype.JPG,
 		Mimetype.PNG,
 	]);
+
+	console.log(file.path, file);
 
 	if (!isFileCorrectMimetype) {
 		return {
@@ -50,7 +55,7 @@ export const createImageFromFile = async (file: File, categoryId: string): Promi
 	}
 
 	const exif = await readExifFromImage({
-		path: file.filepath,
+		path: file.path,
 	});
 
 	return {
@@ -59,8 +64,8 @@ export const createImageFromFile = async (file: File, categoryId: string): Promi
 			categoryId,
 			exif,
 			temporaryFile: {
-				path: file.filepath,
-				name: file.originalFilename!,
+				path: file.path,
+				name: file.originalname,
 			},
 		},
 	}

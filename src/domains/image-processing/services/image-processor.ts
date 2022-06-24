@@ -42,7 +42,7 @@ export const getCroppedCoordinatesForThumbnail = (info: ImageInfo) => {
 	return { x, y }
 }
 
-export const convertImageToPng = async (imagePath: string) => {
+export const convertImageToJpg = async (imagePath: string) => {
 	const imageExist = fs.existsSync(imagePath);
 
 	if (!imageExist) {

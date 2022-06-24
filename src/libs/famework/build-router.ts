@@ -32,11 +32,12 @@ export const buildRouter = (controllers: Controller[], eventDispatcher: EventDis
 		.reduce(
 			(acc, [method, endpoints]) => {				
 				endpoints.forEach((endpoint) => {
+					const { route, handler, middlewares } = endpoint;
 					/**
 					 * Temporary, making a function to get the right
 					 * router function does not work for some reason
 					 */
-					(router as any)[method](endpoint.route, endpoint.handler);
+					(router as any)[method](route, ...middlewares, handler);
 
 					console.log(`ENDPOINT | [${method.toUpperCase()}] - ${endpoint.route} initialized`);
 				});

@@ -1,8 +1,7 @@
-import formidable from 'express-formidable';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
+import multer from 'multer';
 import cors from 'cors';
-import * as fs from 'fs';
 
 import { createApplication } from '@libs/famework/application';
 
@@ -11,27 +10,9 @@ import { imageProcessingDomain } from '@domains/image-processing/image-processin
 
 import { initDatabase } from '@database/index';
 
-const initFileSystem = async () => {
-	const paths = [
-		'files/images/full/400',
-		'files/images/full/1080',
-		'files/images/full/original',
-		'files/images/thumbnail/80',
-		'files/images/thumbnail/400',
-	];
-
-	console.log('SYSTEM | Initializing file system');
-
-	for (const dirPath of paths) {
-		if (!fs.existsSync(dirPath)) {
-			fs.mkdirSync(dirPath, {
-				recursive: true,
-			});
-		}
-	}
-
-  return Promise.resolve();
-}
+export const upload = multer({
+	dest: './tmp'
+});
 
 export const app = createApplication({
 	port: 8000,
@@ -40,20 +21,15 @@ export const app = createApplication({
 		galleryDomain,
 		imageProcessingDomain,
 	],
-	// TODO: Use body parse and multer instead of formidable
 	middlewares: [
+		bodyParser.json(),
+		bodyParser.urlencoded({ extended: true }),
 		morgan('dev'),
-		formidable({
-			multiples: true,
-		}),
 		cors({
 			origin: 'http://localhost:3000'
 		}),
 	],
 	beforeStart: async () => {
-    await Promise.all([
-      initDatabase(),
-      initFileSystem(),
-    ]);
+    await initDatabase();
   },
 });
