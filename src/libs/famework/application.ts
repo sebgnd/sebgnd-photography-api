@@ -1,17 +1,18 @@
 import express from 'express';
 import * as http from 'http';
 import { Server } from 'socket.io';
-import type { Request, Response, NextFunction } from 'express';
 
-import { buildRouter } from './build-router';
+import { executeFunctionOrPromise } from '@libs/utils/function';
+
+import type { Middleware } from './types';
+import type { Domain } from './domain';
+import type { Controller } from './controller';
+import type { EventHandler } from './event-handler';
+
+import { buildRouter } from './router';
 import { removeTrailingAndLeadingSlash } from './path';
-import { executeFunctionOrPromise } from '../utils/function';
 import { initEventDispatcher } from './event-dispatcher';
-import { Domain } from './domain';
-import { Controller } from './controller';
-import { EventHandler, makeEventHandler } from './event-handler';
-
-export type Middleware = (req: Request, res: Response, next: NextFunction) => void;
+import { makeEventHandler } from './event-handler';
 
 export type ApplicationConfig = {
 	port?: number;

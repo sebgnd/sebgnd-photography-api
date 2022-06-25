@@ -1,14 +1,14 @@
 import type { Request, Response, NextFunction } from 'express';
 import type { RequestMethod } from './http';
+import type { Middleware } from './types';
 
 import { buildFullPath } from './path';
 import { EventDispatcher } from './event-dispatcher';
 
-export type EndpointMiddleware = (req: Request, res: Response, next: NextFunction) => void | Promise<void>;
 export type EndpointHandler = (req: Request, res: Response) => void | Promise<void>;
 export type Endpoint = {
 	route: string,
-	middlewares: EndpointMiddleware[],
+	middlewares: Middleware[],
 	handler: EndpointHandler,
 }
 
@@ -16,7 +16,7 @@ export type Endpoint = {
  * TODO: Handle automatic request param parsing + error handling
  */
 export type ControllerBuilderOptions = {
-	middlewares?: EndpointMiddleware[],
+	middlewares?: Middleware[],
 	handler: EndpointHandler,
 };
 
