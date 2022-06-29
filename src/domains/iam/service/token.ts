@@ -10,7 +10,7 @@ export type DecodedToken =
 	| { expired: false, payload: AuthorizationTokenPayload }
 	| { expired: true };
 
-const PRIVATE_KEY = 'REDACTED';
+const PRIVATE_KEY = process.env.JWT_SECRET!;
 const BEARER_STR = 'Bearer';
 
 export const createAuthorizationToken = (payload: AuthorizationTokenPayload) => {

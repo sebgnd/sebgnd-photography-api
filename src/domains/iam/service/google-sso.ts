@@ -1,6 +1,6 @@
 import { OAuth2Client } from 'google-auth-library';
 
-const CLIENT_ID = 'REDACTED';
+const CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
 
 export type GoogleIdentity = {
 	id: string,
