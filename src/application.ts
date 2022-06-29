@@ -7,6 +7,7 @@ import { createApplication } from '@libs/famework/application';
 
 import { galleryDomain } from '@domains/gallery/gallery.domain';
 import { imageProcessingDomain } from '@domains/image-processing/image-processing.domain';
+import { iamDomain } from '@domains/iam/iam.domain';
 
 import { initDatabase } from '@database/index';
 
@@ -20,6 +21,7 @@ export const app = createApplication({
 	domains: [
 		galleryDomain,
 		imageProcessingDomain,
+		iamDomain,
 	],
 	middlewares: [
 		bodyParser.json(),
