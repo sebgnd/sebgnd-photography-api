@@ -39,7 +39,7 @@ export const tokenController = createController('iam/token', ({ builder }) => {
 			 */
 			const user = await findUserById(refreshToken.userId);
 			const newRefreshToken = generateRefreshTokenForUser(user!.id.toString());
-			const newAccessToken = createAuthorizationToken({
+			const newAuthorizationToken = createAuthorizationToken({
 				userId: user!.id,
 			});
 
@@ -49,7 +49,7 @@ export const tokenController = createController('iam/token', ({ builder }) => {
 			]);
 
 			safelySendToken(res, {
-				accessToken: newAccessToken,
+				authorizationToken: newAuthorizationToken,
 				refreshToken: newRefreshToken,
 			});
 		}

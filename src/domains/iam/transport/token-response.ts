@@ -3,14 +3,14 @@ import { RefreshToken } from '@domains/iam/entities/refresh-token';
 import { addTimeToDate } from '@libs/utils/date';
 
 export type TokenToSend = {
-	accessToken: string,
+	authorizationToken: string,
 	refreshToken: RefreshToken,
 };
 
 export const REFRESH_TOKEN_COOKIE = '__Secure-refreshToken';
 
 export const safelySendToken = (res: Response, tokens: TokenToSend) => {
-	const { accessToken, refreshToken } = tokens;
+	const { authorizationToken, refreshToken } = tokens;
 
 	res.cookie(REFRESH_TOKEN_COOKIE, refreshToken.value, {
 		expires: addTimeToDate(new Date(), {
@@ -21,6 +21,6 @@ export const safelySendToken = (res: Response, tokens: TokenToSend) => {
 		sameSite: true,
 	});
 	res.status(200).json({
-		token: accessToken,
+		token: authorizationToken,
 	});
 };
