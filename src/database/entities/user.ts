@@ -14,7 +14,10 @@ const authorizedUserSchema = new Schema<AuthorizedUser>({
 	sso: {
 		required: false,
 		type: {
-			providerUserId: String,
+			providerUserId: {
+				type: String,
+				index: true,
+			},
 			provider: String,
 		},
 	},
@@ -22,4 +25,4 @@ const authorizedUserSchema = new Schema<AuthorizedUser>({
 
 export const AuthorizedUserModel = mongoose.model(AUTHORIZED_USER_SCHEMA_NAME, authorizedUserSchema);
 
-export type AuthorizedUserEntity = OrmEntity<AuthorizedUser>;
+export type AuthorizedUserOrmEntity = OrmEntity<AuthorizedUser>;

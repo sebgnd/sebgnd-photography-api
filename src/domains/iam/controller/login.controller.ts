@@ -1,9 +1,13 @@
 import { createController } from '@libs/famework/controller';
 import { buildErrorResponse } from '@libs/famework/response';
 
+import { saveRefreshToken } from '@domains/iam/database/refresh-token.repository';
+
 import { validateIdToken } from '@domains/iam/service/google-sso';
-import { getAuthorizedUserWithProvider } from '../database/authorized-user.repository';
-import { createAuthorizationToken } from '../service/token';
+import { getAuthorizedUserWithProvider } from '@domains/iam/database/authorized-user.repository';
+import { createAuthorizationToken } from '@domains/iam/entities/authorization-token';
+import { generateRefreshTokenForUser } from '@domains/iam/entities/refresh-token'
+import { safelySendToken } from '@domains/iam/transport/token-response';
 
 export const loginController = createController('iam/login', ({ builder }) => {
 	builder.post('/google', {
@@ -31,12 +35,16 @@ export const loginController = createController('iam/login', ({ builder }) => {
 				return;
 			}
 
-			res.status(200).json({
-				token: createAuthorizationToken({
-					userId: user.id,
-					firstName: googleIdentity.firstName,
-					lastName: googleIdentity.lastName,
-				}),
+			const refreshToken = generateRefreshTokenForUser(user.id.toString());
+			const accessToken = createAuthorizationToken({
+				userId: user.id,
+			});
+
+			await saveRefreshToken(refreshToken);
+
+			safelySendToken(res, {
+				accessToken,
+				refreshToken,
 			});
 		},
 	});

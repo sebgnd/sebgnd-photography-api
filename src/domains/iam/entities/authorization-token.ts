@@ -1,12 +1,10 @@
 import { sign, verify } from 'jsonwebtoken';
 
+export type AuthorizationToken = string;
 export type AuthorizationTokenPayload = {
-	firstName: string,
-	lastName: string,
 	userId: string,
 };
-
-export type DecodedToken =
+export type DecodedAuthorizationToken =
 	| { expired: false, payload: AuthorizationTokenPayload }
 	| { expired: true };
 
@@ -45,7 +43,7 @@ export const isPayloadFromAuthorization = (payload: any): payload is Authorizati
 	return nbKeys === 3 && areKeysCorrect;
 }
 
-export const verifyAuthorizationToken = (token: string): DecodedToken => {
+export const verifyAuthorizationToken = (token: string): DecodedAuthorizationToken => {
 	try {
 		const payload = verify(token, PRIVATE_KEY);
 
@@ -61,3 +59,4 @@ export const verifyAuthorizationToken = (token: string): DecodedToken => {
 		return { expired: true };
 	}
 }
+
