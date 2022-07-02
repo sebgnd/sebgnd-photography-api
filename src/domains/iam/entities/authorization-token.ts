@@ -11,10 +11,12 @@ export type DecodedAuthorizationToken =
 const PRIVATE_KEY = process.env.JWT_SECRET!;
 const BEARER_STR = 'Bearer';
 
-export const createAuthorizationToken = (payload: AuthorizationTokenPayload) => {
-	return sign(payload, PRIVATE_KEY, {
-		expiresIn: '1hr'
-	});
+export const createAuthorizationToken = (payload: AuthorizationTokenPayload): Promise<string> => {
+	return Promise.resolve(
+		sign(payload, PRIVATE_KEY, {
+			expiresIn: '1hr'
+		})
+	);
 };
 
 export const getTokenFromAuthorizationHeader = (authorization: string) => {

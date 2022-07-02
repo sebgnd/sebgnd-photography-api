@@ -38,10 +38,12 @@ export const tokenController = createController('iam/token', ({ builder }) => {
 			 * If users have refreshToken, they will always exist
 			 */
 			const user = await findUserById(refreshToken.userId);
-			const newRefreshToken = generateRefreshTokenForUser(user!.id.toString());
-			const newAuthorizationToken = createAuthorizationToken({
-				userId: user!.id,
-			});
+			const [newRefreshToken, newAuthorizationToken] = await Promise.all([
+				generateRefreshTokenForUser(user!.id.toString()),
+				createAuthorizationToken({
+					userId: user!.id,
+				}),
+			]);
 
 			await Promise.all([
 				saveRefreshToken(newRefreshToken),

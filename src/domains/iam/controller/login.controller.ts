@@ -35,10 +35,12 @@ export const loginController = createController('iam/login', ({ builder }) => {
 				return;
 			}
 
-			const refreshToken = generateRefreshTokenForUser(user.id.toString());
-			const authorizationToken = createAuthorizationToken({
-				userId: user.id,
-			});
+			const [refreshToken, authorizationToken] = await Promise.all([
+				generateRefreshTokenForUser(user.id.toString()),
+				createAuthorizationToken({
+					userId: user.id,
+				}),
+			]);
 
 			await saveRefreshToken(refreshToken);
 

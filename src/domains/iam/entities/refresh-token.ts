@@ -1,6 +1,9 @@
-import cryptoRandomString from 'crypto-random-string';
+import * as crypto from 'crypto';
+import * as util from 'util';
 
 import { addTimeToDate } from '@libs/utils/date';
+
+const randomBytes = util.promisify(crypto.randomBytes);
 
 export type RefreshToken = {
 	value: string,
@@ -14,11 +17,11 @@ export type RefreshToken = {
 // Two weeks in seconds
 export const REFRESH_TOKEN_EXPIRATION = 1.21e6;
 
-export const generateRefreshTokenForUser = (userId: string): RefreshToken => {
+export const generateRefreshTokenForUser = async (userId: string): Promise<RefreshToken> => {
+	const bytes = await randomBytes(16);
+
 	return {
-		value: cryptoRandomString({
-			length: 16,
-		}),
+		value: bytes.toString('hex'),
 		ttl: REFRESH_TOKEN_EXPIRATION,
 		creationDate: new Date(),
 		userId,
