@@ -37,5 +37,5 @@ export const isRefreshTokenValid = (refreshToken: RefreshToken, date: Date) => {
 		seconds: refreshToken.ttl,
 	});
 
-	return expirationDate.getTime() < date.getTime();
+	return expirationDate.getTime() > date.getTime();
 }

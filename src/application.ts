@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import multer from 'multer';
 import cors from 'cors';
@@ -33,6 +34,7 @@ export const app = createApplication({
 	middlewares: [
 		bodyParser.json(),
 		bodyParser.urlencoded({ extended: true }),
+		cookieParser(),
 		morgan('dev'),
 		cors({
 			origin: 'http://localhost:3000',
