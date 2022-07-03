@@ -1,7 +1,7 @@
 import { createController } from '@libs/famework/controller';
 import { buildErrorResponse } from '@libs/famework/response';
 
-import { REFRESH_TOKEN_COOKIE, safelySendToken } from '@domains/iam/transport/token-response';
+import { getCookieName, safelySendToken } from '@domains/iam/transport/token-response';
 
 import { deleteRefreshToken, getRefreshToken, saveRefreshToken } from '@domains/iam/database/refresh-token.repository';
 import { generateRefreshTokenForUser, isRefreshTokenValid } from '@domains/iam/entities/refresh-token';
@@ -11,7 +11,7 @@ import { createAuthorizationToken } from '@domains/iam/entities/authorization-to
 export const tokenController = createController('iam/token', ({ builder }) => {
 	builder.post('/refresh', {
 		handler: async (req, res) => {
-			const cookieToken = req.cookies[REFRESH_TOKEN_COOKIE];
+			const cookieToken = req.cookies[getCookieName()];
 			const refreshToken = cookieToken
 				? await getRefreshToken(cookieToken)
 				: null;
@@ -40,9 +40,7 @@ export const tokenController = createController('iam/token', ({ builder }) => {
 			const user = await findUserById(refreshToken.userId);
 			const [newRefreshToken, newAuthorizationToken] = await Promise.all([
 				generateRefreshTokenForUser(user!.id.toString()),
-				createAuthorizationToken({
-					userId: user!.id,
-				}),
+				createAuthorizationToken(user!.id.toString()),
 			]);
 
 			await Promise.all([

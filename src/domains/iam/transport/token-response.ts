@@ -7,18 +7,25 @@ export type TokenToSend = {
 	refreshToken: RefreshToken,
 };
 
-export const REFRESH_TOKEN_COOKIE = '__Secure-refreshToken';
+export const SECURE_REFRESH_TOKEN_COOKIE = '__Secure-RefreshToken';
+export const REGULAR_REFRESH_TOKEN_COOKIE = 'RefreshToken';
+
+export const getCookieName = () => {
+	return process.env.NODE_ENV === 'dev'
+		? REGULAR_REFRESH_TOKEN_COOKIE
+		: SECURE_REFRESH_TOKEN_COOKIE;
+};
 
 export const safelySendToken = (res: Response, tokens: TokenToSend) => {
 	const { authorizationToken, refreshToken } = tokens;
 
-	res.cookie(REFRESH_TOKEN_COOKIE, refreshToken.value, {
+	res.cookie(getCookieName(), refreshToken.value, {
 		expires: addTimeToDate(new Date(), {
 			seconds: refreshToken.ttl,
 		}),
-		secure: true,
-		httpOnly: true,
+		secure: process.env.NODE_ENV === 'prod',
 		sameSite: true,
+		httpOnly: true,
 	});
 	res.status(200).json({
 		token: authorizationToken,

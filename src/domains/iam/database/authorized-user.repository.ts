@@ -30,10 +30,8 @@ export const doesUserExistWithProvider = (providerUserId: string, provider: stri
 
 export const getAuthorizedUserWithProvider = async (providerUserId: string, provider: string): Promise<User | null> => {
 	const rawUser = await AuthorizedUserModel.findOne({
-		sso: {
-			providerUserId,
-			provider,
-		},
+		'sso.provider': 'google',
+		'sso.providerUserId': providerUserId,
 	});
 
 	if (!rawUser) {
