@@ -2,6 +2,8 @@
 import { createController } from '@libs/famework/controller';
 import { Locality } from '@libs/famework/event-dispatcher';
 
+import { authorization } from '@domains/iam/middleware/authorization.middleware';
+
 import { doesCategoryExist, findCategory, addImageToCategory, removeImageFromCategory } from '@domains/gallery/database/category/category.repository';
 import { findImage, findImagePaginated, getTotalImages, saveImage, deleteImage } from '@domains/gallery/database/image/image.repository';
 
@@ -99,6 +101,7 @@ export const imageController = createController('images', ({ builder, eventDispa
 		.post('/', {
 			middlewares: [
 				upload.single('image'),
+				authorization(),
 			],
 			handler: async (req, res) => {
 				const { body, file } = req;
@@ -176,6 +179,9 @@ export const imageController = createController('images', ({ builder, eventDispa
 			}
 		})
 		.delete(':id', {
+			middlewares: [
+				authorization(),
+			],
 			handler: async (req, res) => {
 				const { id } = req.params;
 

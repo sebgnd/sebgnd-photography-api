@@ -52,9 +52,11 @@ export const deleteImage = async (imageId: string) => {
 				...availableSizes.map(async (size) => {
 					console.log(`APPLICATION | Deleting ${format}/${size} of ${imageId}`);
 
-					await deleteFile(
-						buildImagePath(imageId, format, size),
-					);
+					const imagePath = buildImagePath(imageId, format, size);
+
+					if (fs.existsSync(imagePath)) {
+						await deleteFile(imagePath);
+					}
 				}),
 			]
 		}, [] as Promise<void>[])

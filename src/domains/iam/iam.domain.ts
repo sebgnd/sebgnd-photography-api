@@ -1,12 +1,12 @@
 import { createDomain } from '@libs/famework/domain';
 
-import { loginController } from './controller/login.controller';
+import { accessController } from './controller/access.controller';
 import { tokenController } from './controller/token.controller';
 
 export const iamDomain = createDomain({
 	name: 'iam',
 	controllers: [
-		loginController,
+		accessController,
 		tokenController,
 	],
 });

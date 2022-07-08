@@ -1,5 +1,5 @@
 import { getSecondsEpoch } from '@libs/utils/date';
-import { sign, verify } from 'jsonwebtoken';
+import { sign, verify, decode } from 'jsonwebtoken';
 
 export type AuthorizationToken = string;
 export type AuthorizationTokenPayload = {
@@ -21,7 +21,7 @@ export const createAuthorizationToken = (userId: string): Promise<string> => {
 
 	return Promise.resolve(
 		sign({ iat, iss, sub }, process.env.JWT_SECRET!, {
-			expiresIn: '1h'
+			expiresIn: '30min'
 		})
 	);
 };
@@ -38,9 +38,13 @@ export const getTokenFromAuthorizationHeader = (authorization: string) => {
 
 export const isPayloadFromAuthorization = (payload: any): payload is AuthorizationTokenPayload => {
 	const nbKeys = Object.keys(payload).length;
-	const areKeysCorrect = typeof payload.userId === 'string';
+	const areKeysCorrect =
+		typeof payload.sub === 'string'
+		&& typeof payload.exp === 'number'
+		&& typeof payload.iss === 'string'
+		&& typeof payload.iat === 'number';
 
-	return nbKeys === 1 && areKeysCorrect;
+	return nbKeys === 4 && areKeysCorrect;
 }
 
 export const verifyAuthorizationToken = (token: string): DecodedAuthorizationToken => {

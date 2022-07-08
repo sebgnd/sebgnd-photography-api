@@ -42,8 +42,6 @@ export const createImageFromFile = async (file: File, categoryId: string): Promi
 		Mimetype.PNG,
 	]);
 
-	console.log(file.path, file);
-
 	if (!isFileCorrectMimetype) {
 		return {
 			image: undefined,

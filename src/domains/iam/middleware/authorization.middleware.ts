@@ -1,6 +1,6 @@
 import { buildErrorResponse } from '@libs/famework/response';
 import { Middleware } from '@libs/famework/types';
-import { getTokenFromAuthorizationHeader, verifyAuthorizationToken } from '@domains/iam/service/token';
+import { getTokenFromAuthorizationHeader, verifyAuthorizationToken } from '@domains/iam/entities/authorization-token';
 
 export const authorization = (): Middleware => (req, res, next) => {
 	const authorizationHeader = req.headers['authorization'];

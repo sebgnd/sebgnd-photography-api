@@ -1,5 +1,7 @@
 import { createController } from '@libs/famework/controller';
 
+import { authorization } from '@domains/iam/middleware/authorization.middleware';
+
 import { findAllCategories, findCategory, setThumbnail } from '@domains/gallery/database/category/category.repository';
 import { findImage } from '@domains/gallery/database/image/image.repository';
 
@@ -48,6 +50,9 @@ export const categoryController = createController('categories', ({ builder }) =
       }
     })
 		.put('/:id/thumbnail', {
+			middlewares: [
+				authorization(),
+			],
 			handler: async (req, res) => {
 				const { id } = req.params;
 				const { imageId: receivedImageId } = req.body;
