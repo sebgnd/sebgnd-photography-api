@@ -72,7 +72,7 @@ export const accessController = createController('iam', ({ builder }) => {
 				await deleteRefreshToken(refreshToken.value);
 
 				res.clearCookie(getCookieName());
-				res.status(204);
+				res.status(204).send();
 			},
 		})
 });
