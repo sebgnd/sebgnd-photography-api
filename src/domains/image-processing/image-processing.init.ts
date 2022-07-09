@@ -19,5 +19,7 @@ export const initFileSystem = async () => {
 		}
 	}
 
+	console.log('SYSTEM | Finish initializing file system');
+
   return Promise.resolve();
 }
