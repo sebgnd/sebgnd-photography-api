@@ -63,7 +63,7 @@ export const convertImageToJpg = async (imagePath: string) => {
 
 /**
  * TODO: See if there is a way to imprive the logic
- * TODO: Fix error when image exceeds memory usage
+ * TODO: Fix error when image exceeds memory usage (see sharp package instead of jimp)
  */
 export const createImageVersions = async (imageId: string, config: ImageVersionConfig) => {
 	const { thumbnail, full, initialImagePath } = config;
