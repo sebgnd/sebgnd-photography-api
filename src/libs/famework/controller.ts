@@ -1,9 +1,9 @@
 import type { Request, Response, NextFunction } from 'express';
-import type { RequestMethod } from './http';
+import type { RequestMethod } from './http/http';
 import type { Middleware } from './types';
 
-import { buildFullPath } from './path';
-import { EventDispatcher } from './event-dispatcher';
+import { buildFullPath } from './http/path';
+import { EventDispatcher } from './events/dispatcher';
 
 export type EndpointHandler = (req: Request, res: Response) => void | Promise<void>;
 export type Endpoint = {

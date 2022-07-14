@@ -1,5 +1,6 @@
 import { Express } from 'express';
 import { Server as ServerIO } from 'socket.io';
+import { EVENT_DISPATCHED } from './constant';
 
 export type ServerInjection = {
 	app: Express,
@@ -28,8 +29,9 @@ export const initEventDispatcher = (app: Express, io: ServerIO): EventDispatcher
 			const { name, data, locality } = event;
 
 			if (locality === Locality.WIDE || locality === Locality.INTERNAL) {
-				app.emit(name, {
+				app.emit(EVENT_DISPATCHED, {
 					data,
+					name,
 				});
 			}
 

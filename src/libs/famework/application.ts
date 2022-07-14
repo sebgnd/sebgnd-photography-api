@@ -1,18 +1,21 @@
-import express from 'express';
+import express, { Express } from 'express';
 import * as http from 'http';
 import { Server } from 'socket.io';
 
 import { executeFunctionOrPromise } from '@libs/utils/function';
 
-import type { Middleware } from './types';
-import type { Domain } from './domain';
-import type { Controller } from './controller';
-import type { EventHandler } from './event-handler';
-
+import { combineDomains } from './domain';
 import { buildRouter } from './router';
-import { removeTrailingAndLeadingSlash } from './path';
-import { initEventDispatcher } from './event-dispatcher';
-import { makeEventHandler } from './event-handler';
+import { removeTrailingAndLeadingSlash } from './http/path';
+import { initEventDispatcher } from './events/dispatcher';
+import { makeEventHandler } from './events/handler';
+
+import type { EventDispatcher } from './events/dispatcher';
+import type { Domain } from './domain';
+import type { EventHandler } from './events/handler';
+import type { Middleware } from './types';
+import { initializeQueue } from './events/queue';
+
 
 export type ApplicationConfig = {
 	port?: number;
@@ -28,40 +31,21 @@ export type DomainEvent = {
 	handlers: Record<string, EventHandler[]>,
 }
 
+export const applyMiddlewares = (app: Express, middlewares: Middleware[]) => {
+	middlewares.forEach((middleware) => {
+		app.use(middleware);
+	}) 
+}
+
 export const createApplication = (config: ApplicationConfig) => {
 	console.log('SYSTEM | Application initialization started');
+
 	const port = config.port || 8000;
 	const middlewares = config.middlewares || [];
 	const routePrefix = config.routePrefix || 'api';
-
 	const { domains } = config;
-	const controllers = domains.reduce(
-		(acc, domain) => {
-			return [...acc, ...domain.controllers]; 
-		},
-		[] as Controller[]
-	);
-	const { events, handlers } = domains.reduce(
-		(domainEvent, domain) => {
-			return Object
-				.entries((domain.eventHandlers || {}))
-				.reduce((acc, [eventName, handler]) => {
-					const handlersForEvent = acc.handlers[eventName];
-					const handlersWithCurrent = handlersForEvent
-						? [...handlersForEvent, handler]
-						: [handler];
 
-					return {
-						events: new Set([...acc.events, eventName]),
-						handlers: {
-							...acc.handlers,
-							[eventName]: handlersWithCurrent,
-						},
-					}
-				}, domainEvent);
-		},
-		{ events: new Set<string>(), handlers: {} } as DomainEvent,
-	);
+	const { controllers, eventHandlers } = combineDomains(domains);
 
 	return {
 		start: async () => {
@@ -87,17 +71,13 @@ export const createApplication = (config: ApplicationConfig) => {
 			const router = buildRouter(controllers, eventDispatcher);
 			const prefix = removeTrailingAndLeadingSlash(routePrefix);
 
-			middlewares?.forEach((middleware) => {
-				expressInstance.use(middleware);
-			});
-			
-			events.forEach((event) => {
-				console.log(`SYSTEM | Subscribe to ${event} event`);
+			applyMiddlewares(expressInstance, middlewares || []);
+			initializeQueue({
+				app: expressInstance,
+				eventHandlers,
+				eventDispatcher,
+			})
 
-				handlers[event].forEach((handler) => {
-					expressInstance.on(event, makeEventHandler(handler, eventDispatcher));
-				});
-			});
 			expressInstance.use(`/${prefix}`, router);
 			socketServer.on('connection', (socket) => {
 				console.log(`APPLICATION | user ${socket.id} connected`);

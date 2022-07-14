@@ -1,5 +1,5 @@
 import { createController } from '@libs/famework/controller';
-import { buildErrorResponse } from '@libs/famework/response';
+import { buildErrorResponse } from '@libs/famework/http/response';
 
 import { getCookieName, safelySendToken } from '@domains/iam/transport/token-response';
 

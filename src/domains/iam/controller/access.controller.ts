@@ -1,5 +1,5 @@
 import { createController } from '@libs/famework/controller';
-import { buildErrorResponse } from '@libs/famework/response';
+import { buildErrorResponse } from '@libs/famework/http/response';
 
 import { deleteRefreshToken, getRefreshToken, saveRefreshToken } from '@domains/iam/database/refresh-token.repository';
 
@@ -29,6 +29,8 @@ export const accessController = createController('iam', ({ builder }) => {
 
 				const googleIdentity = await validateIdToken(idToken);
 				const user = await getAuthorizedUserWithProvider(googleIdentity.id, 'google');
+
+				console.log(googleIdentity);
 
 				if (user === null) {
 					res.status(401).json(

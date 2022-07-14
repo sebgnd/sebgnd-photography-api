@@ -1,11 +1,16 @@
 import * as fs from 'fs';
 
+import { Locality } from '@libs/famework/events/dispatcher';
+import { useWorker } from '@libs/famework/worker';
+
+import type { EventHandler } from '@libs/famework/events/handler';
+import type { ImageSize } from '@domains/image-processing/services/image-file-manager';
+
 import { updateImageProcessedData } from '@domains/image-processing/database/image/image.repository';
 import { convertImageToJpg, createImageVersions } from '@domains/image-processing/services/image-processor';
-import { buildImagePath, copyOriginalImage, getImagePathIfExist, ImageSize } from '@domains/image-processing/services/image-file-manager';
+import { buildImagePath, copyOriginalImage, getImagePathIfExist } from '@domains/image-processing/services/image-file-manager';
 
-import { EventHandler } from '@libs/famework/event-handler';
-import { Locality } from '@libs/famework/event-dispatcher';
+
 
 export type ImageUploaded = {
 	id: string,
@@ -17,8 +22,18 @@ export type ImageUploadBody = {
 	image: ImageUploaded
 };
 
-export const handleImageUploaded: EventHandler<ImageUploadBody> = async ({ image }, eventDispatcher) => {
+export type ImageUploadWorkerResult = {
+	processed: boolean,
+	imageData: {
+		width: number,
+		height: number,
+	},
+}
+
+const imageResizeWorker = useWorker<ImageUploaded, ImageUploadWorkerResult>('image-uploaded-worker', async (image) => {
 	const { id, temporaryPath } = image;
+
+	console.log(temporaryPath);
 
 	const jpgPath = await convertImageToJpg(temporaryPath);
 
@@ -49,20 +64,29 @@ export const handleImageUploaded: EventHandler<ImageUploadBody> = async ({ image
 		},
 	});
 
-	await updateImageProcessedData(id, !processed, {
+	fs.unlinkSync(temporaryPath);
+	fs.unlinkSync(jpgPath);
+
+	return {
+		processed,
+		imageData,
+	};
+});
+
+export const handleImageUploaded: EventHandler<ImageUploadBody> = async ({ image }, eventDispatcher) => {
+	const { processed, imageData } = await imageResizeWorker!.execute(__filename, image);
+
+	await updateImageProcessedData(image.id, !processed, {
 		width: imageData.width,
 		height: imageData.height,
 	});
-
-	fs.unlinkSync(temporaryPath);
-	fs.unlinkSync(jpgPath);
 
 	eventDispatcher.dispatch({
 		name: 'image-processing:image-processed',
 		locality: Locality.EXTERNAL,
 		data: {
+			id: image.id,
 			processed,
-			id,
 		},
 	});
 };

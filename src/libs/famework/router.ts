@@ -2,9 +2,9 @@ import express from 'express';
 import type { Router } from 'express';
 
 import type { Controller } from './controller';
-import type { RequestMethod } from './http';
+import type { RequestMethod } from './http/http';
 import { flattenEndpointsFromControllers } from './controller';
-import { EventDispatcher } from './event-dispatcher';
+import { EventDispatcher } from './events/dispatcher';
 
 export const getRouterMethodFunction = (
 	router: Router,

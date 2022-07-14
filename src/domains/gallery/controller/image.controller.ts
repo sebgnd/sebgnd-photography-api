@@ -1,6 +1,6 @@
 
 import { createController } from '@libs/famework/controller';
-import { Locality } from '@libs/famework/event-dispatcher';
+import { Locality } from '@libs/famework/events/dispatcher';
 
 import { authorization } from '@domains/iam/middleware/authorization.middleware';
 

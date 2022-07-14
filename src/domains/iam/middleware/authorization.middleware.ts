@@ -1,4 +1,4 @@
-import { buildErrorResponse } from '@libs/famework/response';
+import { buildErrorResponse } from '@libs/famework/http/response';
 import { Middleware } from '@libs/famework/types';
 import { getTokenFromAuthorizationHeader, verifyAuthorizationToken } from '@domains/iam/entities/authorization-token';
 
