@@ -1,4 +1,4 @@
-import Jimp from 'jimp';
+import sharp from 'sharp';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -31,7 +31,7 @@ export type ImageInfo = {
 	thumbnailSize: number,
 }
 
-export const getCroppedCoordinatesForThumbnail = (info: ImageInfo) => {
+export const getCenterCroppedCoordinatesForThumbnail = (info: ImageInfo) => {
 	const { thumbnailSize, resizedHeight, resizedWidth } = info;
 
 	const isLandscape = info.originalHeight < info.originalWIdth;
@@ -40,7 +40,7 @@ export const getCroppedCoordinatesForThumbnail = (info: ImageInfo) => {
 	const y = isLandscape ? 0 : (resizedHeight / 2) - (thumbnailSize / 2);
 
 	return { x, y }
-}
+};
 
 export const convertImageToJpg = async (imagePath: string) => {
 	const imageExist = fs.existsSync(imagePath);
@@ -49,22 +49,20 @@ export const convertImageToJpg = async (imagePath: string) => {
 		throw new Error('Invalid path');
 	}
 
-	const image = await Jimp.read(imagePath);
+	const jpgImage = await sharp(imagePath)
+		.jpeg()
+		.toBuffer();
 
 	const imageDirectory = path.dirname(imagePath);
 	const [imageName] = path.basename(imagePath).split('.');
 
 	const newPath = path.join(imageDirectory, `${imageName}.jpg`);
 
-	await image.writeAsync(newPath);
+	fs.writeFileSync(newPath, jpgImage);
 
 	return newPath;
 }
 
-/**
- * TODO: See if there is a way to imprive the logic
- * TODO: Fix error when image exceeds memory usage (see sharp package instead of jimp)
- */
 export const createImageVersions = async (imageId: string, config: ImageVersionConfig) => {
 	const { thumbnail, full, initialImagePath } = config;
 	const {
@@ -77,46 +75,36 @@ export const createImageVersions = async (imageId: string, config: ImageVersionC
 		pathFactory: fullPathFactory,
 	} = full;
 
-	const jimpImage = await Jimp.read(initialImagePath);
-	
-	const width = jimpImage.getWidth();
-	const height = jimpImage.getHeight();
+	const image = sharp(initialImagePath);
+	const metadata = await image.metadata();
+	const width = metadata.width!;
+	const height = metadata.height!;
 	
 	const fullResolutionPromises = fullResolutions.map(async (fullHeight) => {
 		console.log(`APPLICATION | Creating full ${fullHeight} of ${imageId}`);
 
 		const resizedPath = fullPathFactory(fullHeight);
-		const resized = jimpImage
-			.clone()
-			.resize(Jimp.AUTO, fullHeight);
+		const resized = await image
+			.resize({ height: fullHeight })
+			.toBuffer();
 
-		await resized.writeAsync(resizedPath);
+		fs.writeFileSync(resizedPath, resized);
 	});
 
 	const thumbnailPromises = thumbnailResolutions.map(async (thumbnailSize) => {
 		console.log(`APPLICATION | Creating thumbnail ${thumbnailSize} of ${imageId}`);
 
-		const isLandscape = height < width 
-		const resized = jimpImage
-			.clone()
-			.resize(
-				isLandscape ? Jimp.AUTO : thumbnailSize,
-				isLandscape ? thumbnailSize : Jimp.AUTO
-			);
-
-		const { x, y } = getCroppedCoordinatesForThumbnail({
-			originalHeight: height,
-			originalWIdth: width,
-			resizedHeight: resized.getHeight(),
-			resizedWidth: resized.getWidth(),
-			thumbnailSize,
-		});
-
-		const cropped = resized.crop(x, y, thumbnailSize, thumbnailSize);
+		const thumbnail = await image
+			.resize({
+				height: thumbnailSize,
+				width: thumbnailSize,
+				fit: sharp.fit.cover,
+			})
+			.toBuffer();
 
 		const thumbnailPath = thumbnailPathFactory(thumbnailSize);
 
-		await cropped.writeAsync(thumbnailPath);
+		fs.writeFileSync(thumbnailPath, thumbnail);
 	});
 
 	await Promise.all([
