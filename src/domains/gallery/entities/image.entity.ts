@@ -5,9 +5,9 @@ import { isFileMimetype, Mimetype } from '@libs/file/mimetype';
 
 export type Exif = {
   iso: number;
-  shutterSpeed: number;
-  aperture: number;
-  focalLength: number;
+  shutterSpeed: string;
+  aperture: string;
+  focalLength: string;
 }
 
 export type File = {
@@ -55,6 +55,8 @@ export const createImageFromFile = async (file: File, categoryId: string): Promi
 	const exif = await readExifFromImage({
 		path: file.path,
 	});
+
+	console.log(exif);
 
 	return {
 		error: undefined,

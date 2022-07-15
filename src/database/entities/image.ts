@@ -7,9 +7,9 @@ type ImageStatus = 'processing' | 'valid' | 'error';
 type Image = {
 	exif?: {
 		iso: number,
-		shutterSpeed: number,
-		aperture: number,
-		focalLength: number,
+		shutterSpeed: string,
+		aperture: string,
+		focalLength: string,
 	};
 	dimension: {
 		width: number,
