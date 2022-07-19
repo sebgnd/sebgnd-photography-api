@@ -92,7 +92,7 @@ export const createImageVersions = async (imageId: string, config: ImageVersionC
 			.resize({ height: fullHeight })
 			.toBuffer();
 
-		await fullPathImageHandler(resized);
+		await fullPathImageHandler(resized, fullHeight);
 	});
 
 	const thumbnailPromises = thumbnailResolutions.map(async (thumbnailSize) => {
@@ -106,7 +106,7 @@ export const createImageVersions = async (imageId: string, config: ImageVersionC
 			})
 			.toBuffer();
 
-		await thumbnailImageHandler(thumbnail);
+		await thumbnailImageHandler(thumbnail, thumbnailSize);
 	});
 
 	await Promise.all([
