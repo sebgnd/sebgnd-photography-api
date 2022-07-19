@@ -4,13 +4,12 @@ import { Locality } from '@libs/famework/events/dispatcher';
 import { useWorker } from '@libs/famework/worker';
 
 import type { EventHandler } from '@libs/famework/events/handler';
-import type { ImageSize } from '@domains/image-processing/services/image-file-manager';
+import { ImageSize, saveFullImage, saveOriginalImage, saveThumbnailImage } from '@domains/image-processing/services/image-file-manager';
 
 import { updateImageProcessedData } from '@domains/image-processing/database/image/image.repository';
 import { convertImageToJpg, createImageVersions } from '@domains/image-processing/services/image-processor';
-import { buildImagePath, copyOriginalImage, getImagePathIfExist } from '@domains/image-processing/services/image-file-manager';
-
-
+import { buildImagePath, getImagePathIfExist } from '@domains/image-processing/services/image-file-manager';
+import { storageProvider } from '@domains/image-processing/services/storage-provider';
 
 export type ImageUploaded = {
 	id: string,
@@ -37,34 +36,24 @@ const imageResizeWorker = useWorker<ImageUploaded, ImageUploadWorkerResult>('ima
 
 	const jpgPath = await convertImageToJpg(temporaryPath);
 
-	await copyOriginalImage(id, jpgPath);
-
-	const initialImagePath = getImagePathIfExist(id, {
-		format: 'full',
-		size: 'original',
-	});
-
-	if (!initialImagePath) {
-		throw new Error('Error copying orignal image');
-	}
+	await saveOriginalImage(jpgPath, id);
 
 	const { processed, imageData } = await createImageVersions(id, {
-		initialImagePath,
+		initialImagePath: jpgPath,
 		thumbnail: {
 			heights: [400, 80],
-			pathFactory: (height: number) => {
-				return buildImagePath(id, 'thumbnail', height.toString() as ImageSize);
-			}
+			imageHandler: async (buffer, height) => (
+				saveThumbnailImage(id, height, buffer)
+			)
 		},
 		full: {
 			heights: [400, 1080],
-			pathFactory: (height: number) => {
-				return buildImagePath(id, 'full', height.toString() as ImageSize);
-			}
+			imageHandler: async (buffer, height) => (
+				saveFullImage(id, height, buffer)
+			),
 		},
 	});
 
-	fs.unlinkSync(temporaryPath);
 	fs.unlinkSync(jpgPath);
 
 	return {

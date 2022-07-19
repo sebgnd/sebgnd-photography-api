@@ -10,7 +10,7 @@ export type ImageVersionConfig = {
 		 * the same as its width.
 		 */
 		heights: number[],
-		pathFactory: (height: number) => string,
+		imageHandler: (buffer: Buffer, height: number) => Promise<void>,
 	},
 	full: {
 		/**
@@ -19,7 +19,7 @@ export type ImageVersionConfig = {
 		 * as the original image.
 		 */
 		heights: number[],
-		pathFactory: (height: number) => string,
+		imageHandler: (buffer: Buffer, height: number) => Promise<void>,
 	},
 }
 
@@ -49,16 +49,21 @@ export const convertImageToJpg = async (imagePath: string) => {
 		throw new Error('Invalid path');
 	}
 
+	const imageDirectory = path.dirname(imagePath);
+	const [imageName, extension] = path.basename(imagePath).split('.');
+
+	if (extension === 'jpg' || extension === 'jpeg') {
+		return imagePath;
+	}
+
 	const jpgImage = await sharp(imagePath)
 		.jpeg()
 		.toBuffer();
 
-	const imageDirectory = path.dirname(imagePath);
-	const [imageName] = path.basename(imagePath).split('.');
-
 	const newPath = path.join(imageDirectory, `${imageName}.jpg`);
 
 	fs.writeFileSync(newPath, jpgImage);
+	fs.unlinkSync(imagePath);
 
 	return newPath;
 }
@@ -67,12 +72,12 @@ export const createImageVersions = async (imageId: string, config: ImageVersionC
 	const { thumbnail, full, initialImagePath } = config;
 	const {
 		heights: thumbnailResolutions,
-		pathFactory: thumbnailPathFactory,
+		imageHandler: thumbnailImageHandler,
 	} = thumbnail;
 
 	const {
 		heights: fullResolutions,
-		pathFactory: fullPathFactory,
+		imageHandler: fullPathImageHandler,
 	} = full;
 
 	const image = sharp(initialImagePath);
@@ -83,12 +88,11 @@ export const createImageVersions = async (imageId: string, config: ImageVersionC
 	const fullResolutionPromises = fullResolutions.map(async (fullHeight) => {
 		console.log(`APPLICATION | Creating full ${fullHeight} of ${imageId}`);
 
-		const resizedPath = fullPathFactory(fullHeight);
 		const resized = await image
 			.resize({ height: fullHeight })
 			.toBuffer();
 
-		fs.writeFileSync(resizedPath, resized);
+		await fullPathImageHandler(resized);
 	});
 
 	const thumbnailPromises = thumbnailResolutions.map(async (thumbnailSize) => {
@@ -102,9 +106,7 @@ export const createImageVersions = async (imageId: string, config: ImageVersionC
 			})
 			.toBuffer();
 
-		const thumbnailPath = thumbnailPathFactory(thumbnailSize);
-
-		fs.writeFileSync(thumbnailPath, thumbnail);
+		await thumbnailImageHandler(thumbnail);
 	});
 
 	await Promise.all([

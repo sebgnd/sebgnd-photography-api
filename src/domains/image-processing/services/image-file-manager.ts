@@ -1,6 +1,6 @@
-import * as fs from 'fs'
 import * as path from 'path';
-import * as utils from 'util';
+
+import { storageProvider } from './storage-provider';
 
 export type ImageFormat = 'thumbnail' | 'full';
 export type ImageSize = '400' | '1080' | '80' | 'original';
@@ -13,22 +13,37 @@ export type ImagePathConfig = {
 	size: ImageSize,
 };
 
-const deleteFile = utils.promisify(fs.unlink);
-const copyFile = utils.promisify(fs.copyFile);
-
 export const validFormatAndSize = (format: string, size: string) => {
 	return availableFormats.includes(format as any) || availableSizes.includes(size as any);
 }
 
 export const buildImagePath = (imageId: string, format: ImageFormat, size: ImageSize) => {
-	return path.join('files', 'images', format, size, imageId) + '.jpg';
+	return path.join(format, size, imageId) + '.jpg';
 }
 
-export const getImagePathIfExist = (imageId: string, config: ImagePathConfig) => {
+export const saveOriginalImage = async (id: string, path: string) => {
+	await storageProvider.upload(path, buildImagePath(id, 'full', 'original'))
+};
+
+export const saveThumbnailImage = async (id: string, height: number, buffer: Buffer) => {
+	await storageProvider.upload(
+		buffer,
+		buildImagePath(id, 'thumbnail', height.toString() as ImageSize),
+	);
+};
+
+export const saveFullImage = async (id: string, height: number, buffer: Buffer) => {
+	await storageProvider.upload(
+		buffer,
+		buildImagePath(id, 'full', height.toString() as ImageSize),
+	);
+}
+
+export const getImagePathIfExist = async (imageId: string, config: ImagePathConfig) => {
 	const { format, size } = config;
 
 	const imagePath = buildImagePath(imageId, format, size);
-	const imagePathExist = fs.existsSync(imagePath);
+	const imagePathExist = await storageProvider.exists(imagePath);
 
 	if (imagePathExist) {
 		return imagePath;
@@ -37,28 +52,19 @@ export const getImagePathIfExist = (imageId: string, config: ImagePathConfig) =>
 	return null;
 }
 
-export const copyOriginalImage = async (imageId: string, temporaryPath: string) => {
-	const oldPath = temporaryPath;
-	const newPath = buildImagePath(imageId, 'full', 'original');
-
-	await copyFile(oldPath, newPath);
-}
-
 export const deleteImage = async (imageId: string) => {
 	await Promise.all(
 		availableFormats.reduce((acc, format) => {
-			return [
-				...acc,
-				...availableSizes.map(async (size) => {
-					console.log(`APPLICATION | Deleting ${format}/${size} of ${imageId}`);
+			return [...acc, ...availableSizes.map(async (size) => {
+				console.log(`APPLICATION | Deleting ${format}/${size} of ${imageId}`);
 
-					const imagePath = buildImagePath(imageId, format, size);
+				const imagePath = buildImagePath(imageId, format, size);
+				const imageExist = await storageProvider.exists(imagePath);
 
-					if (fs.existsSync(imagePath)) {
-						await deleteFile(imagePath);
-					}
-				}),
-			]
+				if (imageExist) {
+					await storageProvider.delete(imagePath);
+				}
+			})]
 		}, [] as Promise<void>[])
 	);
 }

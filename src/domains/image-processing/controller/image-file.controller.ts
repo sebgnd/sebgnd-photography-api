@@ -11,7 +11,7 @@ import { createController } from '@libs/famework/controller';
 
 export const imageFileController = createController('file/images', ({ builder }) => {
 	builder.get('/:format/:size/:id', {
-		handler: (req, res) => {
+		handler: async (req, res) => {
 			const { format, size, id } = req.params;
 			
 			if (!validFormatAndSize(format, size)) {
@@ -31,7 +31,7 @@ export const imageFileController = createController('file/images', ({ builder })
 			/**
 			 * At that point we know that format and size have the right types
 			 */
-			const imagePath = getImagePathIfExist(id, {
+			const imagePath = await getImagePathIfExist(id, {
 				format: format as ImageFormat,
 				size: size as ImageSize,
 			});
@@ -46,7 +46,8 @@ export const imageFileController = createController('file/images', ({ builder })
 				return;
 			}
 
-			res.download(imagePath);
+			// Wating for strategy with AWS S3
+			res.status(501).json();
 		}
 	});
 });
