@@ -101,7 +101,7 @@ export const imageController = createController('images', ({ builder, eventDispa
 		.post('/', {
 			middlewares: [
 				upload.single('image'),
-				// authorization(),
+				authorization(),
 			],
 			handler: async (req, res) => {
 				const { body, file } = req;

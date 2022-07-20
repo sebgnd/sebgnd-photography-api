@@ -6,8 +6,13 @@ import {
 	PutObjectCommand,
 	DeleteObjectCommand,
 	HeadObjectCommandInput,
+	NotFound,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+
+const bucketName = process.env.NODE_ENV === 'dev'
+	? process.env.AWS_S3_BUCKET_DEV!
+	: process.env.AWS_S3_BUCKET!;
 
 const s3 = new S3({
 	region: 'eu-west-3',
@@ -20,7 +25,7 @@ const s3 = new S3({
 export type StorageUploadFn = (pathOrBuffer: string | Buffer, destinationPath: string) => Promise<void>;
 export type StorageDeleteFn = (path: string) => Promise<void>;
 export type StorageExistsFn = (path: string) => Promise<boolean>;
-export type GetFileFn = (path: string) => Promise<ReadableStream>;
+export type GetFileFn = (path: string) => Promise<Readable>;
 export type GetFolderSeparatorFn = () => string;
 export type StorageProvider = {
 	upload: StorageUploadFn;
@@ -46,7 +51,7 @@ const uploadFromPath = async (path: string, destinationPath: string) => {
 	const uploadCommand = new PutObjectCommand({
 		Body: createStreamFromPath(path),
 		Key: destinationPath,
-		Bucket: process.env.AWS_S3_BUCKET!,
+		Bucket: bucketName,
 	});
 
 	await s3.send(uploadCommand);
@@ -57,7 +62,7 @@ const uploadFromBuffer = async (buffer: Buffer, destinationPath: string) => {
 		client: s3,
 		params: {
 			Key: destinationPath,
-			Bucket: process.env.AWS_S3_BUCKET!,
+			Bucket: bucketName,
 			Body: createStreamFromBuffer(buffer),
 		},
 	});
@@ -73,7 +78,7 @@ const uploadFileToBucket: StorageUploadFn = async (pathOrBuffer, destinationPath
 
 const deleteFromBucket: StorageDeleteFn = async (path) => {
 	const deleteCommand = new DeleteObjectCommand({
-		Bucket: process.env.AWS_S3_BUCKET!,
+		Bucket: bucketName,
 		Key: path,
 	});
 
@@ -81,15 +86,15 @@ const deleteFromBucket: StorageDeleteFn = async (path) => {
 };
 
 const objectExistsInBucket: StorageExistsFn = async (path) => {
-	return new Promise((resolve, reject) => {
-		const params: HeadObjectCommandInput = {
-			Key: path,
-			Bucket: process.env.AWS_S3_BUCKET!,
-		};
+	const params: HeadObjectCommandInput = {
+		Key: path,
+		Bucket: bucketName,
+	};
 
-		s3.headObject(params, (err) => {
+	return new Promise((resolve, reject) => {
+		s3.headObject(params, (err: unknown) => {
 			if (err) {
-				if (err.statusCode === 404) {
+				if (err instanceof NotFound) {
 					return resolve(false);
 				}
 
@@ -104,11 +109,10 @@ const objectExistsInBucket: StorageExistsFn = async (path) => {
 export const getFileFromBucket: GetFileFn = async (path) => {
 	const object = await s3.getObject({
 		Key: path,
-		Bucket: process.env.AWS_S3_BUCKET!,
+		Bucket: bucketName,
 	});
-	
-	// TODO: Fix
-	return object.Body as ReadableStream;
+
+	return object.Body as Readable;
 }
 
 export const storageProvider: StorageProvider = {

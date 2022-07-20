@@ -1,3 +1,5 @@
+import { createController } from '@libs/famework/controller';
+
 import {
 	getImagePathIfExist,
 	validFormatAndSize,
@@ -7,8 +9,7 @@ import {
 	ImageSize,
 } from '@domains/image-processing/services/image-file-manager';
 
-import { createController } from '@libs/famework/controller';
-import { storageProvider } from '../services/storage-provider';
+import { storageProvider } from '@domains/image-processing/services/storage-provider';
 
 export const imageFileController = createController('file/images', ({ builder }) => {
 	builder.get('/:format/:size/:id', {
@@ -49,9 +50,7 @@ export const imageFileController = createController('file/images', ({ builder })
 
 			const imageStream = await storageProvider.get(imagePath);
 
-			console.log(imageStream);
-
-			imageStream.pipeTo(res as any);
+			imageStream.pipe(res);
 		}
 	});
 });
