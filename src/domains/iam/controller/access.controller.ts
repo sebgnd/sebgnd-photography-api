@@ -30,8 +30,6 @@ export const accessController = createController('iam', ({ builder }) => {
 				const googleIdentity = await validateIdToken(idToken);
 				const user = await getAuthorizedUserWithProvider(googleIdentity.id, 'google');
 
-				console.log(googleIdentity);
-
 				if (user === null) {
 					res.status(401).json(
 						buildErrorResponse('Unauthorized user'),

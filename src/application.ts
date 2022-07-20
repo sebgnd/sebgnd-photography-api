@@ -6,6 +6,11 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import * as path from 'path';
 
+dotenv.config({
+	path: path.join(__dirname, '..', '.env'),
+	debug: true,
+});
+
 import { createApplication } from '@libs/famework/application';
 
 import { galleryDomain } from '@domains/gallery/gallery.domain';
@@ -13,11 +18,6 @@ import { imageProcessingDomain } from '@domains/image-processing/image-processin
 import { iamDomain } from '@domains/iam/iam.domain';
 
 import { initDatabase } from '@database/index';
-
-dotenv.config({
-	path: path.join(__dirname, '..', '.env'),
-	debug: true,
-});
 
 export const upload = multer({
 	dest: './tmp'

@@ -8,6 +8,7 @@ import {
 } from '@domains/image-processing/services/image-file-manager';
 
 import { createController } from '@libs/famework/controller';
+import { storageProvider } from '../services/storage-provider';
 
 export const imageFileController = createController('file/images', ({ builder }) => {
 	builder.get('/:format/:size/:id', {
@@ -46,8 +47,11 @@ export const imageFileController = createController('file/images', ({ builder })
 				return;
 			}
 
-			// Wating for strategy with AWS S3
-			res.status(501).json();
+			const imageStream = await storageProvider.get(imagePath);
+
+			console.log(imageStream);
+
+			imageStream.pipeTo(res as any);
 		}
 	});
 });

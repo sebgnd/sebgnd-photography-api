@@ -56,8 +56,6 @@ export const createImageFromFile = async (file: File, categoryId: string): Promi
 		path: file.path,
 	});
 
-	console.log(exif);
-
 	return {
 		error: undefined,
 		image: {

@@ -1,5 +1,3 @@
-import * as path from 'path';
-
 import { storageProvider } from './storage-provider';
 
 export type ImageFormat = 'thumbnail' | 'full';
@@ -18,7 +16,10 @@ export const validFormatAndSize = (format: string, size: string) => {
 }
 
 export const buildImagePath = (imageId: string, format: ImageFormat, size: ImageSize) => {
-	return path.join(format, size, imageId) + '.jpg';
+	const parts = [format, size, imageId];
+	const partsWithSeparator = parts.join(storageProvider.getFolderSeparator());
+
+	return `${partsWithSeparator}.jpg`;
 }
 
 export const saveOriginalImage = async (id: string, path: string) => {

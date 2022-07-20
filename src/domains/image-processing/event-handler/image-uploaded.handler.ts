@@ -8,8 +8,6 @@ import { ImageSize, saveFullImage, saveOriginalImage, saveThumbnailImage } from 
 
 import { updateImageProcessedData } from '@domains/image-processing/database/image/image.repository';
 import { convertImageToJpg, createImageVersions } from '@domains/image-processing/services/image-processor';
-import { buildImagePath, getImagePathIfExist } from '@domains/image-processing/services/image-file-manager';
-import { storageProvider } from '@domains/image-processing/services/storage-provider';
 
 export type ImageUploaded = {
 	id: string,
@@ -32,11 +30,9 @@ export type ImageUploadWorkerResult = {
 const imageResizeWorker = useWorker<ImageUploaded, ImageUploadWorkerResult>('image-uploaded-worker', async (image) => {
 	const { id, temporaryPath } = image;
 
-	console.log(temporaryPath);
-
 	const jpgPath = await convertImageToJpg(temporaryPath);
 
-	await saveOriginalImage(jpgPath, id);
+	await saveOriginalImage(id, jpgPath);
 
 	const { processed, imageData } = await createImageVersions(id, {
 		initialImagePath: jpgPath,
