@@ -3,8 +3,7 @@ FROM node:18.6.0-alpine
 
 WORKDIR /opt/api
 
-COPY package.json package-lock.json tsconfig.json .env .
-COPY src ./src
+COPY . .
 
 RUN npm install
 RUN npm run build
