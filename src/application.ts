@@ -24,7 +24,9 @@ export const upload = multer({
 });
 
 export const app = createApplication({
-	port: 8000,
+	port: process.env.PORT
+		? parseInt(process.env.PORT)
+		: undefined,
 	routePrefix: 'api',
 	domains: [
 		galleryDomain,
