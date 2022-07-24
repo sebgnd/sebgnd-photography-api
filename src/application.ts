@@ -23,6 +23,11 @@ export const upload = multer({
 	dest: './tmp'
 });
 
+const corsOrigins = [
+	'http://localhost:3000',
+	'https://www.sebgnd-photography.com',
+];
+
 export const app = createApplication({
 	port: process.env.PORT
 		? parseInt(process.env.PORT)
@@ -33,12 +38,14 @@ export const app = createApplication({
 		imageProcessingDomain,
 		iamDomain,
 	],
+	corsOrigins,
 	middlewares: [
 		bodyParser.json(),
 		bodyParser.urlencoded({ extended: true }),
 		cookieParser(),
 		morgan('dev'),
 		cors({
+			origin: corsOrigins,
 			credentials: true,
 		}),
 	],

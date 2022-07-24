@@ -16,6 +16,7 @@ import { initializeQueue } from './events/queue';
 
 
 export type ApplicationConfig = {
+	corsOrigins?: string[],
 	port?: number;
 	routePrefix?: string,
 	domains: Domain[],
@@ -41,7 +42,7 @@ export const createApplication = (config: ApplicationConfig) => {
 	const port = config.port || 8000;
 	const middlewares = config.middlewares || [];
 	const routePrefix = config.routePrefix || 'api';
-	const { domains } = config;
+	const { domains, corsOrigins } = config;
 
 	const { controllers, eventHandlers } = combineDomains(domains);
 
@@ -51,6 +52,7 @@ export const createApplication = (config: ApplicationConfig) => {
 			const expressServer = http.createServer(expressInstance);
 			const socketServer = new Server(expressServer, {
 				cors: {
+					origin: corsOrigins,
 					methods: ['GET', 'POST'],
 				}
 			});
