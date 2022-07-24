@@ -39,6 +39,9 @@ export const applyMiddlewares = (app: Express, middlewares: Middleware[]) => {
 
 export const createApplication = (config: ApplicationConfig) => {
 	console.log('SYSTEM | Application initialization started');
+	console.log(process.env.AWS_S3_BUCKET);
+	console.log(process.env.NODE_ENV);
+	console.log(process.env.PORT);
 
 	const port = config.port || 8000;
 	const middlewares = config.middlewares || [];
