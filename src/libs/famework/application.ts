@@ -8,9 +8,7 @@ import { combineDomains } from './domain';
 import { buildRouter } from './router';
 import { removeTrailingAndLeadingSlash } from './http/path';
 import { initEventDispatcher } from './events/dispatcher';
-import { makeEventHandler } from './events/handler';
 
-import type { EventDispatcher } from './events/dispatcher';
 import type { Domain } from './domain';
 import type { EventHandler } from './events/handler';
 import type { Middleware } from './types';

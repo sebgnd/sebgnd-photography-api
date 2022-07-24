@@ -39,7 +39,6 @@ export const app = createApplication({
 		cookieParser(),
 		morgan('dev'),
 		cors({
-			origin: 'http://localhost:3000',
 			credentials: true,
 		}),
 	],
