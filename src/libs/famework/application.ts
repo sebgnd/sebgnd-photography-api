@@ -51,7 +51,6 @@ export const createApplication = (config: ApplicationConfig) => {
 			const expressServer = http.createServer(expressInstance);
 			const socketServer = new Server(expressServer, {
 				cors: {
-					origin: 'http://localhost:3000',
 					methods: ['GET', 'POST'],
 				}
 			});
