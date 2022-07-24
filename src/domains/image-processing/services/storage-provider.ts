@@ -10,9 +10,15 @@ import {
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 
-const bucketName = process.env.NODE_ENV === 'dev'
-	? process.env.AWS_S3_BUCKET_DEV!
-	: process.env.AWS_S3_BUCKET!;
+if (
+	!process.env.AWS_S3_BUCKET
+	|| !process.env.AWS_ACCESS_KEY_ID
+	|| !process.env.AWS_SECRET_ACCESS_KEY
+) {
+	throw new Error('environment not set up: please set AWS_S3_BUCKET, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY');
+}
+
+const bucketName = process.env.AWS_S3_BUCKET;
 
 const s3 = new S3({
 	region: 'eu-west-3',

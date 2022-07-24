@@ -1,13 +1,11 @@
 import mongoose from 'mongoose';
 
-const database = 'sebgnd_photography';
-const host = process.env.NODE_ENV === 'dev'
-	? process.env.MONGO_DB_DATABASE_LOCAL
-	: process.env.MONGO_DB_DATABASE_PROD;
+const database = process.env.MONGO_DB_DATABASE_NAME;
+const host = process.env.MONGO_DB_DATABASE_URI;
 
 export const initDatabase = () => {
-	if (!host) {
-		throw new Error('process.env is not setup: could not find the host')
+	if (!host || !database) {
+		throw new Error('process.env is not setup: could not find the host or the database')
 	}
 
   return mongoose.connect(host, {

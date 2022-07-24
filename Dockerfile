@@ -11,4 +11,4 @@ RUN npm prune --production
 
 CMD ["node", "./dist/index.js"]
 
-EXPOSE 8000
+EXPOSE 80
