@@ -24,7 +24,7 @@ export const safelySendToken = (res: Response, tokens: TokenToSend) => {
 			seconds: refreshToken.ttl,
 		}),
 		secure: process.env.NODE_ENV === 'prod',
-		sameSite: 'none',
+		sameSite: process.env.NODE_ENV === 'prod' ? 'none' : undefined,
 		httpOnly: true,
 	});
 	res.status(200).json({
