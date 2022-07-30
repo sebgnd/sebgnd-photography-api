@@ -62,7 +62,7 @@ export const initializeQueue = (initialization: QueueInitialization) => {
       console.log(`APPLICATION | Executing ${eventMessage.name}`);
 
       await Promise.all(
-        handlers.map((handler) => handler(eventMessage))
+        handlers.map((handler) => handler(eventMessage)),
       );
 
       console.log(`APPLICATION | Finish executing ${eventMessage.name}`);
@@ -77,5 +77,5 @@ export const initializeQueue = (initialization: QueueInitialization) => {
     flush: () => {
       queue = [];
     },
-  }
+  };
 };

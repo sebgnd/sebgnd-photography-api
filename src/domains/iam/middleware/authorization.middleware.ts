@@ -3,26 +3,26 @@ import { Middleware } from '@libs/famework/types';
 import { getTokenFromAuthorizationHeader, verifyAuthorizationToken } from '@domains/iam/entities/authorization-token';
 
 export const authorization = (): Middleware => (req, res, next) => {
-	const authorizationHeader = req.headers['authorization'];
+  const authorizationHeader = req.headers['authorization'];
 
-	if (!authorizationHeader) {
-		res.status(401).json(
-			buildErrorResponse('Unauthorized'),
-		);
+  if (!authorizationHeader) {
+    res.status(401).json(
+      buildErrorResponse('Unauthorized'),
+    );
 
-		return;
-	}
+    return;
+  }
 
-	const authorizationToken = getTokenFromAuthorizationHeader(authorizationHeader);
-	const { expired } = verifyAuthorizationToken(authorizationToken);
+  const authorizationToken = getTokenFromAuthorizationHeader(authorizationHeader);
+  const { expired } = verifyAuthorizationToken(authorizationToken);
 
-	if (expired) {
-		res.status(401).json(
-			buildErrorResponse('Unauthorized'),
-		);
+  if (expired) {
+    res.status(401).json(
+      buildErrorResponse('Unauthorized'),
+    );
 
-		return;
-	}
+    return;
+  }
 
-	next();
-}
+  next();
+};

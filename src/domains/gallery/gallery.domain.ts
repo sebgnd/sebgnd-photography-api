@@ -4,6 +4,6 @@ import { imageController } from './controller/image.controller';
 import { categoryController } from './controller/category.controller';
 
 export const galleryDomain = createDomain({
-	name: 'gallery',
-	controllers: [imageController, categoryController],
+  name: 'gallery',
+  controllers: [imageController, categoryController],
 });

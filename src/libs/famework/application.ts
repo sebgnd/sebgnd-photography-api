@@ -16,79 +16,79 @@ import { initializeQueue } from './events/queue';
 
 
 export type ApplicationConfig = {
-	corsOrigins?: string[],
-	port?: number;
-	routePrefix?: string,
-	domains: Domain[],
-	middlewares?: Middleware[],
-	afterStart?: () => void | Promise<void>;
-	beforeStart?: () => void | Promise<void>;
+  corsOrigins?: string[],
+  port?: number;
+  routePrefix?: string,
+  domains: Domain[],
+  middlewares?: Middleware[],
+  afterStart?: () => void | Promise<void>;
+  beforeStart?: () => void | Promise<void>;
 };
 
 export type DomainEvent = {
-	events: Set<string>,
-	handlers: Record<string, EventHandler[]>,
+  events: Set<string>,
+  handlers: Record<string, EventHandler[]>,
 }
 
 export const applyMiddlewares = (app: Express, middlewares: Middleware[]) => {
-	middlewares.forEach((middleware) => {
-		app.use(middleware);
-	}) 
-}
+  middlewares.forEach((middleware) => {
+    app.use(middleware);
+  });
+};
 
 export const createApplication = (config: ApplicationConfig) => {
-	console.log('SYSTEM | Application initialization started');
+  console.log('SYSTEM | Application initialization started');
 
-	const port = config.port || 8000;
-	const middlewares = config.middlewares || [];
-	const routePrefix = config.routePrefix || 'api';
-	const { domains, corsOrigins } = config;
+  const port = config.port || 8000;
+  const middlewares = config.middlewares || [];
+  const routePrefix = config.routePrefix || 'api';
+  const { domains, corsOrigins } = config;
 
-	const { controllers, eventHandlers } = combineDomains(domains);
+  const { controllers, eventHandlers } = combineDomains(domains);
 
-	return {
-		start: async () => {
-			const expressInstance = express();
-			const expressServer = http.createServer(expressInstance);
-			const socketServer = new Server(expressServer, {
-				cors: {
-					origin: corsOrigins,
-					methods: ['GET', 'POST'],
-				}
-			});
+  return {
+    start: async () => {
+      const expressInstance = express();
+      const expressServer = http.createServer(expressInstance);
+      const socketServer = new Server(expressServer, {
+        cors: {
+          origin: corsOrigins,
+          methods: ['GET', 'POST'],
+        },
+      });
 
-			await Promise.all([
-				executeFunctionOrPromise(() => config.beforeStart?.()),
-				...domains.map(async (domain) => {
-					return domain.init?.();
-				}),
-			]);
+      await Promise.all([
+        executeFunctionOrPromise(() => config.beforeStart?.()),
+        ...domains.map(async (domain) => {
+          return domain.init?.();
+        }),
+      ]);
 
-			await executeFunctionOrPromise(() => config.beforeStart?.());
+      await executeFunctionOrPromise(() => config.beforeStart?.());
 
-			const eventDispatcher = initEventDispatcher(expressInstance, socketServer);
-			const router = buildRouter(controllers, eventDispatcher);
-			const prefix = removeTrailingAndLeadingSlash(routePrefix);
+      const eventDispatcher = initEventDispatcher(expressInstance, socketServer);
+      const router = buildRouter(controllers, eventDispatcher);
+      const prefix = removeTrailingAndLeadingSlash(routePrefix);
 
-			applyMiddlewares(expressInstance, middlewares || []);
-			initializeQueue({
-				app: expressInstance,
-				eventHandlers,
-				eventDispatcher,
-			})
+      applyMiddlewares(expressInstance, middlewares || []);
+      initializeQueue({
+        app: expressInstance,
+        eventHandlers,
+        eventDispatcher,
+      });
 
-			expressInstance.use(`/${prefix}`, router);
-			socketServer.on('connection', (socket) => {
-				console.log(`APPLICATION | user ${socket.id} connected`);
-				socket.on('disconnect', () => {
-					console.log(`APPLICATION | user ${socket.id} disconnected`);
-				});
-			});
-			expressServer.listen(port, async () => {
+      expressInstance.use(`/${prefix}`, router);
+      socketServer.on('connection', (socket) => {
+        console.log(`APPLICATION | user ${socket.id} connected`);
+        socket.on('disconnect', () => {
+          console.log(`APPLICATION | user ${socket.id} disconnected`);
+        });
+      });
+      expressServer.listen(port, async () => {
         await executeFunctionOrPromise(() => config.afterStart?.());
 
-				console.log(`SYSTEM | Application started on port ${port}`)
-			});
-		},
-	}
-}
+        console.log(`SYSTEM | Application started on port ${port}`);
+      });
+    },
+  };
+};

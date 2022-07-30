@@ -1,10 +1,13 @@
 import { Worker, isMainThread, workerData, parentPort } from 'node:worker_threads';
 
-export const useWorker = <Param, Result>(name: string, callback: (param: Param) => Result | Promise<Result>) => {
+export const useWorker = <Param, Result>(
+  name: string,
+  callback: (param: Param) => Result | Promise<Result>,
+) => {
   if (!isMainThread) {
     console.log(`APPLICATION | Executing worker ${name}`);
 
-    const executeWorker = async () => {    
+    const executeWorker = async () => {
       const resultOrPromise = callback(workerData);
       const result = resultOrPromise instanceof Promise
         ? await resultOrPromise
@@ -14,7 +17,7 @@ export const useWorker = <Param, Result>(name: string, callback: (param: Param) 
       parentPort?.close();
 
       console.log(`APPLICATION | Finish executing worker ${name}`);
-    }
+    };
 
     executeWorker();
   } else {
@@ -34,6 +37,6 @@ export const useWorker = <Param, Result>(name: string, callback: (param: Param) 
           });
         });
       },
-    }
+    };
   }
 };
