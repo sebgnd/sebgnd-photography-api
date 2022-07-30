@@ -6,73 +6,73 @@ import { deleteRefreshToken, getRefreshToken, saveRefreshToken } from '@domains/
 import { validateIdToken } from '@domains/iam/service/google-sso';
 import { getAuthorizedUserWithProvider } from '@domains/iam/database/authorized-user.repository';
 import { createAuthorizationToken } from '@domains/iam/entities/authorization-token';
-import { generateRefreshTokenForUser } from '@domains/iam/entities/refresh-token'
+import { generateRefreshTokenForUser } from '@domains/iam/entities/refresh-token';
 import { getCookieName, safelySendToken } from '@domains/iam/transport/token-response';
 
 import { authorization } from '@domains/iam/middleware/authorization.middleware';
 
 export const accessController = createController('iam', ({ builder }) => {
-	builder.
-		post('login/google', {
-			handler: async (req, res) => {
-				const { idToken } = req.body;
+  builder.
+    post('login/google', {
+      handler: async (req, res) => {
+        const { idToken } = req.body;
 
-				if (!idToken) {
-					res.status(400).json(
-						buildErrorResponse('You must provide the google id token', {
-							idToken: 'Must be a valid idToken from Google',
-						}),
-					);
+        if (!idToken) {
+          res.status(400).json(
+            buildErrorResponse('You must provide the google id token', {
+              idToken: 'Must be a valid idToken from Google',
+            }),
+          );
 
-					return;
-				}
+          return;
+        }
 
-				const googleIdentity = await validateIdToken(idToken);
-				const user = await getAuthorizedUserWithProvider(googleIdentity.id, 'google');
+        const googleIdentity = await validateIdToken(idToken);
+        const user = await getAuthorizedUserWithProvider(googleIdentity.id, 'google');
 
-				if (user === null) {
-					res.status(401).json(
-						buildErrorResponse('Unauthorized user'),
-					);
+        if (user === null) {
+          res.status(401).json(
+            buildErrorResponse('Unauthorized user'),
+          );
 
-					return;
-				}
+          return;
+        }
 
-				const [refreshToken, authorizationToken] = await Promise.all([
-					generateRefreshTokenForUser(user.id.toString()),
-					createAuthorizationToken(user.id.toString()),
-				]);
+        const [refreshToken, authorizationToken] = await Promise.all([
+          generateRefreshTokenForUser(user.id.toString()),
+          createAuthorizationToken(user.id.toString()),
+        ]);
 
-				await saveRefreshToken(refreshToken);
+        await saveRefreshToken(refreshToken);
 
-				safelySendToken(res, {
-					authorizationToken,
-					refreshToken,
-				});
-			},
-		})
-		.post('logout', {
-			middlewares: [
-				authorization(),
-			],
-			handler: async (req, res) => {
-				const cookieToken = req.cookies[getCookieName()];
-				const refreshToken = cookieToken
-					? await getRefreshToken(cookieToken)
-					: null;
+        safelySendToken(res, {
+          authorizationToken,
+          refreshToken,
+        });
+      },
+    })
+    .post('logout', {
+      middlewares: [
+        authorization(),
+      ],
+      handler: async (req, res) => {
+        const cookieToken = req.cookies[getCookieName()];
+        const refreshToken = cookieToken
+          ? await getRefreshToken(cookieToken)
+          : null;
 
-				if (!refreshToken) {
-					res.status(403).json(
-						buildErrorResponse('Could not find the refresh token'),
-					);
-	
-					return;
-				}
+        if (!refreshToken) {
+          res.status(403).json(
+            buildErrorResponse('Could not find the refresh token'),
+          );
 
-				await deleteRefreshToken(refreshToken.value);
+          return;
+        }
 
-				res.clearCookie(getCookieName());
-				res.status(204).send();
-			},
-		})
+        await deleteRefreshToken(refreshToken.value);
+
+        res.clearCookie(getCookieName());
+        res.status(204).send();
+      },
+    });
 });

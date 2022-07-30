@@ -8,8 +8,8 @@ import { findImage } from '@domains/gallery/database/image/image.repository';
 import { doesImageBelongToCategory } from '@domains/gallery/entities/category.entity';
 
 export const categoryController = createController('categories', ({ builder }) => {
-	builder
-		.get('/', {
+  builder
+    .get('/', {
       handler: async (req, res) => {
         const categories = await findAllCategories();
 
@@ -25,7 +25,7 @@ export const categoryController = createController('categories', ({ builder }) =
                 id: category.thumbnail ? category.thumbnail.id : null,
               },
             };
-          })
+          }),
         });
       },
     })
@@ -36,83 +36,83 @@ export const categoryController = createController('categories', ({ builder }) =
 
         res.status(200).json({
           items: (category.images || [])
-						.filter((img) => img.status === 'valid')
-						.map((img) => {
-							return {
-								id: img.id,
-								type: img.type,
-								categoryId: img.categoryId,
-								createdAt: img.createdAt,
-								updatedAt: img.updatedAt,
-							};
-						}),
+            .filter((img) => img.status === 'valid')
+            .map((img) => {
+              return {
+                id: img.id,
+                type: img.type,
+                categoryId: img.categoryId,
+                createdAt: img.createdAt,
+                updatedAt: img.updatedAt,
+              };
+            }),
         });
-      }
+      },
     })
-		.put('/:id/thumbnail', {
-			middlewares: [
-				authorization(),
-			],
-			handler: async (req, res) => {
-				const { id } = req.params;
-				const { imageId: receivedImageId } = req.body;
+    .put('/:id/thumbnail', {
+      middlewares: [
+        authorization(),
+      ],
+      handler: async (req, res) => {
+        const { id } = req.params;
+        const { imageId: receivedImageId } = req.body;
 
-				if (!receivedImageId || typeof receivedImageId !== 'string') {
-					res.status(400).json({
-						error: {
-							message: 'You must provide an imageId',
-							details: {
-								imageId: 'Must be a string and correspond to an existing image',
-							}
-						},
-					});
-				}
+        if (!receivedImageId || typeof receivedImageId !== 'string') {
+          res.status(400).json({
+            error: {
+              message: 'You must provide an imageId',
+              details: {
+                imageId: 'Must be a string and correspond to an existing image',
+              },
+            },
+          });
+        }
 
-				const imageId = receivedImageId as string;
+        const imageId = receivedImageId as string;
 
-				const [category, image] = await Promise.all([
-					findCategory(id),
-					findImage(imageId),
-				]);
+        const [category, image] = await Promise.all([
+          findCategory(id),
+          findImage(imageId),
+        ]);
 
-				if (!category) {
-					res.status(404).json({
-						error: {
-							message: 'Category not found',
-						},
-					});
+        if (!category) {
+          res.status(404).json({
+            error: {
+              message: 'Category not found',
+            },
+          });
 
-					return;
-				}
+          return;
+        }
 
-				if (!image) {
-					res.status(400).json({
-						error: {
-							message: 'The image does not exist',
-						},
-					});
+        if (!image) {
+          res.status(400).json({
+            error: {
+              message: 'The image does not exist',
+            },
+          });
 
-					return;
-				}
+          return;
+        }
 
-				if (!doesImageBelongToCategory(category, image)) {
-					res.status(400).json({
-						error: {
-							message: 'The image does not have the right category to be the thumbnail',
-						},
-					});
+        if (!doesImageBelongToCategory(category, image)) {
+          res.status(400).json({
+            error: {
+              message: 'The image does not have the right category to be the thumbnail',
+            },
+          });
 
-					return;
-				}
+          return;
+        }
 
-				await setThumbnail(id, imageId);
+        await setThumbnail(id, imageId);
 
-				res.status(200).json({
-					id,
-					thumbnail: {
-						id: imageId,
-					},
-				})
-			},
-		})
+        res.status(200).json({
+          id,
+          thumbnail: {
+            id: imageId,
+          },
+        });
+      },
+    });
 });

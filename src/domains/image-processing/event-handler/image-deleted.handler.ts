@@ -3,13 +3,13 @@ import { deleteImage } from '@domains/image-processing/services/image-file-manag
 import { EventHandler } from '@libs/famework/events/handler';
 
 export type ImageDeleted = {
-	id: string,
+  id: string,
 };
 
 export type ImageDeleteBody = {
-	image: ImageDeleted
+  image: ImageDeleted,
 };
 
 export const handleImageDeleted: EventHandler<ImageDeleteBody> = async ({ image }) => {
-	await deleteImage(image.id);
+  await deleteImage(image.id);
 };
