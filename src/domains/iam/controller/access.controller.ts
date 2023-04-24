@@ -1,10 +1,10 @@
 import { createController } from '@libs/famework/controller';
 import { buildErrorResponse } from '@libs/famework/http/response';
 
-import { deleteRefreshToken, getRefreshToken, saveRefreshToken } from '@domains/iam/database/refresh-token.repository';
+import { refreshTokenRepository } from '@domains/iam/database/refresh-token.repository';
+import { authorizedUserRepositoryL } from '@domains/iam/database/authorized-user.repository';
 
 import { validateIdToken } from '@domains/iam/service/google-sso';
-import { getAuthorizedUserWithProvider } from '@domains/iam/database/authorized-user.repository';
 import { createAuthorizationToken } from '@domains/iam/entities/authorization-token.entity';
 import { generateRefreshTokenForUser } from '@domains/iam/entities/refresh-token.entity';
 import { getCookieName, safelySendToken } from '@domains/iam/transport/token-response';
@@ -28,22 +28,21 @@ export const accessController = createController('iam', ({ builder }) => {
         }
 
         const googleIdentity = await validateIdToken(idToken);
-        const user = await getAuthorizedUserWithProvider(googleIdentity.id, 'google');
+        const user = await authorizedUserRepositoryL.getAuthorizedUserWithProvider(googleIdentity.id, 'google');
 
-        if (user === null) {
+        if (!user) {
           res.status(401).json(
             buildErrorResponse('Unauthorized user'),
           );
-
           return;
         }
 
         const [refreshToken, authorizationToken] = await Promise.all([
-          generateRefreshTokenForUser(user.id.toString()),
-          createAuthorizationToken(user.id.toString()),
+          generateRefreshTokenForUser(user.id!.toString()),
+          createAuthorizationToken(user.id!.toString()),
         ]);
 
-        await saveRefreshToken(refreshToken);
+        await refreshTokenRepository.saveRefreshToken(refreshToken);
 
         safelySendToken(res, {
           authorizationToken,
@@ -58,7 +57,7 @@ export const accessController = createController('iam', ({ builder }) => {
       handler: async (req, res) => {
         const cookieToken = req.cookies[getCookieName()];
         const refreshToken = cookieToken
-          ? await getRefreshToken(cookieToken)
+          ? await refreshTokenRepository.getRefreshToken(cookieToken)
           : null;
 
         if (!refreshToken) {
@@ -69,7 +68,7 @@ export const accessController = createController('iam', ({ builder }) => {
           return;
         }
 
-        await deleteRefreshToken(refreshToken.value);
+        await refreshTokenRepository.deleteRefreshToken(refreshToken.token);
 
         res.clearCookie(getCookieName());
         res.status(204).send();

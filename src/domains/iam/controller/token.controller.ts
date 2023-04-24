@@ -3,9 +3,10 @@ import { buildErrorResponse } from '@libs/famework/http/response';
 
 import { getCookieName, safelySendToken } from '@domains/iam/transport/token-response';
 
-import { deleteRefreshToken, getRefreshToken, saveRefreshToken } from '@domains/iam/database/refresh-token.repository';
+import { refreshTokenRepository } from '@domains/iam/database/refresh-token.repository';
+import { authorizedUserRepositoryL } from '@domains/iam/database/authorized-user.repository';
+
 import { generateRefreshTokenForUser, isRefreshTokenValid } from '@domains/iam/entities/refresh-token.entity';
-import { findUserById } from '@domains/iam/database/authorized-user.repository';
 import { createAuthorizationToken } from '@domains/iam/entities/authorization-token.entity';
 
 export const tokenController = createController('iam/token', ({ builder }) => {
@@ -13,7 +14,7 @@ export const tokenController = createController('iam/token', ({ builder }) => {
     handler: async (req, res) => {
       const cookieToken = req.cookies[getCookieName()];
       const refreshToken = cookieToken
-        ? await getRefreshToken(cookieToken)
+        ? await refreshTokenRepository.getRefreshToken(cookieToken)
         : null;
 
       if (!cookieToken || !refreshToken ) {
@@ -37,15 +38,15 @@ export const tokenController = createController('iam/token', ({ builder }) => {
       /**
        * If users have refreshToken, they will always exist
        */
-      const user = await findUserById(refreshToken.userId);
+      const user = await authorizedUserRepositoryL.findUserById(refreshToken.userId.toString());
       const [newRefreshToken, newAuthorizationToken] = await Promise.all([
-        generateRefreshTokenForUser(user!.id.toString()),
-        createAuthorizationToken(user!.id.toString()),
+        generateRefreshTokenForUser(user!.id!.toString()),
+        createAuthorizationToken(user!.id!.toString()),
       ]);
 
       await Promise.all([
-        saveRefreshToken(newRefreshToken),
-        deleteRefreshToken(refreshToken.value),
+        refreshTokenRepository.saveRefreshToken(newRefreshToken),
+        refreshTokenRepository.deleteRefreshToken(refreshToken.token),
       ]);
 
       safelySendToken(res, {

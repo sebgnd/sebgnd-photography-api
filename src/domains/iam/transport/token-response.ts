@@ -1,10 +1,10 @@
 import { Response } from 'express';
-import { RefreshTokenEntity } from '@domains/iam/entities/refresh-token.entity';
+import { RefreshToken } from '@domains/iam/entities/refresh-token.entity';
 import { addTimeToDate } from '@libs/utils/date';
 
 export type TokenToSend = {
   authorizationToken: string,
-  refreshToken: RefreshTokenEntity,
+  refreshToken: RefreshToken,
 };
 
 export const SECURE_REFRESH_TOKEN_COOKIE = '__Secure-RefreshToken';
@@ -19,7 +19,7 @@ export const getCookieName = () => {
 export const safelySendToken = (res: Response, tokens: TokenToSend) => {
   const { authorizationToken, refreshToken } = tokens;
 
-  res.cookie(getCookieName(), refreshToken.value, {
+  res.cookie(getCookieName(), refreshToken.token, {
     expires: addTimeToDate(new Date(), {
       seconds: refreshToken.ttl,
     }),

@@ -1,10 +1,10 @@
 import mongoose, { Schema } from 'mongoose';
 
-import { Category, CategoryWithImages } from '@domains/gallery/entities/category.entity';
+import { CategoryWithImagesAsIds } from '@domains/gallery/entities/category.entity';
 
 import { IMAGE_SCHEMA_NAME } from './image.orm';
 
-const categorySchema = new Schema<Category>({
+const categorySchema = new Schema<CategoryWithImagesAsIds>({
   name: {
     type: String,
     required: true,

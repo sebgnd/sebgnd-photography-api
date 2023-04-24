@@ -1,48 +1,43 @@
-import { AuthorizedUserModel, AuthorizedUserOrmEntity } from '@database/entities/user';
-import { UserEntity } from '@domains/iam/entities/user.entity';
-import { transformOrNull } from '@libs/utils/function';
+import { AuthorizedUserOrmModel } from '@database/entities/user.orm';
+import { User } from '@domains/iam/entities/user.entity';
 
-export const findUserById = async (id: string): Promise<UserEntity | null> => {
-  const rawUser = await AuthorizedUserModel.findById(id);
-
-  return transformOrNull(
-    rawUser as AuthorizedUserOrmEntity,
-    (user: AuthorizedUserOrmEntity): UserEntity => {
-      return {
-        id: user._id,
-        sso: {
-          id: user.sso.providerUserId,
-          provider: user.sso.provider,
-        },
-      };
-    },
-  );
+export type AuthorizedUserRepository = {
+  findUserById: (id: string) => Promise<User | null>,
+  doesUserExistWithProvider: (providerUserId: string, provider: string) => Promise<boolean>,
+  getAuthorizedUserWithProvider: (providerUserId: string, provider: string) => Promise<User | null>,
 };
 
-export const doesUserExistWithProvider = (providerUserId: string, provider: string) => {
-  return AuthorizedUserModel.exists({
-    sso: {
-      providerUserId,
-      provider,
-    },
-  });
-};
+export const authorizedUserRepositoryL: AuthorizedUserRepository = {
+  findUserById: async (id: string) => {
+    const user = await AuthorizedUserOrmModel.findById(id);
+    if (!user) {
+      return null;
+    }
 
-export const getAuthorizedUserWithProvider = async (providerUserId: string, provider: string): Promise<UserEntity | null> => {
-  const rawUser = await AuthorizedUserModel.findOne({
-    'sso.provider': 'google',
-    'sso.providerUserId': providerUserId,
-  });
+    return user.toJSON<User>();
+  },
 
-  if (!rawUser) {
-    return null;
-  }
+  doesUserExistWithProvider: async (providerUserId, provider) => {
+    const exist = await AuthorizedUserOrmModel.exists({
+      sso: {
+        providerUserId,
+        provider,
+      },
+    });
 
-  return {
-    id: rawUser._id.toString(),
-    sso: {
-      id: providerUserId,
-      provider,
-    },
-  };
+    return exist !== null;
+  },
+
+  getAuthorizedUserWithProvider: async (providerUserId, provider) => {
+    const user = await AuthorizedUserOrmModel.findOne({
+      'sso.provider': provider,
+      'sso.providerUserId': providerUserId,
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return user.toJSON<User>();
+  },
 };

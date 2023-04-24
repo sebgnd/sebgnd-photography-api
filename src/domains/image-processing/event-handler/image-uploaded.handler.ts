@@ -10,7 +10,7 @@ import {
   saveThumbnailImage,
 } from '@domains/image-processing/services/image-file-manager';
 
-import { updateImageProcessedData } from '@domains/image-processing/database/image/image.repository';
+import { processedImageRepository } from '@domains/image-processing/database/image/image.repository';
 import { convertImageToJpg, createImageVersions } from '@domains/image-processing/services/image-processor';
 
 export type ImageUploaded = {
@@ -65,7 +65,7 @@ const imageResizeWorker = useWorker<ImageUploaded, ImageUploadWorkerResult>('ima
 export const handleImageUploaded: EventHandler<ImageUploadBody> = async ({ image }, eventDispatcher) => {
   const { processed, imageData } = await imageResizeWorker!.execute(__filename, image);
 
-  await updateImageProcessedData(image.id, !processed, {
+  await processedImageRepository.saveProcessedData(image.id, !processed, {
     width: imageData.width,
     height: imageData.height,
   });

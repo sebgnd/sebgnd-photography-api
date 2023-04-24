@@ -1,33 +1,29 @@
-import { RefreshTokenModel, RefreshTokenOrmEntity } from '@database/entities/refresh-token';
-import { RefreshTokenEntity } from '@domains/iam/entities/refresh-token.entity';
-import { transformOrNull } from '@libs/utils/function';
+import { RefreshTokenOrmModel } from '@database/entities/refresh-token.orm';
+import { RefreshToken } from '@domains/iam/entities/refresh-token.entity';
 
-export const saveRefreshToken = async (refreshToken: RefreshTokenEntity): Promise<void> => {
-  const ormRefreshToken = new RefreshTokenModel({
-    userId: refreshToken.userId,
-    token: refreshToken.value,
-    ttl: refreshToken.ttl,
-  });
-
-  await ormRefreshToken.save();
+export type RefreshTokenRepository = {
+  saveRefreshToken: (refreshToken: RefreshToken) => Promise<void>,
+  getRefreshToken: (token: string) => Promise<RefreshToken | null>,
+  deleteRefreshToken: (token: string) => Promise<void>,
 };
 
-export const getRefreshToken = async (token: string): Promise<RefreshTokenEntity | null> => {
-  const refreshToken = await RefreshTokenModel.findOne({ token });
+export const refreshTokenRepository: RefreshTokenRepository = {
+  saveRefreshToken: async (refreshToken) => {
+    const ormRefreshToken = new RefreshTokenOrmModel(refreshToken);
+    await ormRefreshToken.save();
+  },
 
-  return transformOrNull(
-    refreshToken as RefreshTokenOrmEntity,
-    (definedRefreshToken: RefreshTokenOrmEntity): RefreshTokenEntity => {
-      return {
-        value: definedRefreshToken.token,
-        ttl: definedRefreshToken.ttl,
-        userId: definedRefreshToken.userId.toString(),
-        creationDate: new Date(definedRefreshToken.createdAt),
-      };
-    },
-  );
+  getRefreshToken: async (token) => {
+    const refreshToken = await RefreshTokenOrmModel.findOne({ token });
+    if (!refreshToken) {
+      return null;
+    }
+
+    return refreshToken.toJSON<RefreshToken>();
+  },
+
+  deleteRefreshToken: async (token) => {
+    await RefreshTokenOrmModel.deleteOne({ token });
+  },
 };
 
-export const deleteRefreshToken = async (token: string): Promise<void> => {
-  await RefreshTokenModel.deleteOne({ token });
-};
