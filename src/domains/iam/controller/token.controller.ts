@@ -4,9 +4,9 @@ import { buildErrorResponse } from '@libs/famework/http/response';
 import { getCookieName, safelySendToken } from '@domains/iam/transport/token-response';
 
 import { deleteRefreshToken, getRefreshToken, saveRefreshToken } from '@domains/iam/database/refresh-token.repository';
-import { generateRefreshTokenForUser, isRefreshTokenValid } from '@domains/iam/entities/refresh-token';
+import { generateRefreshTokenForUser, isRefreshTokenValid } from '@domains/iam/entities/refresh-token.entity';
 import { findUserById } from '@domains/iam/database/authorized-user.repository';
-import { createAuthorizationToken } from '@domains/iam/entities/authorization-token';
+import { createAuthorizationToken } from '@domains/iam/entities/authorization-token.entity';
 
 export const tokenController = createController('iam/token', ({ builder }) => {
   builder.post('/refresh', {

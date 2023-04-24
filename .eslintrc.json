@@ -22,6 +22,7 @@
     "object-curly-spacing": ["error", "always"],
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "error",
-    "operator-linebreak": ["error", "before"]
+    "operator-linebreak": ["error", "before"],
+    "no-invalid-this": "warn"
   }
 }

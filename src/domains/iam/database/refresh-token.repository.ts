@@ -1,8 +1,8 @@
 import { RefreshTokenModel, RefreshTokenOrmEntity } from '@database/entities/refresh-token';
-import { RefreshToken } from '@domains/iam/entities/refresh-token';
+import { RefreshTokenEntity } from '@domains/iam/entities/refresh-token.entity';
 import { transformOrNull } from '@libs/utils/function';
 
-export const saveRefreshToken = async (refreshToken: RefreshToken): Promise<void> => {
+export const saveRefreshToken = async (refreshToken: RefreshTokenEntity): Promise<void> => {
   const ormRefreshToken = new RefreshTokenModel({
     userId: refreshToken.userId,
     token: refreshToken.value,
@@ -12,12 +12,12 @@ export const saveRefreshToken = async (refreshToken: RefreshToken): Promise<void
   await ormRefreshToken.save();
 };
 
-export const getRefreshToken = async (token: string): Promise<RefreshToken | null> => {
+export const getRefreshToken = async (token: string): Promise<RefreshTokenEntity | null> => {
   const refreshToken = await RefreshTokenModel.findOne({ token });
 
   return transformOrNull(
     refreshToken as RefreshTokenOrmEntity,
-    (definedRefreshToken: RefreshTokenOrmEntity): RefreshToken => {
+    (definedRefreshToken: RefreshTokenOrmEntity): RefreshTokenEntity => {
       return {
         value: definedRefreshToken.token,
         ttl: definedRefreshToken.ttl,

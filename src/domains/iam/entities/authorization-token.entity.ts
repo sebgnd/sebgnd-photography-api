@@ -1,7 +1,7 @@
 import { getSecondsEpoch } from '@libs/utils/date';
 import { sign, verify } from 'jsonwebtoken';
 
-export type AuthorizationToken = string;
+export type AuthorizationTokenEntity = string;
 export type AuthorizationTokenPayload = {
   iat: number,
   iss: string,

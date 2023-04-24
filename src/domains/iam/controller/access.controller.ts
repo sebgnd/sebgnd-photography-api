@@ -5,8 +5,8 @@ import { deleteRefreshToken, getRefreshToken, saveRefreshToken } from '@domains/
 
 import { validateIdToken } from '@domains/iam/service/google-sso';
 import { getAuthorizedUserWithProvider } from '@domains/iam/database/authorized-user.repository';
-import { createAuthorizationToken } from '@domains/iam/entities/authorization-token';
-import { generateRefreshTokenForUser } from '@domains/iam/entities/refresh-token';
+import { createAuthorizationToken } from '@domains/iam/entities/authorization-token.entity';
+import { generateRefreshTokenForUser } from '@domains/iam/entities/refresh-token.entity';
 import { getCookieName, safelySendToken } from '@domains/iam/transport/token-response';
 
 import { authorization } from '@domains/iam/middleware/authorization.middleware';

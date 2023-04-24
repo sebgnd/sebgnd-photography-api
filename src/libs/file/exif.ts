@@ -50,7 +50,7 @@ export const readExifFromImage = async <File extends WithPath>(file: File) => {
   }
 
   return {
-    iso: exifRaw.ISO,
+    iso: parseInt(exifRaw.ISO, 10),
     shutterSpeed: convertShutterSpeed(exifRaw.ShutterSpeedValue),
     aperture: convertAperture(exifRaw.ApertureValue),
     focalLength: convertFocalLength(exifRaw.FocalLength),

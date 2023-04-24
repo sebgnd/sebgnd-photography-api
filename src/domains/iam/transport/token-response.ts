@@ -1,10 +1,10 @@
 import { Response } from 'express';
-import { RefreshToken } from '@domains/iam/entities/refresh-token';
+import { RefreshTokenEntity } from '@domains/iam/entities/refresh-token.entity';
 import { addTimeToDate } from '@libs/utils/date';
 
 export type TokenToSend = {
   authorizationToken: string,
-  refreshToken: RefreshToken,
+  refreshToken: RefreshTokenEntity,
 };
 
 export const SECURE_REFRESH_TOKEN_COOKIE = '__Secure-RefreshToken';

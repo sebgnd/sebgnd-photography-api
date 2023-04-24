@@ -4,20 +4,8 @@ import { Locality } from '@libs/famework/events/dispatcher';
 
 import { authorization } from '@domains/iam/middleware/authorization.middleware';
 
-import {
-  doesCategoryExist,
-  findCategory,
-  addImageToCategory,
-  removeImageFromCategory,
-} from '@domains/gallery/database/category/category.repository';
-
-import {
-  findImage,
-  findImagePaginated,
-  getTotalImages,
-  saveImage,
-  deleteImage,
-} from '@domains/gallery/database/image/image.repository';
+import { categoryRepository } from '@domains/gallery/database/category.repository';
+import { imageRepository } from '@domains/gallery/database/image.repository';
 
 import { isImageThumbnail } from '@domains/gallery/entities/category.entity';
 import { createImageFromFile } from '@domains/gallery/entities/image.entity';
@@ -46,7 +34,7 @@ export const imageController = createController('images', ({ builder, eventDispa
         }
 
         if (category) {
-          const categoryExists = await doesCategoryExist(category.toString());
+          const categoryExists = await categoryRepository.doesCategoryExist(category.toString());
 
           if (!categoryExists) {
             res.status(400).json({
@@ -66,19 +54,19 @@ export const imageController = createController('images', ({ builder, eventDispa
         const parseOffset = parseInt(offset.toString());
 
         const [images, total] = await Promise.all([
-          findImagePaginated({
+          imageRepository.findImagePaginated({
             limit: parsedLimit,
             offset: parseOffset,
             categoryId: category?.toString(),
             status: imageStatus,
           }),
-          getTotalImages(imageStatus, category?.toString()),
+          imageRepository.getTotalImages(imageStatus, category?.toString()),
         ]);
 
         res.status(200).json({
           items: images.map((img) => ({
             id: img.id,
-            categoryId: img.categoryId,
+            categoryId: img.category,
             type: img.type,
             createdAt: img.createdAt,
             updatedAt: img.updatedAt,
@@ -93,7 +81,15 @@ export const imageController = createController('images', ({ builder, eventDispa
     .get('/:id', {
       handler: async (req, res) => {
         const { id } = req.params;
-        const image = await findImage(id);
+        const image = await imageRepository.findImage(id);
+        if (!image) {
+          res.status(404).json({
+            error: {
+              message: 'The image does not exist.',
+            },
+          });
+          return;
+        }
 
         res.status(200).json({
           id: image.id,
@@ -133,7 +129,7 @@ export const imageController = createController('images', ({ builder, eventDispa
         }
 
         const categoryId = body.categoryId as string;
-        const category = await findCategory(categoryId);
+        const category = await categoryRepository.findCategory(categoryId);
 
         if (!category) {
           res.status(400).json({
@@ -146,9 +142,9 @@ export const imageController = createController('images', ({ builder, eventDispa
           return;
         }
 
-        const { error, image: createdImage } = await createImageFromFile(file, categoryId);
+        const resultFromFile = await createImageFromFile(file, categoryId);
 
-        if (error) {
+        if (!resultFromFile) {
           /**
            * Only handles incorrect mimetype for now.
            */
@@ -156,7 +152,7 @@ export const imageController = createController('images', ({ builder, eventDispa
             error: {
               message: 'Invalid image',
               details: {
-                mimetype: error.message,
+                mimetype: 'Only PNG and JPG are supported',
               },
             },
           });
@@ -164,9 +160,9 @@ export const imageController = createController('images', ({ builder, eventDispa
           return;
         }
 
-        const savedImage = await saveImage(createdImage!);
+        const savedImage = await imageRepository.saveImage(resultFromFile.image);
 
-        await addImageToCategory(categoryId, savedImage.id!);
+        await categoryRepository.addImageToCategory(categoryId, savedImage.id!.toString());
 
         eventDispatcher.dispatch({
           name: 'images:uploaded',
@@ -174,8 +170,8 @@ export const imageController = createController('images', ({ builder, eventDispa
           data: {
             image: {
               id: savedImage.id?.toString(),
-              originalName: createdImage!.temporaryFile!.name,
-              temporaryPath: createdImage!.temporaryFile!.path,
+              originalName: resultFromFile.temporaryFile.name,
+              temporaryPath: resultFromFile.temporaryFile.path,
             },
           },
         });
@@ -197,7 +193,7 @@ export const imageController = createController('images', ({ builder, eventDispa
       handler: async (req, res) => {
         const { id } = req.params;
 
-        const image = await findImage(id);
+        const image = await imageRepository.findImage(id);
 
         if (!image) {
           res.status(404).json({
@@ -209,9 +205,9 @@ export const imageController = createController('images', ({ builder, eventDispa
           return;
         }
 
-        const category = await findCategory(image.categoryId);
+        const category = await categoryRepository.findCategory(image.category.toString());
 
-        if (isImageThumbnail(category, id)) {
+        if (isImageThumbnail(category!, id)) {
           res.status(400).json({
             error: {
               message: 'Cannot delete an image used as a thumbnail',
@@ -226,8 +222,8 @@ export const imageController = createController('images', ({ builder, eventDispa
         }
 
         await Promise.all([
-          deleteImage(id),
-          removeImageFromCategory(category!.id!, id),
+          imageRepository.deleteImage(id),
+          categoryRepository.removeImageFromCategory(category!.id!.toString(), id),
         ]);
 
         eventDispatcher.dispatch({

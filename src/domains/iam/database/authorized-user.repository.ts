@@ -1,13 +1,13 @@
 import { AuthorizedUserModel, AuthorizedUserOrmEntity } from '@database/entities/user';
-import { User } from '@domains/iam/entities/user';
+import { UserEntity } from '@domains/iam/entities/user.entity';
 import { transformOrNull } from '@libs/utils/function';
 
-export const findUserById = async (id: string): Promise<User | null> => {
+export const findUserById = async (id: string): Promise<UserEntity | null> => {
   const rawUser = await AuthorizedUserModel.findById(id);
 
   return transformOrNull(
     rawUser as AuthorizedUserOrmEntity,
-    (user: AuthorizedUserOrmEntity): User => {
+    (user: AuthorizedUserOrmEntity): UserEntity => {
       return {
         id: user._id,
         sso: {
@@ -28,7 +28,7 @@ export const doesUserExistWithProvider = (providerUserId: string, provider: stri
   });
 };
 
-export const getAuthorizedUserWithProvider = async (providerUserId: string, provider: string): Promise<User | null> => {
+export const getAuthorizedUserWithProvider = async (providerUserId: string, provider: string): Promise<UserEntity | null> => {
   const rawUser = await AuthorizedUserModel.findOne({
     'sso.provider': 'google',
     'sso.providerUserId': providerUserId,
@@ -39,7 +39,7 @@ export const getAuthorizedUserWithProvider = async (providerUserId: string, prov
   }
 
   return {
-    id: rawUser._id,
+    id: rawUser._id.toString(),
     sso: {
       id: providerUserId,
       provider,

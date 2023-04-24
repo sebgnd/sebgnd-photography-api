@@ -1,4 +1,4 @@
-import { ImageModel } from '@database/entities/image';
+import { ImageModel } from '@database/entities/image.orm';
 
 export type Dimension = {
   width: number,

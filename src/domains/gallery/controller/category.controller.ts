@@ -2,8 +2,8 @@ import { createController } from '@libs/famework/controller';
 
 import { authorization } from '@domains/iam/middleware/authorization.middleware';
 
-import { findAllCategories, findCategory, setThumbnail } from '@domains/gallery/database/category/category.repository';
-import { findImage } from '@domains/gallery/database/image/image.repository';
+import { categoryRepository } from '@domains/gallery/database/category.repository';
+import { imageRepository } from '@domains/gallery/database/image.repository';
 
 import { doesImageBelongToCategory } from '@domains/gallery/entities/category.entity';
 
@@ -11,7 +11,7 @@ export const categoryController = createController('categories', ({ builder }) =
   builder
     .get('/', {
       handler: async (req, res) => {
-        const categories = await findAllCategories();
+        const categories = await categoryRepository.findAllCategories();
 
         res.status(200).json({
           items: categories.map((category) => {
@@ -32,7 +32,16 @@ export const categoryController = createController('categories', ({ builder }) =
     .get('/:id/images', {
       handler: async (req, res) => {
         const { id } = req.params;
-        const category = await findCategory(id);
+        const category = await categoryRepository.findCategory(id);
+        if (!category) {
+          res.status(404).json({
+            error: {
+              message: 'The category does not exist.',
+            },
+          });
+
+          return;
+        }
 
         res.status(200).json({
           items: (category.images || [])
@@ -41,7 +50,7 @@ export const categoryController = createController('categories', ({ builder }) =
               return {
                 id: img.id,
                 type: img.type,
-                categoryId: img.categoryId,
+                categoryId: img.category,
                 createdAt: img.createdAt,
                 updatedAt: img.updatedAt,
               };
@@ -71,8 +80,8 @@ export const categoryController = createController('categories', ({ builder }) =
         const imageId = receivedImageId as string;
 
         const [category, image] = await Promise.all([
-          findCategory(id),
-          findImage(imageId),
+          categoryRepository.findCategory(id),
+          imageRepository.findImage(imageId),
         ]);
 
         if (!category) {
@@ -105,7 +114,7 @@ export const categoryController = createController('categories', ({ builder }) =
           return;
         }
 
-        await setThumbnail(id, imageId);
+        await categoryRepository.setThumbnail(id, imageId);
 
         res.status(200).json({
           id,

@@ -1,70 +1,65 @@
-import { PersistedEntity } from '@libs/types';
+import { Types } from 'mongoose';
+
+import { Entity } from '@libs/entity';
 
 import { readExifFromImage } from '@libs/file/exif';
 import { isFileMimetype, Mimetype } from '@libs/file/mimetype';
 
+export const IMAGE_STATUSES = ['processing', 'valid', 'error'] as const;
+
+export type ImageStatus = typeof IMAGE_STATUSES[number];
+export type ImageType = 'landscape' | 'portrait';
 export type Exif = {
-  iso: number;
-  shutterSpeed: string;
-  aperture: string;
-  focalLength: string;
+  iso: number,
+  shutterSpeed: string,
+  aperture: string,
+  focalLength: string,
+};
+export type Dimension = {
+  width: number,
+  height: number,
+};
+export type Image = Entity & {
+  exif: Exif | null;
+  dimension: Dimension | null,
+  status: ImageStatus,
+  category: Types.ObjectId,
+  type: ImageType | null,
 }
 
-export type File = {
+type File = {
   path: string,
   mimetype: string,
   originalname: string,
-}
-
-export type Image = PersistedEntity & {
-  exif: Exif | null;
-  type?: 'portrait' | 'landscape',
-  categoryId: string,
-  status?: 'processing' | 'valid' | 'error',
-  temporaryFile?: {
-    name: string,
-    path: string,
-  },
 };
 
-export type ImageCreationError = {
-  message: string,
-  type: 'invalid-image',
-};
-
-export type ImageCreationResult =
-  | { image: undefined, error: ImageCreationError }
-  | { image: Image, error: undefined };
-
-export const createImageFromFile = async (file: File, categoryId: string): Promise<ImageCreationResult> => {
+export const createImageFromFile = async (file: File, categoryId: string) => {
   const isFileCorrectMimetype = isFileMimetype(file, [
     Mimetype.JPG,
     Mimetype.PNG,
   ]);
 
   if (!isFileCorrectMimetype) {
-    return {
-      image: undefined,
-      error: {
-        type: 'invalid-image',
-        message: 'You must provide a JPG or PNG image',
-      },
-    };
+    return null;
   }
 
   const exif = await readExifFromImage({
     path: file.path,
   });
 
+  const image: Image = {
+    dimension: null,
+    status: 'processing',
+    category: new Types.ObjectId(categoryId),
+    type: null,
+    exif,
+  };
+
   return {
-    error: undefined,
-    image: {
-      categoryId,
-      exif,
-      temporaryFile: {
-        path: file.path,
-        name: file.originalname,
-      },
+    temporaryFile: {
+      path: file.path,
+      name: file.originalname,
     },
+    image,
   };
 };

@@ -1,17 +1,18 @@
+import { Types } from 'mongoose';
+
 import * as crypto from 'crypto';
 import * as util from 'util';
+
+import { Entity } from '@libs/entity';
 
 import { addTimeToDate } from '@libs/utils/date';
 
 const randomBytes = util.promisify(crypto.randomBytes);
 
-export type RefreshToken = {
-  value: string,
+export type RefreshToken = Entity & {
+  token: string,
   ttl: number,
-  userId: string,
-
-  // `creationDate` is undefined when it is not saved in the database
-  creationDate?: Date,
+  userId: Types.ObjectId,
 };
 
 // Two weeks in seconds
@@ -21,19 +22,18 @@ export const generateRefreshTokenForUser = async (userId: string): Promise<Refre
   const bytes = await randomBytes(16);
 
   return {
-    value: bytes.toString('hex'),
+    token: bytes.toString('hex'),
     ttl: REFRESH_TOKEN_EXPIRATION,
-    creationDate: new Date(),
-    userId,
+    userId: new Types.ObjectId(userId),
   };
 };
 
 export const isRefreshTokenValid = (refreshToken: RefreshToken, date: Date) => {
-  if (!refreshToken.creationDate) {
+  if (!refreshToken.createdAt) {
     return false;
   }
 
-  const expirationDate = addTimeToDate(refreshToken.creationDate, {
+  const expirationDate = addTimeToDate(refreshToken.createdAt, {
     seconds: refreshToken.ttl,
   });
 
